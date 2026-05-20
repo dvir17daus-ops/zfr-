@@ -1,0 +1,11 @@
+---
+pid: 13816
+cwd: "/Users/dvirdaus"
+command: "cd \"/Users/dvirdaus/.cursor/projects/var-folders-b-9772634s0c9313b6nn8grw840000gn-T-b6e043d6-493a-42d3-85ba-05b83136368a\" && python3 -m http.server 8765 --bind 127.0.0.1"
+started_at: 2026-05-11T16:40:47.778Z
+running_for_ms: 3286562  
+---
+127.0.0.1 - - [11/May/2026 19:40:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 19:41:07] "GET /?client=%D7%9E%D7%95%D7%A8%D7%9F HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 19:43:00] "GET /?client=%D7%9E%D7%95%D7%A8%D7%9F HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 19:44:34] "GET /?client=%D7%9E%D7%95%D7%A8%D7%9F HTTP/1.1" 200 -
