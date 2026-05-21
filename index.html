@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="ZFR Estates — נדל״ן יוקרתי עם עוזר דיגיטלי אישי." />
   <title>ZFR Estates | נדל״ן יוקרתי</title>
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -189,7 +194,7 @@
       margin: 0;
       min-height: 4.5rem;
       padding-block: clamp(0.85rem, 3vw, 1.25rem);
-      padding-inline: clamp(1rem, 4vw, 2.5rem);
+      padding-inline: clamp(4.25rem, 12vw, 8.5rem);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -321,8 +326,10 @@
 
     nav {
       display: flex;
+      flex-wrap: wrap;
       gap: clamp(0.35rem, 2vw, 0.5rem);
       align-items: center;
+      justify-content: center;
     }
 
     nav a {
@@ -339,6 +346,14 @@
     nav a:hover {
       color: var(--white);
       background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.12);
+    }
+
+    nav a:focus-visible,
+    .footer-links a:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: 999px;
     }
 
     .nav-cta {
@@ -353,18 +368,26 @@
       letter-spacing: -0.02em;
       border-radius: 999px;
       border: none;
+      cursor: pointer;
       transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
     }
 
     .nav-cta:hover {
       transform: scale(1.03);
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.18);
-      opacity: 0.95;
+      box-shadow: 0 0 22px rgba(255, 255, 255, 0.35), 0 8px 24px rgba(255, 255, 255, 0.2);
+      opacity: 0.98;
+    }
+
+    .nav-cta:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
     @media (max-width: 640px) {
       header {
         gap: 0.75rem;
+        padding-inline: clamp(3.5rem, 16vw, 5rem);
       }
 
       .brand-name {
@@ -388,7 +411,9 @@
 
     main {
       flex: 1;
-      display: block;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
     }
 
     .hero-section {
@@ -404,6 +429,7 @@
     .site-section {
       position: relative;
       z-index: 1;
+      flex-shrink: 0;
       padding: clamp(4rem, 9vw, 6.5rem) clamp(1.25rem, 4vw, 2.5rem);
       scroll-margin-top: 5.5rem;
     }
@@ -411,6 +437,39 @@
     .site-section-inner {
       max-width: 1100px;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    /* כרטיסי מידע — עמודה במובייל, רשת במסכים רחבים */
+    .pillars,
+    .property-grid,
+    .service-list,
+    .contact-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .pillar,
+    .property-card,
+    .service-item,
+    .contact-card {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: 100%;
+      min-width: 0;
+      flex-shrink: 0;
+      text-align: start;
     }
 
     .section-glass {
@@ -460,8 +519,6 @@
     }
 
     .pillars {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
       gap: 1.25rem;
     }
 
@@ -501,30 +558,14 @@
       color: var(--white-soft);
     }
 
-    .property-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-
     .property-card {
-      position: relative;
       padding: 1.5rem 1.25rem 1.35rem;
       border-radius: var(--radius-lg);
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
       border: 0.5px solid rgba(255, 255, 255, 0.1);
-      overflow: hidden;
+      border-top: 2px solid rgba(212, 175, 55, 0.55);
+      box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.15);
       transition: transform 0.4s var(--ease-apple), border-color 0.4s var(--ease-apple);
-    }
-
-    .property-card::before {
-      content: "";
-      position: absolute;
-      inset: 0 auto auto 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      opacity: 0.7;
     }
 
     .property-card:hover {
@@ -556,18 +597,25 @@
     }
 
     .service-list {
-      display: grid;
       gap: 0.85rem;
     }
 
     .service-item {
-      display: flex;
+      flex-direction: row;
       align-items: flex-start;
       gap: 1rem;
       padding: 1.1rem 1.15rem;
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.03);
       border: 0.5px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .service-item > div {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
     .service-icon {
@@ -603,6 +651,13 @@
       margin-top: 2rem;
     }
 
+    .btn-gold,
+    .btn-ghost {
+      cursor: pointer;
+      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple),
+        background 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
+    }
+
     .btn-gold {
       display: inline-flex;
       align-items: center;
@@ -616,12 +671,18 @@
       font-weight: 600;
       text-decoration: none;
       letter-spacing: -0.01em;
-      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple);
     }
 
     .btn-gold:hover {
       transform: scale(1.03);
-      box-shadow: 0 10px 28px rgba(212, 175, 55, 0.28);
+      border-color: rgba(212, 175, 55, 0.75);
+      box-shadow: 0 0 24px rgba(212, 175, 55, 0.45), 0 10px 28px rgba(212, 175, 55, 0.28);
+    }
+
+    .btn-gold:focus-visible {
+      outline: 2px solid var(--gold-bright);
+      outline-offset: 3px;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     }
 
     .btn-ghost {
@@ -636,21 +697,23 @@
       font-size: 0.875rem;
       font-weight: 500;
       text-decoration: none;
-      transition: background 0.35s var(--ease-apple);
     }
 
     .btn-ghost:hover {
+      transform: scale(1.02);
       background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(212, 175, 55, 0.4);
+      box-shadow: 0 0 18px rgba(245, 245, 247, 0.12), 0 0 0 1px rgba(212, 175, 55, 0.15);
     }
 
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
+    .btn-ghost:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
     }
 
     .contact-card {
-      padding: 1.25rem;
+      gap: 0.5rem;
+      padding: 1.25rem 1.35rem;
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.04);
       border: 0.5px solid rgba(255, 255, 255, 0.08);
@@ -658,23 +721,54 @@
 
     .contact-card span {
       display: block;
-      margin-bottom: 0.35rem;
+      margin: 0;
       font-size: 0.65rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--gold);
+      line-height: 1.3;
     }
 
     .contact-card strong,
     .contact-card a {
+      display: block;
+      margin: 0;
       font-size: 1rem;
       font-weight: 500;
+      line-height: 1.45;
       color: var(--white);
       text-decoration: none;
+      word-break: break-word;
     }
 
     .contact-card a:hover {
       color: var(--gold-bright);
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    @media (min-width: 520px) {
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+    }
+
+    @media (min-width: 720px) {
+      .pillars {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        align-items: stretch;
+      }
+
+      .property-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
     }
 
     .site-footer {
@@ -712,23 +806,13 @@
 
     .footer-links a:hover {
       color: var(--gold-bright);
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
     }
 
     .footer-copy {
       margin: 0;
       font-size: 0.6875rem;
       color: rgba(245, 245, 247, 0.4);
-    }
-
-    @media (max-width: 900px) {
-      .pillars,
-      .property-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .contact-grid {
-        grid-template-columns: 1fr;
-      }
     }
 
     .hero-copy {
@@ -1012,16 +1096,30 @@
       background: #0a84ff;
       color: #fff;
       box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
-      transition: transform 0.35s var(--ease-spring), opacity 0.35s var(--ease-apple);
+      transition: transform 0.35s var(--ease-spring), opacity 0.35s var(--ease-apple),
+        box-shadow 0.35s var(--ease-apple);
     }
 
-    .send-btn:hover {
+    .send-btn:hover:not(:disabled) {
       transform: scale(1.08);
-      opacity: 0.92;
+      opacity: 1;
+      box-shadow: 0 0 20px rgba(10, 132, 255, 0.55), 0 4px 14px rgba(10, 132, 255, 0.4);
     }
 
-    .send-btn:active {
+    .send-btn:focus-visible:not(:disabled) {
+      outline: 2px solid rgba(10, 132, 255, 0.8);
+      outline-offset: 3px;
+      box-shadow: 0 0 18px rgba(10, 132, 255, 0.5);
+    }
+
+    .send-btn:active:not(:disabled) {
       transform: scale(0.94);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
     }
 
     .send-btn svg {
@@ -1050,21 +1148,31 @@
       color: var(--white);
       cursor: pointer;
       backdrop-filter: blur(12px);
-      transition: background 0.35s var(--ease-apple), transform 0.35s var(--ease-spring);
+      transition: background 0.35s var(--ease-apple), transform 0.35s var(--ease-spring),
+        box-shadow 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
     }
 
-    .quick-reply-btn:hover {
+    .quick-reply-btn:hover:not(:disabled) {
       background: rgba(118, 118, 128, 0.42);
       transform: scale(1.02);
+      border-color: rgba(212, 175, 55, 0.35);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
     }
 
-    .quick-reply-btn:active {
+    .quick-reply-btn:focus-visible:not(:disabled) {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
+    }
+
+    .quick-reply-btn:active:not(:disabled) {
       transform: scale(0.96);
     }
 
     .quick-reply-btn:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+      box-shadow: none;
     }
 
     .hero-aside {
@@ -1203,6 +1311,63 @@
       }
     }
 
+    @media (hover: hover) and (pointer: fine) {
+      body.has-custom-cursor,
+      body.has-custom-cursor a,
+      body.has-custom-cursor button,
+      body.has-custom-cursor .tab,
+      body.has-custom-cursor select {
+        cursor: none !important;
+      }
+
+      .custom-cursor-dot {
+        width: 6px;
+        height: 6px;
+        background-color: #d4af37;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9999;
+        border-radius: 50%;
+        opacity: 0;
+        transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.2s;
+      }
+
+      .custom-cursor {
+        width: 30px;
+        height: 30px;
+        border: 1.5px solid #d4af37;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9998;
+        border-radius: 50%;
+        opacity: 0;
+        transition: left 0.08s ease-out, top 0.08s ease-out, width 0.3s, height 0.3s,
+          background-color 0.3s, border-color 0.3s, opacity 0.2s;
+      }
+
+      body.has-custom-cursor .custom-cursor:not(.is-hidden),
+      body.has-custom-cursor .custom-cursor-dot:not(.is-hidden) {
+        opacity: 1;
+      }
+
+      body.has-custom-cursor.hovered .custom-cursor {
+        width: 45px;
+        height: 45px;
+        background-color: rgba(214, 175, 55, 0.1);
+        border-color: #fff;
+      }
+
+      body.has-custom-cursor.hovered .custom-cursor-dot {
+        background-color: #fff;
+      }
+    }
+
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -1217,6 +1382,9 @@
   </style>
 </head>
 <body>
+  <div class="custom-cursor" aria-hidden="true"></div>
+  <div class="custom-cursor-dot" aria-hidden="true"></div>
+
   <div class="bg-canvas" aria-hidden="true">
     <div class="bg-motion">
       <img
@@ -1296,7 +1464,7 @@
         <nav aria-label="ניווט ראשי">
           <a href="#about" class="nav-keep-mobile">אודותינו</a>
           <a href="#properties">נכסים</a>
-          <a href="#concierge">שירות</a>
+          <a href="#concierge-services">שירות</a>
           <a href="#contact" class="nav-cta">סיור פרטי</a>
         </nav>
       </div>
@@ -1375,7 +1543,7 @@
       </section>
 
       <section id="about" class="site-section" aria-labelledby="about-title">
-        <motion class="site-section-inner section-glass">
+        <div class="site-section-inner section-glass">
           <span class="section-eyebrow">הסיפור שלנו</span>
           <h2 id="about-title" class="section-title">אודות ZFR Estates</h2>
           <p class="section-lead">
@@ -1399,7 +1567,7 @@
               <p>משכנתא, משפטי, שיפוץ ומסירה — צוות אחד שמרכז את כל התהליך עבורכם.</p>
             </article>
           </div>
-        </motion>
+        </div>
       </section>
 
       <section id="properties" class="site-section" aria-labelledby="properties-title">
@@ -1410,7 +1578,7 @@
             מגדלי בוטיק, פנטהאוזים עם נוף לים ואחוזות עם פרטיות מוחלטת — אנחנו מציגים רק נכסים
             שעומדים בקריטריון אחד: להרגיש בבית מהרגע הראשון.
           </p>
-          <motion class="property-grid">
+          <div class="property-grid">
             <article class="property-card">
               <h3>פנטהאוזים</h3>
               <p>מרפסות אינסופיות, תקרות גבוהות וחומרים שמדברים בשקט.</p>
@@ -1426,12 +1594,12 @@
               <p>נכסים עם פוטנציאל תשואה וערך עתידי, לפני שהשוק מגלה אותם.</p>
               <span class="property-tag">אוף־מרקט · בלעדי ללקוחות ZFR</span>
             </article>
-          </motion>
+          </div>
           <div class="cta-row">
-            <a href="#home" class="btn-gold">גלה נכסים מתאימים</a>
+            <a href="#concierge" class="btn-gold">גלה נכסים מתאימים</a>
             <a href="#contact" class="btn-ghost">בקשת פרטים חסויים</a>
           </div>
-        </motion>
+        </div>
       </section>
 
       <section id="concierge-services" class="site-section" aria-labelledby="services-title">
@@ -1449,26 +1617,26 @@
                 <h3>יועץ נכסים חכם</h3>
                 <p>שיחה מיידית שמבינה תקציב, סגנון חיים ולוח זמנים — ומסננת רעש.</p>
               </div>
-            </motion>
+            </div>
             <div class="service-item">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
                 <h3>סיורים פרטיים</h3>
                 <p>ביקורים מחוץ לשעות עומס, עם סוכן בכיר שמכיר כל פרט בנכס.</p>
               </div>
-            </motion>
-            <motion class="service-item">
+            </div>
+            <div class="service-item">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
                 <h3>ליווי עסקה מלא</h3>
                 <p>משא ומתן, עורכי דין, בנקים וקבלנים — הכל תחת קורת גג אחת.</p>
               </div>
-            </motion>
-          </motion>
-          <div class="cta-row">
-            <a href="#home" class="btn-gold">התחילו בשיחה עכשיו</a>
+            </div>
           </div>
-        </motion>
+          <div class="cta-row">
+            <a href="#concierge" class="btn-gold">התחילו בשיחה עכשיו</a>
+          </div>
+        </div>
       </section>
 
       <section id="contact" class="site-section" aria-labelledby="contact-title">
@@ -1483,24 +1651,24 @@
             <div class="contact-card">
               <span>טלפון</span>
               <a href="tel:+972525240271">052-524-0271</a>
-            </motion>
+            </div>
             <div class="contact-card">
               <span>דוא״ל</span>
               <a href="mailto:hello@zfr-estates.com">hello@zfr-estates.com</a>
-            </motion>
+            </div>
             <div class="contact-card">
               <span>שעות פעילות</span>
               <strong>א׳–ה׳ · 09:00–19:00</strong>
-            </motion>
+            </div>
             <div class="contact-card">
               <span>משרדים</span>
               <strong>תל אביב · פגישות בתיאום מראש</strong>
-            </motion>
-          </motion>
-          <div class="cta-row">
-            <a href="#home" class="btn-gold">דברו עם היועץ</a>
+            </div>
           </div>
-        </motion>
+          <div class="cta-row">
+            <a href="#concierge" class="btn-gold">דברו עם היועץ</a>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -1512,11 +1680,11 @@
           <a href="#properties">נכסים</a>
           <a href="#concierge-services">שירות</a>
           <a href="#contact">צור קשר</a>
-          <a href="#home">יועץ דיגיטלי</a>
+          <a href="#concierge">יועץ דיגיטלי</a>
         </nav>
-      </motion>
+      </div>
     </footer>
-  </motion>
+  </div>
 
   <script>
     (function initHeaderScroll() {
@@ -1527,6 +1695,66 @@
       }
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
+    })();
+
+    (function initChatFocusLinks() {
+      var chatInput = document.getElementById("chatInput");
+      if (!chatInput) return;
+
+      document.querySelectorAll('a[href="#concierge"]').forEach(function (link) {
+        link.addEventListener("click", function () {
+          window.setTimeout(function () {
+            if (!chatInput.disabled) {
+              chatInput.focus({ preventScroll: true });
+            }
+          }, 450);
+        });
+      });
+    })();
+
+    (function initCustomCursor() {
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var cursor = document.querySelector(".custom-cursor");
+      var cursorDot = document.querySelector(".custom-cursor-dot");
+      if (!cursor || !cursorDot) return;
+
+      document.body.classList.add("has-custom-cursor");
+      cursor.classList.add("is-hidden");
+      cursorDot.classList.add("is-hidden");
+
+      window.addEventListener(
+        "mousemove",
+        function (e) {
+          cursor.classList.remove("is-hidden");
+          cursorDot.classList.remove("is-hidden");
+
+          cursorDot.style.left = e.clientX + "px";
+          cursorDot.style.top = e.clientY + "px";
+
+          cursor.style.left = e.clientX + "px";
+          cursor.style.top = e.clientY + "px";
+        },
+        { passive: true }
+      );
+
+      document.documentElement.addEventListener("mouseleave", function () {
+        cursor.classList.add("is-hidden");
+        cursorDot.classList.add("is-hidden");
+        document.body.classList.remove("hovered");
+      });
+
+      var hoverElements = document.querySelectorAll('a, button, .tab, [role="button"]');
+
+      hoverElements.forEach(function (element) {
+        element.addEventListener("mouseenter", function () {
+          document.body.classList.add("hovered");
+        });
+        element.addEventListener("mouseleave", function () {
+          document.body.classList.remove("hovered");
+        });
+      });
     })();
 
     (function () {
