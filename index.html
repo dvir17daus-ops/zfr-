@@ -24,11 +24,18 @@
       --charcoal-mid: #2c2c2e;
       --charcoal-light: #3a3a3c;
       --white: #f5f5f7;
-      --white-muted: rgba(245, 245, 247, 0.72);
-      --white-soft: rgba(245, 245, 247, 0.55);
+      --white-muted: #cbd5e1;
+      --white-soft: #e2e8f0;
+      --text-silver: #e2e8f0;
+      --text-silver-muted: #cbd5e1;
       --gold: #d4af37;
-      --gold-bright: #f0e6c8;
+      --gold-light: #c5a059;
+      --gold-bright: #f3e5ab;
+      --gold-shine: #e8d5a3;
       --gold-dim: rgba(212, 175, 55, 0.28);
+      --gold-glow: rgba(214, 175, 55, 0.15);
+      --gradient-gold: linear-gradient(135deg, #c5a059 0%, #f3e5ab 50%, #d4af37 100%);
+      --gradient-gold-hover: linear-gradient(135deg, #d4af37 0%, #f3e5ab 45%, #c5a059 100%);
       --glass: rgba(255, 255, 255, 0.07);
       --glass-strong: rgba(28, 28, 30, 0.68);
       --glass-border: rgba(255, 255, 255, 0.14);
@@ -318,10 +325,10 @@
       padding: 0.55rem 0.85rem;
       border-radius: 999px;
       background: var(--glass-strong);
-      border: 0.5px solid rgba(212, 175, 55, 0.22);
+      border: 0.5px solid rgba(212, 175, 55, 0.35);
       backdrop-filter: blur(40px) saturate(180%);
       -webkit-backdrop-filter: blur(40px) saturate(180%);
-      box-shadow: var(--shadow-soft), 0 0 24px rgba(212, 175, 55, 0.06);
+      box-shadow: var(--shadow-soft), 0 0 24px var(--gold-glow);
     }
 
     nav {
@@ -446,8 +453,7 @@
     /* כרטיסי מידע — עמודה במובייל, רשת במסכים רחבים */
     .pillars,
     .property-grid,
-    .service-list,
-    .contact-grid {
+    .service-list {
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -459,8 +465,7 @@
 
     .pillar,
     .property-card,
-    .service-item,
-    .contact-card {
+    .service-item {
       position: static;
       display: flex;
       flex-direction: column;
@@ -476,7 +481,7 @@
       border-radius: var(--radius-xl);
       padding: clamp(2rem, 5vw, 3.25rem);
       background: rgba(18, 18, 20, 0.62);
-      border: 0.5px solid rgba(212, 175, 55, 0.2);
+      border: 0.5px solid rgba(212, 175, 55, 0.28);
       backdrop-filter: blur(40px) saturate(170%);
       -webkit-backdrop-filter: blur(40px) saturate(170%);
       box-shadow: var(--shadow-soft), 0 0 40px rgba(212, 175, 55, 0.05);
@@ -490,10 +495,23 @@
       font-weight: 500;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--gold-bright);
+      color: var(--gold-shine);
       background: rgba(212, 175, 55, 0.1);
-      border: 0.5px solid rgba(212, 175, 55, 0.22);
+      border: 0.5px solid rgba(212, 175, 55, 0.35);
       border-radius: 999px;
+    }
+
+    .section-glass .pillar h3,
+    .section-glass .property-card h3,
+    .section-glass .service-item h3 {
+      color: var(--white);
+    }
+
+    .section-glass .pillar p,
+    .section-glass .property-card p,
+    .section-glass .service-item p,
+    .section-glass .section-lead {
+      color: var(--text-silver);
     }
 
     .section-title {
@@ -511,7 +529,7 @@
       max-width: 40rem;
       font-size: clamp(1rem, 2.2vw, 1.125rem);
       line-height: 1.65;
-      color: var(--white-soft);
+      color: var(--text-silver);
     }
 
     .section-lead:last-child {
@@ -527,12 +545,13 @@
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.04);
       border: 0.5px solid rgba(255, 255, 255, 0.08);
-      transition: border-color 0.35s var(--ease-apple), transform 0.35s var(--ease-apple);
+      transition: all 0.3s ease;
     }
 
     .pillar:hover {
-      border-color: rgba(212, 175, 55, 0.35);
-      transform: translateY(-2px);
+      transform: translateY(-6px);
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px var(--gold-glow);
     }
 
     .pillar-num {
@@ -555,7 +574,7 @@
       margin: 0;
       font-size: 0.875rem;
       line-height: 1.55;
-      color: var(--white-soft);
+      color: var(--text-silver);
     }
 
     .property-card {
@@ -563,14 +582,16 @@
       border-radius: var(--radius-lg);
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
       border: 0.5px solid rgba(255, 255, 255, 0.1);
-      border-top: 2px solid rgba(212, 175, 55, 0.55);
-      box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.15);
-      transition: transform 0.4s var(--ease-apple), border-color 0.4s var(--ease-apple);
+      border-top: 2px solid var(--gold);
+      box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.12);
+      transition: all 0.3s ease;
     }
 
     .property-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(212, 175, 55, 0.35);
+      transform: translateY(-6px);
+      border-color: var(--gold);
+      border-top-color: var(--gold-bright);
+      box-shadow: 0 10px 30px var(--gold-glow);
     }
 
     .property-card h3 {
@@ -584,7 +605,7 @@
       margin: 0;
       font-size: 0.8125rem;
       line-height: 1.5;
-      color: var(--white-soft);
+      color: var(--text-silver);
     }
 
     .property-tag {
@@ -593,7 +614,7 @@
       font-size: 0.65rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--gold-bright);
+      color: var(--gold-shine);
     }
 
     .service-list {
@@ -608,6 +629,13 @@
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.03);
       border: 0.5px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .service-item:hover {
+      transform: translateY(-6px);
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px var(--gold-glow);
     }
 
     .service-item > div {
@@ -628,7 +656,8 @@
       font-family: var(--font-brand);
       font-size: 1.1rem;
       color: #1a1510;
-      background: linear-gradient(145deg, var(--gold-bright), var(--gold));
+      background: var(--gradient-gold);
+      box-shadow: 0 2px 10px var(--gold-glow);
     }
 
     .service-item h3 {
@@ -641,7 +670,7 @@
       margin: 0;
       font-size: 0.8125rem;
       line-height: 1.5;
-      color: var(--white-soft);
+      color: var(--text-silver);
     }
 
     .cta-row {
@@ -664,19 +693,21 @@
       justify-content: center;
       padding: 0.7rem 1.35rem;
       border-radius: 999px;
-      border: 0.5px solid rgba(212, 175, 55, 0.45);
-      background: linear-gradient(145deg, var(--gold-bright), var(--gold));
+      border: 0.5px solid rgba(212, 175, 55, 0.55);
+      background: var(--gradient-gold);
       color: #1a1510;
       font-size: 0.875rem;
       font-weight: 600;
       text-decoration: none;
       letter-spacing: -0.01em;
+      box-shadow: 0 4px 18px var(--gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
     .btn-gold:hover {
-      transform: scale(1.03);
-      border-color: rgba(212, 175, 55, 0.75);
-      box-shadow: 0 0 24px rgba(212, 175, 55, 0.45), 0 10px 28px rgba(212, 175, 55, 0.28);
+      transform: translateY(-2px) scale(1.02);
+      border-color: var(--gold-bright);
+      background: var(--gradient-gold-hover);
+      box-shadow: 0 8px 28px rgba(214, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     }
 
     .btn-gold:focus-visible {
@@ -711,48 +742,84 @@
       outline-offset: 3px;
     }
 
-    .contact-card {
-      gap: 0.5rem;
-      padding: 1.25rem 1.35rem;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.04);
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
+    /* יצירת קשר — טקסט מינימלי + אייקוני זהב */
+    #contact .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.35rem;
+      width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
-    .contact-card span {
-      display: block;
+    #contact .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      padding: 0;
       margin: 0;
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    #contact .contact-row-icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
       color: var(--gold);
+    }
+
+    #contact .contact-row-icon svg {
+      display: block;
+      width: 1.35rem;
+      height: 1.35rem;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    #contact .contact-row-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+
+    #contact .contact-row-label {
+      margin: 0;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-silver-muted);
       line-height: 1.3;
     }
 
-    .contact-card strong,
-    .contact-card a {
-      display: block;
+    #contact .contact-row-value,
+    #contact .contact-row-value:visited {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.0625rem;
       font-weight: 500;
       line-height: 1.45;
       color: var(--white);
       text-decoration: none;
       word-break: break-word;
+      transition: color 0.3s ease;
     }
 
-    .contact-card a:hover {
+    #contact .contact-row-value:hover {
       color: var(--gold-bright);
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
     }
 
-    @media (min-width: 520px) {
-      .contact-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        align-items: stretch;
-      }
+    #contact .cta-row {
+      margin-top: 2rem;
     }
 
     @media (min-width: 720px) {
@@ -861,7 +928,7 @@
     .hero-copy p {
       margin: 0;
       font-size: clamp(1rem, 2.2vw, 1.125rem);
-      color: var(--white-soft);
+      color: var(--text-silver);
       line-height: 1.55;
       font-weight: 400;
       letter-spacing: -0.015em;
@@ -873,8 +940,8 @@
       height: 2px;
       margin-top: 1.5rem;
       border-radius: 2px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      opacity: 0.85;
+      background: linear-gradient(90deg, var(--gold-light), var(--gold-bright), transparent);
+      opacity: 0.9;
     }
 
     .chat-shell {
@@ -940,7 +1007,7 @@
     .chat-header-text p {
       margin: 0.2rem 0 0;
       font-size: 0.75rem;
-      color: var(--white-soft);
+      color: var(--text-silver-muted);
       letter-spacing: -0.01em;
       font-weight: 400;
     }
@@ -1023,8 +1090,8 @@
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: var(--white-soft);
-      opacity: 0.5;
+      background: var(--text-silver-muted);
+      opacity: 0.65;
       animation: bounce 1.2s var(--ease-apple) infinite;
     }
 
@@ -1208,7 +1275,7 @@
       margin-top: 0.25rem;
       font-size: 0.75rem;
       letter-spacing: -0.01em;
-      color: var(--white-soft);
+      color: var(--text-silver-muted);
       font-weight: 400;
     }
 
@@ -1640,33 +1707,55 @@
       </section>
 
       <section id="contact" class="site-section" aria-labelledby="contact-title">
-        <div class="site-section-inner section-glass">
-          <span class="section-eyebrow">יצירת קשר</span>
-          <h2 id="contact-title" class="section-title">סיור פרטי או שיחת ייעוץ</h2>
-          <p class="section-lead">
-            השאירו פרטים בשיחה עם היועץ בראש העמוד, או פנו אלינו ישירות. נחזור אליכם בזמן הקרוב
-            עם הצעה מותאמת — בדיסקרטיות מלאה.
-          </p>
-          <div class="contact-grid">
-            <div class="contact-card">
-              <span>טלפון</span>
-              <a href="tel:+972525240271">052-524-0271</a>
+        <div class="site-section-inner">
+          <div class="section-glass">
+            <span class="section-eyebrow">יצירת קשר</span>
+            <h2 id="contact-title" class="section-title">סיור פרטי או שיחת ייעוץ</h2>
+            <p class="section-lead">
+              השאירו פרטים בשיחה עם היועץ בראש העמוד, או פנו אלינו ישירות. נחזור אליכם בזמן הקרוב
+              עם הצעה מותאמת — בדיסקרטיות מלאה.
+            </p>
+            <div class="contact-list" role="list" aria-label="פרטי התקשרות">
+              <div class="contact-row" role="listitem">
+                <span class="contact-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </span>
+                <div class="contact-row-text">
+                  <span class="contact-row-label">טלפון</span>
+                  <a class="contact-row-value" href="tel:+972525240271">052-524-0271</a>
+                </div>
+              </div>
+              <div class="contact-row" role="listitem">
+                <span class="contact-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+                </span>
+                <div class="contact-row-text">
+                  <span class="contact-row-label">דוא״ל</span>
+                  <a class="contact-row-value" href="mailto:hello@zfr-estates.com">hello@zfr-estates.com</a>
+                </div>
+              </div>
+              <div class="contact-row" role="listitem">
+                <span class="contact-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </span>
+                <div class="contact-row-text">
+                  <span class="contact-row-label">שעות פעילות</span>
+                  <span class="contact-row-value">א׳–ה׳ · 09:00–19:00</span>
+                </div>
+              </div>
+              <div class="contact-row" role="listitem">
+                <span class="contact-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <div class="contact-row-text">
+                  <span class="contact-row-label">משרדים</span>
+                  <span class="contact-row-value">תל אביב · פגישות בתיאום מראש</span>
+                </div>
+              </div>
             </div>
-            <div class="contact-card">
-              <span>דוא״ל</span>
-              <a href="mailto:hello@zfr-estates.com">hello@zfr-estates.com</a>
+            <div class="cta-row">
+              <a href="#concierge" class="btn-gold">דברו עם היועץ</a>
             </div>
-            <div class="contact-card">
-              <span>שעות פעילות</span>
-              <strong>א׳–ה׳ · 09:00–19:00</strong>
-            </div>
-            <div class="contact-card">
-              <span>משרדים</span>
-              <strong>תל אביב · פגישות בתיאום מראש</strong>
-            </div>
-          </div>
-          <div class="cta-row">
-            <a href="#concierge" class="btn-gold">דברו עם היועץ</a>
           </div>
         </div>
       </section>
