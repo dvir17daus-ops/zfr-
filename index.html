@@ -489,6 +489,9 @@
 
     .section-eyebrow {
       display: inline-block;
+      align-self: flex-start;
+      width: fit-content;
+      max-width: 100%;
       margin: 0 0 1rem;
       padding: 0.35rem 0.75rem;
       font-size: 0.6875rem;
@@ -882,6 +885,8 @@
 
     .hero-eyebrow {
       display: inline-block;
+      width: fit-content;
+      max-width: 100%;
       margin: 0 0 1rem;
       padding: 0.35rem 0.75rem;
       font-size: 0.6875rem;
@@ -1918,8 +1923,8 @@
       ).matches;
       var BETWEEN_BOT_MESSAGES_MS = prefersReducedMotion ? 200 : 1500;
       var FIRST_MESSAGE_DELAY_MS = prefersReducedMotion ? 150 : 650;
-      var FINAL_STEP = 6;
-      var PHONE_STEP = 5;
+      var FINAL_STEP = 7;
+      var PHONE_STEP = 6;
       var PHONE_DIGITS_ONLY = /^\d{9,15}$/;
       var MORTGAGE_READY = "כן, מוכן לפעולה";
       var MORTGAGE_IN_PROGRESS = "בתהליכים";
@@ -1944,13 +1949,14 @@
         "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv";
       var leadSentToMake = false;
 
-      /** 0 = name, 1 = budget, 2 = mortgage (QR), 3 = housing (QR), 4 = call time (QR), 5 = phone, 6 = done */
+      /** 0 = name, 1 = property requirements, 2 = budget, 3 = mortgage (QR), 4 = housing (QR), 5 = call time (QR), 6 = phone, 7 = done */
       var surveyStep = 0;
       var activeQuickRepliesEl = null;
       var isBotBusy = false;
       var botTimeouts = [];
       var lead = {
         name: null,
+        propertyRequirements: null,
         initialMessage: null,
         budget: null,
         mortgageStatus: null,
@@ -1963,7 +1969,7 @@
       };
 
       function isQuickReplyStep(step) {
-        return step === 2 || step === 3 || step === 4;
+        return step === 3 || step === 4 || step === 5;
       }
 
       function setPhoneCaptureMode(active) {
@@ -2143,9 +2149,9 @@
       }
 
       function handleMortgageSelection(choice) {
-        if (surveyStep !== 2) return;
+        if (surveyStep !== 3) return;
         lead.mortgageStatus = choice;
-        surveyStep = 3;
+        surveyStep = 4;
         sendBotSequence(
           ["האם הנכס שבו אתם גרים כעת הוא בבעלותכם או בשכירות?"],
           showHousingQuickReplies
@@ -2153,10 +2159,10 @@
       }
 
       function handleHousingSelection(choice) {
-        if (surveyStep !== 3) return;
+        if (surveyStep !== 4) return;
         lead.housingStatus = choice;
         lead.hasPropertyToSell = choice === HOUSING_OWNED;
-        surveyStep = 4;
+        surveyStep = 5;
 
         var replies = [];
         if (choice === HOUSING_OWNED) {
@@ -2168,9 +2174,9 @@
       }
 
       function handleCallTimeSelection(choice) {
-        if (surveyStep !== 4) return;
+        if (surveyStep !== 5) return;
         lead.bestTimeToCall = choice;
-        surveyStep = 5;
+        surveyStep = 6;
         sendBotSequence(
           [
             "כדי שאוכל לשלוח לך תיק נכסים רלוונטי בוואטסאפ (כולל תמונות וסיורים וירטואליים), מה מספר הטלפון הכי טוב ליצירת קשר?",
@@ -2192,6 +2198,7 @@
         if (lead.mortgageStatus) lines.push("משכנתא / הון: " + lead.mortgageStatus);
         if (lead.housingStatus) lines.push("דיור נוכחי: " + lead.housingStatus);
         if (lead.bestTimeToCall) lines.push("זמן מועדף לשיחה: " + lead.bestTimeToCall);
+        if (lead.propertyRequirements) lines.push("דרישות נכס: " + lead.propertyRequirements);
         if (lead.initialMessage) lines.push("פנייה ראשונה: " + lead.initialMessage);
         if (lead.housingStatus === HOUSING_OWNED) {
           lines.push("", "⭐ לקוח בבעלות — פוטנציאל שדרוג / מכירה");
@@ -2214,7 +2221,8 @@
           housingStatus: lead.housingStatus || null,
           hasPropertyToSell: lead.hasPropertyToSell,
           bestTimeToCall: lead.bestTimeToCall || null,
-          initialMessage: lead.initialMessage || null,
+          propertyRequirements: lead.propertyRequirements || null,
+          initialMessage: lead.propertyRequirements || lead.initialMessage || null,
           preferredNeighborhood: lead.preferredNeighborhood || null,
           propertyType: lead.propertyType || null,
         };
@@ -2370,6 +2378,7 @@
         var isOwner = lead.housingStatus === HOUSING_OWNED;
         var summary = {
           Name: lead.name || getClientName() || "—",
+          "Property requirements": lead.propertyRequirements || "—",
           Budget: lead.budget || "—",
           "Housing Status": lead.housingStatus || "—",
           "Mortgage Status": lead.mortgageStatus || "—",
@@ -2399,16 +2408,21 @@
         if (surveyStep === 0) {
           lead.name = userText;
           surveyStep = 1;
-          return ["מהו התקציב שלכם?"];
+          return ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"];
         }
         if (surveyStep === 1) {
-          lead.budget = userText;
+          lead.propertyRequirements = userText;
           surveyStep = 2;
+          return ["מהו התקציב שלכם?"];
+        }
+        if (surveyStep === 2) {
+          lead.budget = userText;
+          surveyStep = 3;
           return [
             "האם כבר קיבלתם אישור עקרוני למשכנתא או שיש הון עצמי זמין?",
           ];
         }
-        if (surveyStep === 2 || surveyStep === 3 || surveyStep === 4 || surveyStep === 5) {
+        if (surveyStep === 3 || surveyStep === 4 || surveyStep === 5 || surveyStep === 6) {
           return [];
         }
         return [];
@@ -2455,10 +2469,13 @@
         if (urlName) {
           lead.name = urlName;
           surveyStep = 1;
-          sendBotSequence(["מהו התקציב שלכם?"], function () {
-            setInputDisabled(false);
-            input.focus();
-          });
+          sendBotSequence(
+            ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"],
+            function () {
+              setInputDisabled(false);
+              input.focus();
+            }
+          );
           return;
         }
         sendBotSequence(["מה שמך?"], function () {
@@ -2494,8 +2511,8 @@
 
         var previousStep = surveyStep;
         var replies = nextAssistantRepliesAfterUserMessage(text);
-        var awaitingMortgageChoice = previousStep === 1 && surveyStep === 2;
-        var awaitingCallTimeChoice = previousStep === 3 && surveyStep === 4;
+        var awaitingMortgageChoice = previousStep === 2 && surveyStep === 3;
+        var awaitingCallTimeChoice = previousStep === 4 && surveyStep === 5;
         setInputDisabled(true);
 
         sendBotSequence(replies, function () {
