@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Z">
+  <defs>
+    <linearGradient id="zfrGold" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff8eb" />
+      <stop offset="40%" stop-color="#f3e5ab" />
+      <stop offset="100%" stop-color="#9a7b3a" />
+    </linearGradient>
+    <filter id="zfrGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-color="#d4af37" flood-opacity="0.38" />
+    </filter>
+  </defs>
+  <path
+    filter="url(#zfrGlow)"
+    fill="url(#zfrGold)"
+    d="M13 12 L51 12 L51 18 L17 46 L51 46 L51 52 L13 52 L13 46 L47 18 L13 18 Z"
+  />
+</svg>

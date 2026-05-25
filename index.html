@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -34,6 +34,9 @@
       --gold-shine: #e8d5a3;
       --gold-dim: rgba(212, 175, 55, 0.28);
       --gold-glow: rgba(214, 175, 55, 0.15);
+      --hover-glow: 0 0 22px rgba(214, 175, 55, 0.38), 0 8px 26px rgba(214, 175, 55, 0.22);
+      --chat-btn-hover-glow: 0 0 20px rgba(10, 132, 255, 0.45), 0 4px 14px rgba(10, 132, 255, 0.35);
+      --chat-accent: rgba(10, 132, 255, 0.45);
       --gradient-gold: linear-gradient(135deg, #c5a059 0%, #f3e5ab 50%, #d4af37 100%);
       --gradient-gold-hover: linear-gradient(135deg, #d4af37 0%, #f3e5ab 45%, #c5a059 100%);
       --glass: rgba(255, 255, 255, 0.07);
@@ -263,15 +266,24 @@
 
     .brand-mark {
       flex-shrink: 0;
-      width: clamp(3.1rem, 8vw, 3.65rem);
-      height: clamp(3.1rem, 8vw, 3.65rem);
-      filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.28));
+      width: clamp(2.65rem, 7vw, 3.2rem);
+      height: clamp(3rem, 7.5vw, 3.55rem);
+      filter: drop-shadow(0 4px 14px rgba(212, 175, 55, 0.32));
     }
 
     .brand-mark svg {
       display: block;
       width: 100%;
       height: 100%;
+      overflow: visible;
+    }
+
+    .brand-mark-letter {
+      font-family: var(--font-brand);
+      font-size: 54px;
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: -0.06em;
     }
 
     .brand-wordmark {
@@ -328,7 +340,7 @@
       border: 0.5px solid rgba(212, 175, 55, 0.35);
       backdrop-filter: blur(40px) saturate(180%);
       -webkit-backdrop-filter: blur(40px) saturate(180%);
-      box-shadow: var(--shadow-soft), 0 0 24px var(--gold-glow);
+      box-shadow: var(--shadow-soft);
     }
 
     nav {
@@ -340,6 +352,9 @@
     }
 
     nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       color: var(--white-muted);
       text-decoration: none;
       font-size: 0.8125rem;
@@ -347,13 +362,26 @@
       letter-spacing: -0.01em;
       padding: 0.45rem 0.85rem;
       border-radius: 999px;
-      transition: color 0.35s var(--ease-apple), background 0.35s var(--ease-apple);
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      cursor: pointer;
+      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple),
+        background 0.35s var(--ease-apple), color 0.35s var(--ease-apple);
     }
 
-    nav a:hover {
+    nav a:not(.nav-cta):hover {
       color: var(--white);
       background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 14px rgba(212, 175, 55, 0.12);
+    }
+
+    nav a.nav-cta {
+      padding: 0.5rem 1.15rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      background: var(--white);
+      color: #000;
+      border: none;
     }
 
     nav a:focus-visible,
@@ -361,34 +389,6 @@
       outline: 2px solid var(--gold);
       outline-offset: 3px;
       border-radius: 999px;
-    }
-
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem 1.15rem;
-      background: var(--white);
-      color: #000;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
-    }
-
-    .nav-cta:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 22px rgba(255, 255, 255, 0.35), 0 8px 24px rgba(255, 255, 255, 0.2);
-      opacity: 0.98;
-    }
-
-    .nav-cta:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 3px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
     @media (max-width: 640px) {
@@ -484,7 +484,7 @@
       border: 0.5px solid rgba(212, 175, 55, 0.28);
       backdrop-filter: blur(40px) saturate(170%);
       -webkit-backdrop-filter: blur(40px) saturate(170%);
-      box-shadow: var(--shadow-soft), 0 0 40px rgba(212, 175, 55, 0.05);
+      box-shadow: var(--shadow-soft);
     }
 
     .section-eyebrow {
@@ -545,13 +545,12 @@
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.04);
       border: 0.5px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s ease;
+      box-shadow: none;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .pillar:hover {
-      transform: translateY(-6px);
-      border-color: var(--gold);
-      box-shadow: 0 10px 30px var(--gold-glow);
+      border-color: rgba(212, 175, 55, 0.35);
     }
 
     .pillar-num {
@@ -583,15 +582,12 @@
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
       border: 0.5px solid rgba(255, 255, 255, 0.1);
       border-top: 2px solid var(--gold);
-      box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.12);
-      transition: all 0.3s ease;
+      box-shadow: none;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .property-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--gold);
-      border-top-color: var(--gold-bright);
-      box-shadow: 0 10px 30px var(--gold-glow);
+      border-color: rgba(212, 175, 55, 0.35);
     }
 
     .property-card h3 {
@@ -629,13 +625,12 @@
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.03);
       border: 0.5px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s ease;
+      box-shadow: none;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .service-item:hover {
-      transform: translateY(-6px);
-      border-color: var(--gold);
-      box-shadow: 0 10px 30px var(--gold-glow);
+      border-color: rgba(212, 175, 55, 0.35);
     }
 
     .service-item > div {
@@ -657,7 +652,8 @@
       font-size: 1.1rem;
       color: #1a1510;
       background: var(--gradient-gold);
-      box-shadow: 0 2px 10px var(--gold-glow);
+      box-shadow: none;
+      transition: box-shadow 0.3s ease;
     }
 
     .service-item h3 {
@@ -682,59 +678,52 @@
 
     .btn-gold,
     .btn-ghost {
-      cursor: pointer;
-      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple),
-        background 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
-    }
-
-    .btn-gold {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       padding: 0.7rem 1.35rem;
       border-radius: 999px;
+      font-size: 0.875rem;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      box-shadow: none;
+      cursor: pointer;
+      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple),
+        background 0.35s var(--ease-apple), color 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
+    }
+
+    .btn-gold {
       border: 0.5px solid rgba(212, 175, 55, 0.55);
       background: var(--gradient-gold);
       color: #1a1510;
-      font-size: 0.875rem;
       font-weight: 600;
-      text-decoration: none;
-      letter-spacing: -0.01em;
-      box-shadow: 0 4px 18px var(--gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-gold:hover,
+    .btn-ghost:hover {
+      transform: translateY(-2px) scale(1.02);
     }
 
     .btn-gold:hover {
-      transform: translateY(-2px) scale(1.02);
       border-color: var(--gold-bright);
       background: var(--gradient-gold-hover);
-      box-shadow: 0 8px 28px rgba(214, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-ghost {
+      border: 0.5px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(212, 175, 55, 0.4);
     }
 
     .btn-gold:focus-visible {
       outline: 2px solid var(--gold-bright);
       outline-offset: 3px;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-    }
-
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.7rem 1.35rem;
-      border-radius: 999px;
-      border: 0.5px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--white);
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-decoration: none;
-    }
-
-    .btn-ghost:hover {
-      transform: scale(1.02);
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(212, 175, 55, 0.4);
-      box-shadow: 0 0 18px rgba(245, 245, 247, 0.12), 0 0 0 1px rgba(212, 175, 55, 0.15);
     }
 
     .btn-ghost:focus-visible {
@@ -811,10 +800,11 @@
       color: var(--white);
       text-decoration: none;
       word-break: break-word;
-      transition: color 0.3s ease;
+      text-shadow: none;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
     }
 
-    #contact .contact-row-value:hover {
+    #contact a.contact-row-value:hover {
       color: var(--gold-bright);
     }
 
@@ -868,12 +858,12 @@
       color: var(--white-muted);
       text-decoration: none;
       font-size: 0.8125rem;
-      transition: color 0.35s var(--ease-apple);
+      text-shadow: none;
+      transition: color 0.35s var(--ease-apple), text-shadow 0.35s ease;
     }
 
     .footer-links a:hover {
       color: var(--gold-bright);
-      text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
     }
 
     .footer-copy {
@@ -958,16 +948,12 @@
       overflow: hidden;
       border: 0.5px solid var(--glass-border);
       background: var(--glass-strong);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-soft);
       backdrop-filter: blur(48px) saturate(180%);
       -webkit-backdrop-filter: blur(48px) saturate(180%);
       min-height: min(68dvh, 540px);
       max-height: min(76dvh, 600px);
       transition: transform 0.5s var(--ease-apple), box-shadow 0.5s var(--ease-apple);
-    }
-
-    .chat-widget:hover {
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
     }
 
     .chat-header {
@@ -1162,7 +1148,7 @@
       place-items: center;
       background: #0a84ff;
       color: #fff;
-      box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
+      box-shadow: none;
       transition: transform 0.35s var(--ease-spring), opacity 0.35s var(--ease-apple),
         box-shadow 0.35s var(--ease-apple);
     }
@@ -1170,13 +1156,11 @@
     .send-btn:hover:not(:disabled) {
       transform: scale(1.08);
       opacity: 1;
-      box-shadow: 0 0 20px rgba(10, 132, 255, 0.55), 0 4px 14px rgba(10, 132, 255, 0.4);
     }
 
     .send-btn:focus-visible:not(:disabled) {
       outline: 2px solid rgba(10, 132, 255, 0.8);
       outline-offset: 3px;
-      box-shadow: 0 0 18px rgba(10, 132, 255, 0.5);
     }
 
     .send-btn:active:not(:disabled) {
@@ -1210,26 +1194,22 @@
       letter-spacing: -0.01em;
       padding: 0.5rem 1rem;
       border-radius: 999px;
-      border: 0.5px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       background: rgba(118, 118, 128, 0.28);
       color: var(--white);
       cursor: pointer;
       backdrop-filter: blur(12px);
+      box-shadow: none;
+      outline: none;
       transition: background 0.35s var(--ease-apple), transform 0.35s var(--ease-spring),
         box-shadow 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
     }
 
-    .quick-reply-btn:hover:not(:disabled) {
+    .quick-reply-btn:hover:not(:disabled),
+    .quick-reply-btn:focus-visible:not(:disabled) {
       background: rgba(118, 118, 128, 0.42);
       transform: scale(1.02);
-      border-color: rgba(212, 175, 55, 0.35);
-      box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
-    }
-
-    .quick-reply-btn:focus-visible:not(:disabled) {
-      outline: 2px solid var(--gold);
-      outline-offset: 2px;
-      box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
+      border-color: var(--chat-accent);
     }
 
     .quick-reply-btn:active:not(:disabled) {
@@ -1355,6 +1335,72 @@
       }
     }
 
+    /* זוהר ואנימציות lift — רק מכשיר עם עכבר (לא נתקע במגע) */
+    @media (hover: hover) and (pointer: fine) {
+      .brand-wordmark-link:hover .brand-rule {
+        box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+      }
+
+      nav a:not(.nav-cta):hover,
+      nav a.nav-cta:hover,
+      .btn-gold:hover,
+      .btn-ghost:hover {
+        box-shadow: var(--hover-glow);
+      }
+
+      nav a:not(.nav-cta):hover,
+      nav a.nav-cta:hover {
+        transform: scale(1.02);
+      }
+
+      nav a.nav-cta:hover {
+        background: var(--white);
+        color: #000;
+      }
+
+      .pillar:hover {
+        transform: translateY(-6px);
+        border-color: var(--gold);
+        box-shadow: 0 10px 30px var(--gold-glow);
+      }
+
+      .property-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--gold);
+        border-top-color: var(--gold-bright);
+        box-shadow: 0 10px 30px var(--gold-glow);
+      }
+
+      .service-item:hover {
+        transform: translateY(-6px);
+        border-color: var(--gold);
+        box-shadow: 0 10px 30px var(--gold-glow);
+      }
+
+      .service-item:hover .service-icon {
+        box-shadow: 0 0 14px rgba(214, 175, 55, 0.4);
+      }
+
+
+      #contact a.contact-row-value:hover {
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      }
+
+      .footer-links a:hover {
+        text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+      }
+
+      .chat-widget:hover {
+        box-shadow: var(--shadow), 0 0 32px rgba(212, 175, 55, 0.08);
+      }
+
+      .send-btn:hover:not(:disabled),
+      .quick-reply-btn:hover:not(:disabled),
+      .quick-reply-btn:focus-visible:not(:disabled) {
+        box-shadow: var(--chat-btn-hover-glow);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .bg-motion-image {
         animation: none;
@@ -1475,55 +1521,29 @@
     <header>
       <a href="#home" class="brand-mark-link" aria-label="ZFR Estates — דף הבית">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
             <defs>
-              <linearGradient id="zfrGoldGrad" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#fff4d6" />
-                <stop offset="42%" stop-color="#e8d5a3" />
-                <stop offset="100%" stop-color="#b8942e" />
-              </linearGradient>
-              <linearGradient id="zfrGoldFill" x1="18" y1="24" x2="46" y2="50" gradientUnits="userSpaceOnUse">
+              <linearGradient id="markGold" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stop-color="#fff8eb" />
-                <stop offset="55%" stop-color="#d4af37" />
+                <stop offset="40%" stop-color="#f3e5ab" />
                 <stop offset="100%" stop-color="#9a7b3a" />
               </linearGradient>
+              <filter id="markGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#d4af37" flood-opacity="0.45" />
+              </filter>
             </defs>
-            <rect
-              x="3"
-              y="3"
-              width="58"
-              height="58"
-              rx="16"
-              stroke="url(#zfrGoldGrad)"
-              stroke-width="1.25"
-              fill="rgba(8, 8, 10, 0.78)"
-            />
-            <path
-              d="M16 22V16M28 22V12M40 22V18M52 22V14"
-              stroke="url(#zfrGoldGrad)"
-              stroke-width="1.1"
-              stroke-linecap="round"
-              opacity="0.85"
-            />
-            <rect x="15" y="22" width="7" height="26" rx="1" fill="url(#zfrGoldFill)" opacity="0.55" />
-            <rect x="28.5" y="22" width="7" height="26" rx="1" fill="url(#zfrGoldFill)" opacity="0.75" />
-            <rect x="42" y="22" width="7" height="26" rx="1" fill="url(#zfrGoldFill)" opacity="0.55" />
-            <path
-              d="M20 46 L32 30 L44 46"
-              stroke="url(#zfrGoldGrad)"
-              stroke-width="1"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              opacity="0.35"
-            />
-            <path
-              d="M22 44.5 L32 33 L42 44.5"
-              stroke="url(#zfrGoldFill)"
-              stroke-width="2.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              fill="none"
-            />
+            <text
+              class="brand-mark-letter"
+              x="32"
+              y="47"
+              text-anchor="middle"
+              font-family="Cormorant Garamond, Georgia, serif"
+              font-size="54"
+              font-weight="600"
+              font-style="italic"
+              fill="url(#markGold)"
+              filter="url(#markGlow)"
+            >Z</text>
           </svg>
         </span>
       </a>
@@ -1834,15 +1854,24 @@
         document.body.classList.remove("hovered");
       });
 
-      var hoverElements = document.querySelectorAll('a, button, .tab, [role="button"]');
+      var cursorInteractive =
+        'a, button, .tab, [role="button"], .btn-gold, .btn-ghost, .nav-cta, .send-btn, .quick-reply-btn, .contact-row-value[href]';
 
-      hoverElements.forEach(function (element) {
-        element.addEventListener("mouseenter", function () {
+      document.addEventListener("mouseover", function (e) {
+        if (e.target.closest && e.target.closest(cursorInteractive)) {
           document.body.classList.add("hovered");
-        });
-        element.addEventListener("mouseleave", function () {
+        }
+      });
+
+      document.addEventListener("mouseout", function (e) {
+        var from = e.target.closest ? e.target.closest(cursorInteractive) : null;
+        var to =
+          e.relatedTarget && e.relatedTarget.closest
+            ? e.relatedTarget.closest(cursorInteractive)
+            : null;
+        if (from && !to) {
           document.body.classList.remove("hovered");
-        });
+        }
       });
     })();
 
@@ -1874,6 +1903,13 @@
       var input = document.getElementById("chatInput");
       if (!messagesEl || !form || !input) return;
 
+      if (window.location.protocol === "file:") {
+        console.warn(
+          "%cZFR — האתר נפתח כקובץ מקומי (file://). לחיבור Make פתחו עם שרת מקומי, למשל: python3 -m http.server 8080",
+          "font-weight:bold;color:#fbbf24;"
+        );
+      }
+
       var submitBtn = form.querySelector('button[type="submit"]');
       var DEFAULT_INPUT_PLACEHOLDER = input.placeholder;
 
@@ -1903,12 +1939,18 @@
        */
       var CALLMEBOT_API_KEY = "";
 
-      /** 0 = intro, 1 = budget, 2 = mortgage (QR), 3 = housing (QR), 4 = call time (QR), 5 = phone, 6 = done */
+      /** Webhook Make — שליחת לידים (JSON POST) */
+      var MAKE_WEBHOOK_URL =
+        "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv";
+      var leadSentToMake = false;
+
+      /** 0 = name, 1 = budget, 2 = mortgage (QR), 3 = housing (QR), 4 = call time (QR), 5 = phone, 6 = done */
       var surveyStep = 0;
       var activeQuickRepliesEl = null;
       var isBotBusy = false;
       var botTimeouts = [];
       var lead = {
+        name: null,
         initialMessage: null,
         budget: null,
         mortgageStatus: null,
@@ -1964,7 +2006,7 @@
         surveyStep = FINAL_STEP;
         logLeadSummary();
         setInputDisabled(true);
-        var name = getClientName();
+        var name = lead.name || getClientName();
         var opener = name ? "תודה " + name + "!" : "תודה רבה!";
         sendBotSequence(
           [
@@ -2074,8 +2116,6 @@
         setQuickReplyMode(true);
         setInputDisabled(true);
         scrollToBottom();
-        var firstBtn = wrap.querySelector(".quick-reply-btn");
-        if (firstBtn) firstBtn.focus();
       }
 
       function showMortgageQuickReplies() {
@@ -2145,8 +2185,8 @@
 
       function buildLeadWhatsAppMessage() {
         var lines = ["*ליד חדש — ZFR Estates*", ""];
-        var clientName = getClientName();
-        if (clientName) lines.push("שם (מקישור): " + clientName);
+        var clientName = lead.name || getClientName();
+        if (clientName) lines.push("שם: " + clientName);
         if (lead.phoneNumber) lines.push("טלפון לקוח: " + lead.phoneNumber);
         if (lead.budget) lines.push("תקציב: " + lead.budget);
         if (lead.mortgageStatus) lines.push("משכנתא / הון: " + lead.mortgageStatus);
@@ -2162,6 +2202,139 @@
         lines.push("", "נשלח מהאתר · " + new Date().toLocaleString("he-IL"));
         return lines.join("\n");
       }
+
+      function buildLeadPayload() {
+        return {
+          source: "ZFR Estates Website",
+          submittedAt: new Date().toISOString(),
+          clientName: lead.name || getClientName() || null,
+          phoneNumber: lead.phoneNumber || null,
+          budget: lead.budget || null,
+          mortgageStatus: lead.mortgageStatus || null,
+          housingStatus: lead.housingStatus || null,
+          hasPropertyToSell: lead.hasPropertyToSell,
+          bestTimeToCall: lead.bestTimeToCall || null,
+          initialMessage: lead.initialMessage || null,
+          preferredNeighborhood: lead.preferredNeighborhood || null,
+          propertyType: lead.propertyType || null,
+        };
+      }
+
+      function ensureMakeSinkFrame() {
+        var iframeName = "zfr_make_sink";
+        var iframe = document.getElementById(iframeName);
+        if (iframe) return iframe;
+        iframe = document.createElement("iframe");
+        iframe.id = iframeName;
+        iframe.name = iframeName;
+        iframe.title = "Make webhook";
+        iframe.style.cssText =
+          "position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none";
+        iframe.setAttribute("aria-hidden", "true");
+        document.body.appendChild(iframe);
+        return iframe;
+      }
+
+      function sendLeadToMakeViaForm(payload) {
+        ensureMakeSinkFrame();
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = MAKE_WEBHOOK_URL;
+        form.target = "zfr_make_sink";
+        form.style.display = "none";
+        Object.keys(payload).forEach(function (key) {
+          var input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          var val = payload[key];
+          input.value = val === null || val === undefined ? "" : String(val);
+          form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
+        window.setTimeout(function () {
+          if (form.parentNode) form.parentNode.removeChild(form);
+        }, 3000);
+      }
+
+      function sendLeadToMake() {
+        if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
+        leadSentToMake = true;
+
+        var payload = buildLeadPayload();
+        var body = JSON.stringify(payload);
+
+        function makeSendOk(method) {
+          console.info(
+            "%cZFR — Make: הליד נשלח בהצלחה (" + method + ")",
+            "font-weight:bold;color:#4ade80;"
+          );
+          console.log("Make payload:", payload);
+        }
+
+        function makeSendFailed(err) {
+          leadSentToMake = false;
+          console.warn("ZFR — Make: שליחה נכשלה", err || "");
+        }
+
+        if (window.location.protocol === "file:") {
+          console.warn(
+            "%cZFR — פתחו את האתר דרך שרת (http://localhost) לשליחת JSON אמינה; משתמשים ב-fallback",
+            "color:#fbbf24;"
+          );
+          sendLeadToMakeViaForm(payload);
+          makeSendOk("form POST (file://)");
+          return;
+        }
+
+        fetch(MAKE_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: body,
+          mode: "cors",
+          keepalive: true,
+        })
+          .then(function (res) {
+            if (res.ok) {
+              makeSendOk("JSON POST · " + res.status);
+              return;
+            }
+            sendLeadToMakeViaForm(payload);
+            makeSendOk("form POST (fallback · " + res.status + ")");
+          })
+          .catch(function (err) {
+            var beaconOk = false;
+            if (navigator.sendBeacon) {
+              try {
+                beaconOk = navigator.sendBeacon(
+                  MAKE_WEBHOOK_URL,
+                  new Blob([body], { type: "application/json" })
+                );
+              } catch (beaconErr) {
+                beaconOk = false;
+              }
+            }
+            if (beaconOk) {
+              makeSendOk("sendBeacon");
+              return;
+            }
+            try {
+              sendLeadToMakeViaForm(payload);
+              makeSendOk("form POST (fallback)");
+            } catch (formErr) {
+              makeSendFailed(err || formErr);
+            }
+          });
+      }
+
+      /** לבדיקה: הריצו ב-Console כש-Make במצב "מאזין" — zfrDebugSendMake() */
+      window.zfrDebugSendMake = function () {
+        leadSentToMake = false;
+        if (!lead.phoneNumber) lead.phoneNumber = "0501234567";
+        if (!lead.budget) lead.budget = "בדיקת חיבור Make";
+        if (!lead.initialMessage) lead.initialMessage = "בדיקה ידנית מה-Console";
+        sendLeadToMake();
+      };
 
       function sendLeadSummaryToOwnerWhatsApp() {
         var text = buildLeadWhatsAppMessage();
@@ -2196,6 +2369,7 @@
       function logLeadSummary() {
         var isOwner = lead.housingStatus === HOUSING_OWNED;
         var summary = {
+          Name: lead.name || getClientName() || "—",
           Budget: lead.budget || "—",
           "Housing Status": lead.housingStatus || "—",
           "Mortgage Status": lead.mortgageStatus || "—",
@@ -2217,12 +2391,13 @@
         console.log("Full lead object:", lead);
         console.groupEnd();
 
+        sendLeadToMake();
         sendLeadSummaryToOwnerWhatsApp();
       }
 
       function nextAssistantRepliesAfterUserMessage(userText) {
         if (surveyStep === 0) {
-          lead.initialMessage = userText;
+          lead.name = userText;
           surveyStep = 1;
           return ["מהו התקציב שלכם?"];
         }
@@ -2274,6 +2449,23 @@
       }
 
       appendBubble(getWelcomeMessage(), "assistant");
+
+      (function startNameQuestion() {
+        var urlName = getClientName();
+        if (urlName) {
+          lead.name = urlName;
+          surveyStep = 1;
+          sendBotSequence(["מהו התקציב שלכם?"], function () {
+            setInputDisabled(false);
+            input.focus();
+          });
+          return;
+        }
+        sendBotSequence(["מה שמך?"], function () {
+          setInputDisabled(false);
+          input.focus();
+        });
+      })();
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
