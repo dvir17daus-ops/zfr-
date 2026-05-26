@@ -2202,8 +2202,11 @@
         return lines.join("\n");
       }
 
-      function buildLeadPayload() {
-        return {
+      function sendLeadToMake() {
+        if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
+        leadSentToMake = true;
+
+        var leadData = {
           source: "ZFR Estates Website",
           submittedAt: new Date().toISOString(),
           clientName: lead.name || getClientName() || null,
@@ -2213,117 +2216,27 @@
           housingStatus: lead.housingStatus || null,
           hasPropertyToSell: lead.hasPropertyToSell,
           bestTimeToCall: lead.bestTimeToCall || null,
-          propertyRequirements: lead.propertyRequirements || null,
           initialMessage: lead.propertyRequirements || lead.initialMessage || null,
-          preferredNeighborhood: lead.preferredNeighborhood || null,
-          propertyType: lead.propertyType || null,
         };
-      }
 
-      function ensureMakeSinkFrame() {
-        var iframeName = "zfr_make_sink";
-        var iframe = document.getElementById(iframeName);
-        if (iframe) return iframe;
-        iframe = document.createElement("iframe");
-        iframe.id = iframeName;
-        iframe.name = iframeName;
-        iframe.title = "Make webhook";
-        iframe.style.cssText =
-          "position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none";
-        iframe.setAttribute("aria-hidden", "true");
-        document.body.appendChild(iframe);
-        return iframe;
-      }
-
-      function sendLeadToMakeViaForm(payload) {
-        ensureMakeSinkFrame();
-        var form = document.createElement("form");
-        form.method = "POST";
-        form.action = MAKE_WEBHOOK_URL;
-        form.target = "zfr_make_sink";
-        form.style.display = "none";
-        Object.keys(payload).forEach(function (key) {
-          var input = document.createElement("input");
-          input.type = "hidden";
-          input.name = key;
-          var val = payload[key];
-          input.value = val === null || val === undefined ? "" : String(val);
-          form.appendChild(input);
-        });
-        document.body.appendChild(form);
-        form.submit();
-        window.setTimeout(function () {
-          if (form.parentNode) form.parentNode.removeChild(form);
-        }, 3000);
-      }
-
-      function sendLeadToMake() {
-        if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
-        leadSentToMake = true;
-
-        var payload = buildLeadPayload();
-        var body = JSON.stringify(payload);
-
-        function makeSendOk(method) {
-          console.info(
-            "%cZFR — Make: הליד נשלח בהצלחה (" + method + ")",
-            "font-weight:bold;color:#4ade80;"
-          );
-          console.log("Make payload:", payload);
-        }
-
-        function makeSendFailed(err) {
-          leadSentToMake = false;
-          console.warn("ZFR — Make: שליחה נכשלה", err || "");
-        }
-
-        if (window.location.protocol === "file:") {
-          console.warn(
-            "%cZFR — פתחו את האתר דרך שרת (http://localhost) לשליחת JSON אמינה; משתמשים ב-fallback",
-            "color:#fbbf24;"
-          );
-          sendLeadToMakeViaForm(payload);
-          makeSendOk("form POST (file://)");
-          return;
-        }
-
-        fetch(MAKE_WEBHOOK_URL, {
+        fetch("https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x350ejeexv", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: body,
-          mode: "cors",
-          keepalive: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(leadData),
         })
-          .then(function (res) {
-            if (res.ok) {
-              makeSendOk("JSON POST · " + res.status);
-              return;
+          .then(function (response) {
+            if (response.ok) {
+              console.log("הליד נשלח בהצלחה ל-Make!");
+            } else {
+              leadSentToMake = false;
+              console.error("שגיאה בתגובת השרת:", response.statusText);
             }
-            sendLeadToMakeViaForm(payload);
-            makeSendOk("form POST (fallback · " + res.status + ")");
           })
-          .catch(function (err) {
-            var beaconOk = false;
-            if (navigator.sendBeacon) {
-              try {
-                beaconOk = navigator.sendBeacon(
-                  MAKE_WEBHOOK_URL,
-                  new Blob([body], { type: "application/json" })
-                );
-              } catch (beaconErr) {
-                beaconOk = false;
-              }
-            }
-            if (beaconOk) {
-              makeSendOk("sendBeacon");
-              return;
-            }
-            try {
-              sendLeadToMakeViaForm(payload);
-              makeSendOk("form POST (fallback)");
-            } catch (formErr) {
-              makeSendFailed(err || formErr);
-            }
+          .catch(function (error) {
+            leadSentToMake = false;
+            console.error("שגיאה פיזית בשליחת ה-fetch:", error);
           });
       }
 
