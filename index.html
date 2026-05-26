@@ -2206,7 +2206,7 @@
         if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
         leadSentToMake = true;
 
-        var leadData = {
+        var dataToSend = {
           source: "ZFR Estates Website",
           submittedAt: new Date().toISOString(),
           clientName: lead.name || getClientName() || null,
@@ -2224,19 +2224,14 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(leadData),
+          body: JSON.stringify(dataToSend),
         })
-          .then(function (response) {
-            if (response.ok) {
-              console.log("הליד נשלח בהצלחה ל-Make!");
-            } else {
-              leadSentToMake = false;
-              console.error("שגיאה בתגובת השרת:", response.statusText);
-            }
+          .then(function () {
+            console.log("הליד נשלח בהצלחה ל-Make!");
           })
-          .catch(function (error) {
+          .catch(function (err) {
             leadSentToMake = false;
-            console.error("שגיאה פיזית בשליחת ה-fetch:", error);
+            console.error("שגיאה בשליחה:", err);
           });
       }
 
