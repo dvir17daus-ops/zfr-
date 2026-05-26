@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="ZFR Estates — נדל״ן יוקרתי עם עוזר דיגיטלי אישי." />
   <title>ZFR Estates | נדל״ן יוקרתי</title>
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#09090b" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -266,24 +267,16 @@
 
     .brand-mark {
       flex-shrink: 0;
-      width: clamp(2.65rem, 7vw, 3.2rem);
-      height: clamp(3rem, 7.5vw, 3.55rem);
-      filter: drop-shadow(0 4px 14px rgba(212, 175, 55, 0.32));
+      width: clamp(2.5rem, 6.5vw, 3rem);
+      height: clamp(2.5rem, 6.5vw, 3rem);
+      filter: drop-shadow(0 3px 12px rgba(212, 175, 55, 0.28));
     }
 
-    .brand-mark svg {
+    .brand-mark img {
       display: block;
       width: 100%;
       height: 100%;
-      overflow: visible;
-    }
-
-    .brand-mark-letter {
-      font-family: var(--font-brand);
-      font-size: 54px;
-      font-weight: 600;
-      font-style: italic;
-      letter-spacing: -0.06em;
+      object-fit: contain;
     }
 
     .brand-wordmark {
@@ -944,6 +937,7 @@
       width: 100%;
       max-width: 480px;
       justify-self: center;
+      scroll-margin-top: 5.5rem;
     }
 
     .chat-widget {
@@ -982,10 +976,12 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
 
-    .chat-avatar svg {
-      width: 20px;
-      height: 20px;
-      color: var(--gold-bright);
+    .chat-avatar img {
+      width: 24px;
+      height: 24px;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 5px rgba(212, 175, 55, 0.32));
     }
 
     .chat-header-text h2 {
@@ -1526,30 +1522,7 @@
     <header>
       <a href="#home" class="brand-mark-link" aria-label="ZFR Estates — דף הבית">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-            <defs>
-              <linearGradient id="markGold" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#fff8eb" />
-                <stop offset="40%" stop-color="#f3e5ab" />
-                <stop offset="100%" stop-color="#9a7b3a" />
-              </linearGradient>
-              <filter id="markGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#d4af37" flood-opacity="0.45" />
-              </filter>
-            </defs>
-            <text
-              class="brand-mark-letter"
-              x="32"
-              y="47"
-              text-anchor="middle"
-              font-family="Cormorant Garamond, Georgia, serif"
-              font-size="54"
-              font-weight="600"
-              font-style="italic"
-              fill="url(#markGold)"
-              filter="url(#markGlow)"
-            >Z</text>
-          </svg>
+          <img src="assets/zfr-mark.svg" alt="" width="64" height="64" decoding="async" />
         </span>
       </a>
       <div class="header-inner">
@@ -1585,11 +1558,7 @@
         <div class="chat-widget" id="chatWidget" role="region" aria-label="יועץ נכסים אישי ZFR Estates">
           <div class="chat-header">
             <div class="chat-avatar" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3a7 7 0 0 1 7 7v1a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4v-1a7 7 0 0 1 7-7z" />
-                <path d="M8 21h8" />
-                <path d="M12 17v4" />
-              </svg>
+              <img src="assets/zfr-mark.svg" alt="" width="24" height="24" decoding="async" />
             </div>
             <div class="chat-header-text">
               <h2>יועץ נכסים אישי</h2>
@@ -1946,7 +1915,7 @@
 
       /** Webhook Make — שליחת לידים (JSON POST) */
       var MAKE_WEBHOOK_URL =
-        "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv";
+        "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x350ejeexv";
       var leadSentToMake = false;
 
       /** 0 = name, 1 = property requirements, 2 = budget, 3 = mortgage (QR), 4 = housing (QR), 5 = call time (QR), 6 = phone, 7 = done */
@@ -1990,8 +1959,30 @@
         return (input.value || "").trim();
       }
 
+      function normalizePhoneDigits(raw) {
+        return String(raw || "").replace(/\D/g, "");
+      }
+
       function validatePhoneNumber(digits) {
         return PHONE_DIGITS_ONLY.test(digits);
+      }
+
+      function updateInputPlaceholderForStep() {
+        if (surveyStep >= FINAL_STEP) return;
+        if (surveyStep === PHONE_STEP) {
+          setPhoneCaptureMode(true);
+          return;
+        }
+        setPhoneCaptureMode(false);
+        if (surveyStep === 0) {
+          input.placeholder = "הקלידו את שמכם…";
+        } else if (surveyStep === 1) {
+          input.placeholder = "תארו דרישות נכס (אזור, סוג, חדרים…)…";
+        } else if (surveyStep === 2) {
+          input.placeholder = "לדוגמה: 3–5 מיליון ₪…";
+        } else {
+          input.placeholder = DEFAULT_INPUT_PLACEHOLDER;
+        }
       }
 
       function promptForValidPhone(userMessage, botMessage) {
@@ -2081,6 +2072,8 @@
         clearStaleTypingIndicators();
         isBotBusy = false;
         removeQuickReplies();
+        setQuickReplyMode(false);
+        setPhoneCaptureMode(false);
         setInputDisabled(true);
         input.placeholder = "השיחה הסתיימה — ניצור קשר בקרוב.";
       }
@@ -2199,7 +2192,6 @@
         if (lead.housingStatus) lines.push("דיור נוכחי: " + lead.housingStatus);
         if (lead.bestTimeToCall) lines.push("זמן מועדף לשיחה: " + lead.bestTimeToCall);
         if (lead.propertyRequirements) lines.push("דרישות נכס: " + lead.propertyRequirements);
-        if (lead.initialMessage) lines.push("פנייה ראשונה: " + lead.initialMessage);
         if (lead.housingStatus === HOUSING_OWNED) {
           lines.push("", "⭐ לקוח בבעלות — פוטנציאל שדרוג / מכירה");
         }
@@ -2340,7 +2332,7 @@
         leadSentToMake = false;
         if (!lead.phoneNumber) lead.phoneNumber = "0501234567";
         if (!lead.budget) lead.budget = "בדיקת חיבור Make";
-        if (!lead.initialMessage) lead.initialMessage = "בדיקה ידנית מה-Console";
+        if (!lead.propertyRequirements) lead.propertyRequirements = "בדיקה ידנית מה-Console";
         sendLeadToMake();
       };
 
@@ -2462,6 +2454,7 @@
         next();
       }
 
+      setInputDisabled(true);
       appendBubble(getWelcomeMessage(), "assistant");
 
       (function startNameQuestion() {
@@ -2472,6 +2465,7 @@
           sendBotSequence(
             ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"],
             function () {
+              updateInputPlaceholderForStep();
               setInputDisabled(false);
               input.focus();
             }
@@ -2479,6 +2473,7 @@
           return;
         }
         sendBotSequence(["מה שמך?"], function () {
+          updateInputPlaceholderForStep();
           setInputDisabled(false);
           input.focus();
         });
@@ -2492,7 +2487,8 @@
           var phoneRaw = getPhoneInputRaw();
           if (!phoneRaw) return;
 
-          if (!validatePhoneNumber(phoneRaw)) {
+          var phoneDigits = normalizePhoneDigits(phoneRaw);
+          if (!validatePhoneNumber(phoneDigits)) {
             promptForValidPhone(
               phoneRaw,
               "כדי שנוכל לשלוח לך את תיק הנכסים בוואטסאפ, נא לשלוח מספר טלפון בלבד — ספרות בלבד, 9–15 ספרות (לדוגמה: 0501234567)."
@@ -2500,7 +2496,7 @@
             return;
           }
 
-          completePhoneCapture(phoneRaw);
+          completePhoneCapture(phoneDigits);
           return;
         }
 
@@ -2523,6 +2519,7 @@
           } else if (awaitingCallTimeChoice) {
             showCallTimeQuickReplies();
           } else {
+            updateInputPlaceholderForStep();
             setInputDisabled(false);
             input.focus();
           }

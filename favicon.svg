@@ -1,14 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="g" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#fff8eb" />
-      <stop offset="40%" stop-color="#f3e5ab" />
-      <stop offset="100%" stop-color="#9a7b3a" />
+    <linearGradient id="bg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#141416" />
+      <stop offset="100%" stop-color="#060608" />
+    </linearGradient>
+    <linearGradient id="zfrGold" x1="14" y1="10" x2="50" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff8ec" />
+      <stop offset="38%" stop-color="#f3e5ab" />
+      <stop offset="100%" stop-color="#b8942e" />
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#0a0a0c" />
+  <rect width="64" height="64" rx="15" fill="url(#bg)" />
+  <rect
+    x="2"
+    y="2"
+    width="60"
+    height="60"
+    rx="13"
+    fill="none"
+    stroke="rgba(212, 175, 55, 0.22)"
+    stroke-width="1"
+  />
   <path
-    fill="url(#g)"
-    d="M13 12 L51 12 L51 18 L17 46 L51 46 L51 52 L13 52 L13 46 L47 18 L13 18 Z"
+    d="M17 18H47M47 18L17 46M17 46H47"
+    stroke="url(#zfrGold)"
+    stroke-width="5.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
   />
 </svg>
