@@ -2049,7 +2049,7 @@
 
       /** Webhook Make — שליחת לידים (JSON POST) */
       var MAKE_WEBHOOK_URL =
-        "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x350ejeexv";
+        "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv";
       var leadSentToMake = false;
 
       /** 0 = name, 1 = property requirements, 2 = budget, 3 = mortgage (QR), 4 = housing (QR), 5 = call time (QR), 6 = phone, 7 = done */
@@ -2360,19 +2360,17 @@
             : lead.initialMessage;
 
         return {
-          source: "ZFR Estates Website",
-          submittedAt: new Date().toISOString(),
           clientName: leadField(lead.name || getClientName()),
           phoneNumber: leadField(lead.phoneNumber),
           budget: leadField(lead.budget),
-          mortgageStatus: leadField(lead.mortgageStatus),
           housingStatus: leadField(lead.housingStatus),
           hasPropertyToSell:
             lead.hasPropertyToSell === true
-              ? "Yes"
+              ? "כן"
               : lead.hasPropertyToSell === false
-                ? "No"
+                ? "לא"
                 : LEAD_FIELD_FALLBACK,
+          mortgageStatus: leadField(lead.mortgageStatus),
           bestTimeToCall: leadField(lead.bestTimeToCall),
           propertyRequirements: leadField(requirements),
           initialMessage: leadField(lead.initialMessage || requirements),
@@ -2402,15 +2400,14 @@
 
         fetch(MAKE_WEBHOOK_URL, {
           method: "POST",
-          mode: "no-cors",
           headers: {
-            "Content-Type": "text/plain;charset=UTF-8",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(dataToSend),
         })
           .then(function () {
             console.log(
-              "%cZFR — Lead POST dispatched to Make (no-cors; response is opaque)",
+              "%cZFR — Lead JSON sent to Make webhook",
               "color:#86efac;"
             );
           })
