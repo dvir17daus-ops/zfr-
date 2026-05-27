@@ -1482,6 +1482,61 @@
       }
     }
 
+    /* Scroll-driven reveal (Intersection Observer + CSS) */
+    :root {
+      --scroll-reveal-duration: 0.8s;
+      --scroll-reveal-ease: cubic-bezier(0.25, 1, 0.5, 1);
+      --scroll-reveal-offset-y: 30px;
+      --scroll-reveal-offset-x: 30px;
+    }
+
+    .fade-in-scroll,
+    .slide-up-scroll,
+    .slide-left-scroll,
+    .slide-right-scroll {
+      opacity: 0;
+      transition:
+        opacity var(--scroll-reveal-duration) var(--scroll-reveal-ease),
+        transform var(--scroll-reveal-duration) var(--scroll-reveal-ease);
+      will-change: opacity, transform;
+    }
+
+    .fade-in-scroll {
+      transform: translateY(18px);
+    }
+
+    .slide-up-scroll {
+      transform: translateY(var(--scroll-reveal-offset-y));
+    }
+
+    .slide-left-scroll {
+      transform: translateX(calc(-1 * var(--scroll-reveal-offset-x)));
+    }
+
+    .slide-right-scroll {
+      transform: translateX(var(--scroll-reveal-offset-x));
+    }
+
+    .fade-in-scroll.active,
+    .slide-up-scroll.active,
+    .slide-left-scroll.active,
+    .slide-right-scroll.active {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in-scroll,
+      .slide-up-scroll,
+      .slide-left-scroll,
+      .slide-right-scroll {
+        opacity: 1;
+        transform: none;
+        transition: none;
+        will-change: auto;
+      }
+    }
+
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -1545,16 +1600,16 @@
     <main>
       <section id="home" class="hero-section" aria-label="דף הבית">
       <div class="hero-copy">
-        <p class="hero-eyebrow">נדל״ן יוקרתי</p>
-        <h1>בתים נבחרים ל<em>חיים ברמה אחרת</em></h1>
-        <div class="gold-line" aria-hidden="true"></div>
-        <p>
+        <p class="hero-eyebrow fade-in-scroll">נדל״ן יוקרתי</p>
+        <h1 class="slide-up-scroll">בתים נבחרים ל<em>חיים ברמה אחרת</em></h1>
+        <div class="gold-line fade-in-scroll" data-scroll-delay="120" aria-hidden="true"></div>
+        <p class="slide-up-scroll" data-scroll-delay="200">
           מפנטהאוזים ועד אחוזות על קו המים — ZFR Estates מצמידה נכסים יוצאי דופן לשירות לבן־יחיד.
           התחילו בשיחה עם העוזר הדיגיטלי שלנו כדי לקבל הצעות מותאמות אישית.
         </p>
       </div>
 
-      <div class="chat-shell" id="concierge">
+      <div class="chat-shell slide-left-scroll" id="concierge" data-scroll-delay="280">
         <div class="chat-widget" id="chatWidget" role="region" aria-label="יועץ נכסים אישי ZFR Estates">
           <div class="chat-header">
             <div class="chat-avatar" aria-hidden="true">
@@ -1587,16 +1642,16 @@
         </div>
       </div>
 
-      <aside class="hero-aside" aria-label="נתונים בולטים">
-        <div class="stat">
+      <aside class="hero-aside slide-right-scroll" aria-label="נתונים בולטים" data-scroll-delay="320">
+        <div class="stat fade-in-scroll" data-scroll-delay="380">
           <strong>40+</strong>
           <span>שנות אמון</span>
         </div>
-        <div class="stat">
+        <div class="stat fade-in-scroll" data-scroll-delay="460">
           <strong>גלובלי</strong>
           <span>גישה לפורטפוליו</span>
         </div>
-        <div class="stat">
+        <div class="stat fade-in-scroll" data-scroll-delay="540">
           <strong>24/7</strong>
           <span>קו לקוחות פרימיום</span>
         </div>
@@ -1605,24 +1660,24 @@
 
       <section id="about" class="site-section" aria-labelledby="about-title">
         <div class="site-section-inner section-glass">
-          <span class="section-eyebrow">הסיפור שלנו</span>
-          <h2 id="about-title" class="section-title">אודות ZFR Estates</h2>
-          <p class="section-lead">
+          <span class="section-eyebrow fade-in-scroll">הסיפור שלנו</span>
+          <h2 id="about-title" class="section-title slide-up-scroll">אודות ZFR Estates</h2>
+          <p class="section-lead fade-in-scroll" data-scroll-delay="80">
             אנחנו בית סוכנות יוקרתי שמחבר בין אנשים לנכסים נדירים — לא ברשימות ציבוריות, אלא בחוויה אישית,
             דיסקרטית ומדויקת. כל לקוח מקבל ליווי צמוד מהרגע הראשון ועד המפתח.
           </p>
           <div class="pillars">
-            <article class="pillar">
+            <article class="pillar slide-up-scroll" data-scroll-delay="0">
               <span class="pillar-num">01</span>
               <h3>דיסקרטיות מוחלטת</h3>
               <p>נכסים off-market, סיורים פרטיים ושיח ישיר — בלי רעש, בלי פשרות.</p>
             </article>
-            <article class="pillar">
+            <article class="pillar slide-up-scroll" data-scroll-delay="100">
               <span class="pillar-num">02</span>
               <h3>מומחיות מקומית</h3>
               <p>סוכנים שחיים את השכונה, מכירים את הקצב ואת הערך האמיתי של כל כתובת.</p>
             </article>
-            <article class="pillar">
+            <article class="pillar slide-up-scroll" data-scroll-delay="200">
               <span class="pillar-num">03</span>
               <h3>שירות לבן־יחיד</h3>
               <p>משכנתא, משפטי, שיפוץ ומסירה — צוות אחד שמרכז את כל התהליך עבורכם.</p>
@@ -1633,30 +1688,30 @@
 
       <section id="properties" class="site-section" aria-labelledby="properties-title">
         <div class="site-section-inner section-glass">
-          <span class="section-eyebrow">פורטפוליו נבחר</span>
-          <h2 id="properties-title" class="section-title">נכסים שמגדירים סטנדרט</h2>
-          <p class="section-lead">
+          <span class="section-eyebrow fade-in-scroll">פורטפוליו נבחר</span>
+          <h2 id="properties-title" class="section-title slide-up-scroll">נכסים שמגדירים סטנדרט</h2>
+          <p class="section-lead fade-in-scroll" data-scroll-delay="80">
             מגדלי בוטיק, פנטהאוזים עם נוף לים ואחוזות עם פרטיות מוחלטת — אנחנו מציגים רק נכסים
             שעומדים בקריטריון אחד: להרגיש בבית מהרגע הראשון.
           </p>
           <div class="property-grid">
-            <article class="property-card">
+            <article class="property-card slide-up-scroll" data-scroll-delay="0">
               <h3>פנטהאוזים</h3>
               <p>מרפסות אינסופיות, תקרות גבוהות וחומרים שמדברים בשקט.</p>
               <span class="property-tag">תל אביב · הרצליה · רמת אביב</span>
             </article>
-            <article class="property-card">
+            <article class="property-card slide-up-scroll" data-scroll-delay="120">
               <h3>וילות יוקרה</h3>
               <p>פרטיות, בריכה וגינה מעוצבת — חיים שקטים עם נגישות מושלמת.</p>
               <span class="property-tag">סביון · כפר שמריהו · רעננה</span>
             </article>
-            <article class="property-card">
+            <article class="property-card slide-up-scroll" data-scroll-delay="240">
               <h3>נדל״ן השקעה</h3>
               <p>נכסים עם פוטנציאל תשואה וערך עתידי, לפני שהשוק מגלה אותם.</p>
               <span class="property-tag">אוף־מרקט · בלעדי ללקוחות ZFR</span>
             </article>
           </div>
-          <div class="cta-row">
+          <div class="cta-row fade-in-scroll" data-scroll-delay="160">
             <a href="#concierge" class="btn-gold">גלה נכסים מתאימים</a>
             <a href="#contact" class="btn-ghost">בקשת פרטים חסויים</a>
           </div>
@@ -1665,28 +1720,28 @@
 
       <section id="concierge-services" class="site-section" aria-labelledby="services-title">
         <div class="site-section-inner section-glass">
-          <span class="section-eyebrow">הבטחת ZFR</span>
-          <h2 id="services-title" class="section-title">שירות אישי שמלווה אתכם</h2>
-          <p class="section-lead">
+          <span class="section-eyebrow fade-in-scroll">הבטחת ZFR</span>
+          <h2 id="services-title" class="section-title slide-up-scroll">שירות אישי שמלווה אתכם</h2>
+          <p class="section-lead fade-in-scroll" data-scroll-delay="80">
             מעבר לחיפוש נכס — אנחנו בונים עבורכם מסלול מותאם: מהשיחה הראשונה עם היועץ הדיגיטלי,
             דרך בחירת הנכס ועד חתימה ומסירה חלקה.
           </p>
           <div class="service-list">
-            <div class="service-item">
+            <div class="service-item slide-right-scroll" data-scroll-delay="0">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
                 <h3>יועץ נכסים חכם</h3>
                 <p>שיחה מיידית שמבינה תקציב, סגנון חיים ולוח זמנים — ומסננת רעש.</p>
               </div>
             </div>
-            <div class="service-item">
+            <div class="service-item slide-right-scroll" data-scroll-delay="100">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
                 <h3>סיורים פרטיים</h3>
                 <p>ביקורים מחוץ לשעות עומס, עם סוכן בכיר שמכיר כל פרט בנכס.</p>
               </div>
             </div>
-            <div class="service-item">
+            <div class="service-item slide-right-scroll" data-scroll-delay="200">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
                 <h3>ליווי עסקה מלא</h3>
@@ -1694,7 +1749,7 @@
               </div>
             </div>
           </div>
-          <div class="cta-row">
+          <div class="cta-row fade-in-scroll" data-scroll-delay="120">
             <a href="#concierge" class="btn-gold">התחילו בשיחה עכשיו</a>
           </div>
         </div>
@@ -1703,14 +1758,14 @@
       <section id="contact" class="site-section" aria-labelledby="contact-title">
         <div class="site-section-inner">
           <div class="section-glass">
-            <span class="section-eyebrow">יצירת קשר</span>
-            <h2 id="contact-title" class="section-title">סיור פרטי או שיחת ייעוץ</h2>
-            <p class="section-lead">
+            <span class="section-eyebrow fade-in-scroll">יצירת קשר</span>
+            <h2 id="contact-title" class="section-title slide-up-scroll">סיור פרטי או שיחת ייעוץ</h2>
+            <p class="section-lead fade-in-scroll" data-scroll-delay="80">
               השאירו פרטים בשיחה עם היועץ בראש העמוד, או פנו אלינו ישירות. נחזור אליכם בזמן הקרוב
               עם הצעה מותאמת — בדיסקרטיות מלאה.
             </p>
             <div class="contact-list" role="list" aria-label="פרטי התקשרות">
-              <div class="contact-row" role="listitem">
+              <div class="contact-row slide-left-scroll" data-scroll-delay="0" role="listitem">
                 <span class="contact-row-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 </span>
@@ -1719,7 +1774,7 @@
                   <a class="contact-row-value" href="tel:+972525240271">052-524-0271</a>
                 </div>
               </div>
-              <div class="contact-row" role="listitem">
+              <div class="contact-row slide-left-scroll" data-scroll-delay="80" role="listitem">
                 <span class="contact-row-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
                 </span>
@@ -1728,7 +1783,7 @@
                   <a class="contact-row-value" href="mailto:hello@zfr-estates.com">hello@zfr-estates.com</a>
                 </div>
               </div>
-              <div class="contact-row" role="listitem">
+              <div class="contact-row slide-left-scroll" data-scroll-delay="160" role="listitem">
                 <span class="contact-row-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                 </span>
@@ -1737,7 +1792,7 @@
                   <span class="contact-row-value">א׳–ה׳ · 09:00–19:00</span>
                 </div>
               </div>
-              <div class="contact-row" role="listitem">
+              <div class="contact-row slide-left-scroll" data-scroll-delay="240" role="listitem">
                 <span class="contact-row-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 </span>
@@ -1747,7 +1802,7 @@
                 </div>
               </div>
             </div>
-            <div class="cta-row">
+            <div class="cta-row fade-in-scroll" data-scroll-delay="120">
               <a href="#concierge" class="btn-gold">דברו עם היועץ</a>
             </div>
           </div>
@@ -1756,7 +1811,7 @@
     </main>
 
     <footer class="site-footer">
-      <div class="site-footer-inner">
+      <div class="site-footer-inner fade-in-scroll">
         <p class="footer-copy">© ZFR Estates · נדל״ן יוקרתי</p>
         <nav class="footer-links" aria-label="קישורי תחתית">
           <a href="#about">אודותינו</a>
@@ -1770,6 +1825,25 @@
   </div>
 
   <script>
+    (function initPageScroll() {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      var hash = window.location.hash;
+      if (!hash || hash === "#home") {
+        window.scrollTo(0, 0);
+        window.addEventListener(
+          "load",
+          function () {
+            if (!window.location.hash || window.location.hash === "#home") {
+              window.scrollTo(0, 0);
+            }
+          },
+          { once: true }
+        );
+      }
+    })();
+
     (function initHeaderScroll() {
       var header = document.querySelector("header");
       if (!header) return;
@@ -1778,6 +1852,58 @@
       }
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
+    })();
+
+    (function initScrollReveal() {
+      var selector =
+        ".fade-in-scroll, .slide-up-scroll, .slide-left-scroll, .slide-right-scroll";
+      var elements = document.querySelectorAll(selector);
+      if (!elements.length) return;
+
+      var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function activate(el) {
+        var delay = el.getAttribute("data-scroll-delay");
+        if (delay && !reducedMotion) {
+          el.style.transitionDelay = delay + "ms";
+        }
+        el.classList.add("active");
+      }
+
+      if (reducedMotion) {
+        elements.forEach(activate);
+        return;
+      }
+
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            activate(entry.target);
+            observer.unobserve(entry.target);
+          });
+        },
+        {
+          root: null,
+          rootMargin: "0px 0px -10% 0px",
+          threshold: 0.12,
+        }
+      );
+
+      elements.forEach(function (el) {
+        observer.observe(el);
+      });
+
+      requestAnimationFrame(function () {
+        var viewH = window.innerHeight || document.documentElement.clientHeight;
+        elements.forEach(function (el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top < viewH * 0.92 && rect.bottom > viewH * 0.08) {
+            activate(el);
+            observer.unobserve(el);
+          }
+        });
+      });
     })();
 
     (function initChatFocusLinks() {
@@ -1887,6 +2013,14 @@
       var submitBtn = form.querySelector('button[type="submit"]');
       var DEFAULT_INPUT_PLACEHOLDER = input.placeholder;
 
+      function focusChatInput() {
+        try {
+          input.focus({ preventScroll: true });
+        } catch (e) {
+          input.focus();
+        }
+      }
+
       var prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
@@ -1992,7 +2126,7 @@
         sendBotSequence([botMessage], function () {
           setPhoneCaptureMode(true);
           setInputDisabled(false);
-          input.focus();
+          focusChatInput();
         });
       }
 
@@ -2076,6 +2210,11 @@
         setPhoneCaptureMode(false);
         setInputDisabled(true);
         input.placeholder = "השיחה הסתיימה — ניצור קשר בקרוב.";
+
+        if (isLeadConversationComplete()) {
+          sendLeadToMake();
+          sendLeadSummaryToOwnerWhatsApp();
+        }
       }
 
       function removeQuickReplies() {
@@ -2177,7 +2316,7 @@
           function () {
             setPhoneCaptureMode(true);
             setInputDisabled(false);
-            input.focus();
+            focusChatInput();
           }
         );
       }
@@ -2202,44 +2341,91 @@
         return lines.join("\n");
       }
 
-      function sendLeadToMake() {
-        if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
-        leadSentToMake = true;
+      var LEAD_FIELD_FALLBACK = "Not specified";
 
-        var dataToSend = {
+      function leadField(value) {
+        if (value === null || value === undefined) return LEAD_FIELD_FALLBACK;
+        var str = String(value).trim();
+        return str.length ? str : LEAD_FIELD_FALLBACK;
+      }
+
+      function isLeadConversationComplete() {
+        return surveyStep >= FINAL_STEP && !!lead.phoneNumber;
+      }
+
+      function buildMakeLeadPayload() {
+        var requirements =
+          lead.propertyRequirements != null && String(lead.propertyRequirements).trim()
+            ? lead.propertyRequirements
+            : lead.initialMessage;
+
+        return {
           source: "ZFR Estates Website",
           submittedAt: new Date().toISOString(),
-          clientName: lead.name || getClientName() || null,
-          phoneNumber: lead.phoneNumber || null,
-          budget: lead.budget || null,
-          mortgageStatus: lead.mortgageStatus || null,
-          housingStatus: lead.housingStatus || null,
-          hasPropertyToSell: lead.hasPropertyToSell,
-          bestTimeToCall: lead.bestTimeToCall || null,
-          initialMessage: lead.propertyRequirements || lead.initialMessage || null,
+          clientName: leadField(lead.name || getClientName()),
+          phoneNumber: leadField(lead.phoneNumber),
+          budget: leadField(lead.budget),
+          mortgageStatus: leadField(lead.mortgageStatus),
+          housingStatus: leadField(lead.housingStatus),
+          hasPropertyToSell:
+            lead.hasPropertyToSell === true
+              ? "Yes"
+              : lead.hasPropertyToSell === false
+                ? "No"
+                : LEAD_FIELD_FALLBACK,
+          bestTimeToCall: leadField(lead.bestTimeToCall),
+          propertyRequirements: leadField(requirements),
+          initialMessage: leadField(lead.initialMessage || requirements),
+          preferredNeighborhood: leadField(lead.preferredNeighborhood),
+          propertyType: leadField(lead.propertyType),
         };
+      }
 
-        fetch("https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x350ejeexv", {
+      function sendLeadToMake() {
+        if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
+        if (!isLeadConversationComplete()) {
+          console.warn(
+            "ZFR — Make send skipped: conversation not complete (step " +
+              surveyStep +
+              ", phone " +
+              (lead.phoneNumber || "missing") +
+              ")"
+          );
+          return;
+        }
+
+        var dataToSend = buildMakeLeadPayload();
+        leadSentToMake = true;
+
+        console.log("%cZFR — dataToSend (Make webhook)", "font-weight:bold;color:#c9a962;");
+        console.log(dataToSend);
+
+        fetch(MAKE_WEBHOOK_URL, {
           method: "POST",
           mode: "no-cors",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "text/plain;charset=UTF-8",
           },
           body: JSON.stringify(dataToSend),
         })
           .then(function () {
-            console.log("הליד נשלח בהצלחה ל-Make!");
+            console.log(
+              "%cZFR — Lead POST dispatched to Make (no-cors; response is opaque)",
+              "color:#86efac;"
+            );
           })
           .catch(function (err) {
             leadSentToMake = false;
-            console.error("שגיאה בשליחה:", err);
+            console.error("ZFR — Make webhook error:", err);
           });
       }
 
       /** לבדיקה: הריצו ב-Console כש-Make במצב "מאזין" — zfrDebugSendMake() */
       window.zfrDebugSendMake = function () {
         leadSentToMake = false;
+        surveyStep = FINAL_STEP;
         if (!lead.phoneNumber) lead.phoneNumber = "0501234567";
+        if (!lead.name) lead.name = "בדיקת Console";
         if (!lead.budget) lead.budget = "בדיקת חיבור Make";
         if (!lead.propertyRequirements) lead.propertyRequirements = "בדיקה ידנית מה-Console";
         sendLeadToMake();
@@ -2300,9 +2486,6 @@
         }
         console.log("Full lead object:", lead);
         console.groupEnd();
-
-        sendLeadToMake();
-        sendLeadSummaryToOwnerWhatsApp();
       }
 
       function nextAssistantRepliesAfterUserMessage(userText) {
@@ -2376,7 +2559,7 @@
             function () {
               updateInputPlaceholderForStep();
               setInputDisabled(false);
-              input.focus();
+              focusChatInput();
             }
           );
           return;
@@ -2384,7 +2567,7 @@
         sendBotSequence(["מה שמך?"], function () {
           updateInputPlaceholderForStep();
           setInputDisabled(false);
-          input.focus();
+          focusChatInput();
         });
       })();
 
@@ -2430,7 +2613,7 @@
           } else {
             updateInputPlaceholderForStep();
             setInputDisabled(false);
-            input.focus();
+            focusChatInput();
           }
         });
       });
