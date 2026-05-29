@@ -1,0 +1,10 @@
+נמחקו (חיסכון ~12.7MB):
+- architecture-loop.mp4
+- miniature-model-loop.mp4
+- image_11.png
+
+בשימוש:
+- assets/רקע לאתר.mp4 — רקע האתר
+- assets/poster.jpg — poster לווידאו
+- assets/zfr-mark.svg — לוגו
+- assets/image_15.png — גיבוי תמונה (אופציונלי למחיקה אחרי וידאו יציב)

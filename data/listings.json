@@ -1,0 +1,44 @@
+{
+  "updatedAt": "2026-05-28T12:00:00+03:00",
+  "listings": [
+    {
+      "id": "penthouse-herzliya-01",
+      "title": "פנטהאוז עם נוף לים",
+      "description": "מרפסת אינסופית, תקרות גבוהות וחומרים פרימיום — דירת גג בקו ראשון.",
+      "area": "הרצליה פיתוח",
+      "type": "פנטהאוז",
+      "rooms": 5,
+      "priceLabel": "בקשת פרטים",
+      "status": "exclusive",
+      "image": "assets/image_15.png",
+      "featured": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "villa-savyon-01",
+      "title": "וילה עם בריכה וגינה",
+      "description": "פרטיות מוחלטת, מוכן למעבר מיידי.",
+      "area": "סביון",
+      "type": "וילה",
+      "rooms": 6,
+      "priceLabel": "18.5M ₪",
+      "status": "available",
+      "image": "assets/image_11.png",
+      "featured": false,
+      "sortOrder": 2
+    },
+    {
+      "id": "apt-ramat-aviv-01",
+      "title": "דירת 4 חדרים מעוצבת",
+      "description": "קומה גבוהה, מעלית שבת, חניה כפולה.",
+      "area": "רמת אביב",
+      "type": "דירה",
+      "rooms": 4,
+      "priceLabel": "6.2M ₪",
+      "status": "available",
+      "image": "assets/zfr-logo.png",
+      "featured": false,
+      "sortOrder": 3
+    }
+  ]
+}

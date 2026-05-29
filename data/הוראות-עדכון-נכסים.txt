@@ -1,0 +1,24 @@
+ZFR Estates — איך מעדכנים נכסים
+================================
+
+אפשרות 1 — Google Sheets (מומלץ למתווך)
+----------------------------------------
+1. צרו גיליון לפי data/google-sheets-template.csv
+2. מלאו שורות — כל שורה = נכס
+3. בעמודת image: הדביקו קישור מלא לתמונה (Google Drive / Imgur)
+4. חברו Make לפי data/MAKE-GOOGLE-SHEETS-SETUP.md
+5. הדביקו את כתובת ה-Webhook ב-js/zfr-config.js → listingsLiveUrl
+
+אפשרות 2 — קובץ מקומי (גיבוי)
+-------------------------------
+ערכו: data/listings.json
+העלו מחדש לאתר.
+
+סטטוסים:
+  available  = למכירה
+  sold       = נמכר (תג על התמונה)
+  exclusive  = בבלעדיות (תג על התמונה)
+  hidden     = לא מוצג
+
+לידים מהבוט / טופס:
+  js/zfr-config.js → makeLeadWebhook

@@ -3,8 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="ZFR Estates — נדל״ן יוקרתי עם עוזר דיגיטלי אישי." />
+  <meta name="description" content="ZFR Estates — נדל״ן יוקרתי עם יועץ אישי. פנטהאוזים, וילות ונכסי פרימיום בלעדיות." />
   <title>ZFR Estates | נדל״ן יוקרתי</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:title" content="ZFR Estates | נדל״ן יוקרתי" />
+  <meta property="og:description" content="נכסים נבחרים, שירות אישי וליווי דיסקרטי מהשיחה הראשונה ועד המפתח." />
+  <meta property="og:image" content="assets/poster.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ZFR Estates | נדל״ן יוקרתי" />
+  <meta name="twitter:description" content="נכסים נבחרים ושירות אישי ב-ZFR Estates." />
+  <meta name="twitter:image" content="assets/poster.jpg" />
+  <link rel="canonical" href="https://zfr-estates.com/" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "ZFR Estates",
+      "description": "נדל״ן יוקרתי וליווי אישי",
+      "telephone": "+972-52-524-0271",
+      "areaServed": "IL",
+      "url": "https://zfr-estates.com"
+    }
+  </script>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
   <link rel="shortcut icon" href="favicon.ico" />
@@ -17,1548 +38,32 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap"
     rel="stylesheet"
   />
-  <style>
-    :root {
-      --obsidian: #000000;
-      --obsidian-mid: #0a0a0a;
-      --charcoal: #1c1c1e;
-      --charcoal-mid: #2c2c2e;
-      --charcoal-light: #3a3a3c;
-      --white: #f5f5f7;
-      --white-muted: #cbd5e1;
-      --white-soft: #e2e8f0;
-      --text-silver: #e2e8f0;
-      --text-silver-muted: #cbd5e1;
-      --gold: #d4af37;
-      --gold-light: #c5a059;
-      --gold-bright: #f3e5ab;
-      --gold-shine: #e8d5a3;
-      --gold-dim: rgba(212, 175, 55, 0.28);
-      --gold-glow: rgba(214, 175, 55, 0.15);
-      --hover-glow: 0 0 22px rgba(214, 175, 55, 0.38), 0 8px 26px rgba(214, 175, 55, 0.22);
-      --chat-btn-hover-glow: 0 0 20px rgba(10, 132, 255, 0.45), 0 4px 14px rgba(10, 132, 255, 0.35);
-      --chat-accent: rgba(10, 132, 255, 0.45);
-      --gradient-gold: linear-gradient(135deg, #c5a059 0%, #f3e5ab 50%, #d4af37 100%);
-      --gradient-gold-hover: linear-gradient(135deg, #d4af37 0%, #f3e5ab 45%, #c5a059 100%);
-      --glass: rgba(255, 255, 255, 0.07);
-      --glass-strong: rgba(28, 28, 30, 0.68);
-      --glass-border: rgba(255, 255, 255, 0.14);
-      --shadow: 0 32px 64px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.08) inset;
-      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.28);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --radius-sm: 14px;
-      --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
-      --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
-      --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-      --font-brand: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-    }
-
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      -webkit-text-size-adjust: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100dvh;
-      font-family: var(--font-ui);
-      font-weight: 400;
-      color: var(--white);
-      background: var(--obsidian);
-      overflow-x: hidden;
-      letter-spacing: -0.01em;
-    }
-
-    ::selection {
-      background: rgba(212, 175, 55, 0.35);
-      color: var(--white);
-    }
-
-    .bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-      background: var(--obsidian);
-    }
-
-    .bg-motion {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    .bg-motion-image {
-      position: absolute;
-      inset: -14%;
-      width: 128%;
-      height: 128%;
-      object-fit: cover;
-      object-position: center 42%;
-      display: block;
-      transform: scale3d(1.06, 1.06, 1);
-      transform-origin: center center;
-      animation: bgLuxuryDrift 110s ease-in-out infinite alternate;
-    }
-
-    @keyframes bgLuxuryDrift {
-      from {
-        transform: scale3d(1.06, 1.06, 1);
-      }
-      to {
-        transform: scale3d(1.13, 1.13, 1);
-      }
-    }
-
-    .bg-obsidian-wash {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: linear-gradient(
-        165deg,
-        rgba(5, 5, 8, 0.45) 0%,
-        rgba(8, 8, 12, 0.25) 50%,
-        rgba(2, 2, 4, 0.5) 100%
-      );
-      pointer-events: none;
-    }
-
-    .bg-glow-pulse {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0.58;
-      background:
-        radial-gradient(ellipse 28% 22% at 32% 58%, rgba(255, 196, 120, 0.14), transparent 70%),
-        radial-gradient(ellipse 24% 20% at 62% 52%, rgba(255, 180, 90, 0.12), transparent 68%),
-        radial-gradient(ellipse 20% 18% at 48% 64%, rgba(212, 175, 55, 0.1), transparent 65%);
-    }
-
-
-    .bg-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: rgba(0, 0, 0, 0.55);
-    }
-
-    .bg-overlay-warm {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: radial-gradient(
-        ellipse 70% 50% at 50% 58%,
-        rgba(212, 175, 55, 0.12) 0%,
-        transparent 62%
-      );
-      pointer-events: none;
-    }
-
-    .bg-grain {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      pointer-events: none;
-    }
-
-    .page {
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      z-index: 1;
-      isolation: isolate;
-      animation: pageIn 1s var(--ease-apple) both;
-    }
-
-    @keyframes pageIn {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      width: 100%;
-      margin: 0;
-      min-height: 4.5rem;
-      padding-block: clamp(0.85rem, 3vw, 1.25rem);
-      padding-inline: clamp(4.25rem, 12vw, 8.5rem);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      transition: background 0.4s var(--ease-apple), box-shadow 0.4s var(--ease-apple),
-        backdrop-filter 0.4s var(--ease-apple);
-    }
-
-    header.is-scrolled {
-      background: rgba(10, 10, 12, 0.72);
-      backdrop-filter: blur(24px) saturate(160%);
-      -webkit-backdrop-filter: blur(24px) saturate(160%);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    }
-
-    .brand-mark-link {
-      position: absolute;
-      left: clamp(0.75rem, 2.5vw, 1.5rem);
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      display: flex;
-      text-decoration: none;
-      color: inherit;
-      transition: opacity 0.35s var(--ease-apple), transform 0.35s var(--ease-apple);
-    }
-
-    .brand-mark-link:hover {
-      opacity: 0.92;
-      transform: translateY(-50%) scale(1.03);
-    }
-
-    .brand-mark-link:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 4px;
-      border-radius: 14px;
-    }
-
-    .brand-wordmark-link {
-      position: absolute;
-      right: clamp(0.75rem, 2.5vw, 1.5rem);
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      text-decoration: none;
-      color: inherit;
-      transition: opacity 0.35s var(--ease-apple);
-    }
-
-    .brand-wordmark-link:hover {
-      opacity: 0.94;
-    }
-
-    .brand-wordmark-link:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 4px;
-      border-radius: 12px;
-    }
-
-    .brand-mark {
-      flex-shrink: 0;
-      width: clamp(2.5rem, 6.5vw, 3rem);
-      height: clamp(2.5rem, 6.5vw, 3rem);
-      filter: drop-shadow(0 3px 12px rgba(212, 175, 55, 0.28));
-    }
-
-    .brand-mark img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .brand-wordmark {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.35rem;
-      line-height: 1;
-      text-align: center;
-    }
-
-    .brand-name {
-      font-family: var(--font-brand);
-      font-size: clamp(2.15rem, 5.8vw, 2.95rem);
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      padding-left: 0.14em;
-      color: #ffffff;
-      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
-    }
-
-    .brand-rule {
-      display: block;
-      width: min(100%, 5.5rem);
-      height: 1px;
-      background: linear-gradient(
-        90deg,
-        var(--gold) 0%,
-        var(--gold-bright) 45%,
-        rgba(212, 175, 55, 0.15) 100%
-      );
-      box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
-    }
-
-    .brand-tag {
-      font-family: var(--font-ui);
-      font-size: clamp(0.58rem, 1.4vw, 0.65rem);
-      font-weight: 500;
-      letter-spacing: 0.38em;
-      padding-left: 0.38em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .header-inner {
-      flex: 0 1 auto;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 0.55rem 0.85rem;
-      border-radius: 999px;
-      background: var(--glass-strong);
-      border: 0.5px solid rgba(212, 175, 55, 0.35);
-      backdrop-filter: blur(40px) saturate(180%);
-      -webkit-backdrop-filter: blur(40px) saturate(180%);
-      box-shadow: var(--shadow-soft);
-    }
-
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: clamp(0.35rem, 2vw, 0.5rem);
-      align-items: center;
-      justify-content: center;
-    }
-
-    nav a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--white-muted);
-      text-decoration: none;
-      font-size: 0.8125rem;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      padding: 0.45rem 0.85rem;
-      border-radius: 999px;
-      border: none;
-      background: transparent;
-      box-shadow: none;
-      cursor: pointer;
-      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple),
-        background 0.35s var(--ease-apple), color 0.35s var(--ease-apple);
-    }
-
-    nav a:not(.nav-cta):hover {
-      color: var(--white);
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    nav a.nav-cta {
-      padding: 0.5rem 1.15rem;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      background: var(--white);
-      color: #000;
-      border: none;
-    }
-
-    nav a:focus-visible,
-    .footer-links a:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 3px;
-      border-radius: 999px;
-    }
-
-    @media (max-width: 640px) {
-      header {
-        gap: 0.75rem;
-        padding-inline: clamp(3.5rem, 16vw, 5rem);
-      }
-
-      .brand-name {
-        letter-spacing: 0.1em;
-        padding-left: 0.1em;
-      }
-
-      .brand-tag {
-        letter-spacing: 0.26em;
-        padding-left: 0.26em;
-      }
-
-      .brand-rule {
-        max-width: 4.25rem;
-      }
-
-      nav a:not(.nav-cta):not(.nav-keep-mobile) {
-        display: none;
-      }
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-    }
-
-    .hero-section {
-      min-height: calc(100dvh - 4.5rem);
-      display: grid;
-      grid-template-columns: 1fr minmax(min(100%, 420px), 440px) 1fr;
-      align-items: center;
-      padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2.5rem);
-      gap: clamp(2rem, 5vw, 4rem);
-      scroll-margin-top: 5rem;
-    }
-
-    .site-section {
-      position: relative;
-      z-index: 1;
-      flex-shrink: 0;
-      padding: clamp(4rem, 9vw, 6.5rem) clamp(1.25rem, 4vw, 2.5rem);
-      scroll-margin-top: 5.5rem;
-    }
-
-    .site-section-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      width: 100%;
-    }
-
-    /* כרטיסי מידע — עמודה במובייל, רשת במסכים רחבים */
-    .pillars,
-    .property-grid,
-    .service-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .pillar,
-    .property-card,
-    .service-item {
-      position: static;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      width: 100%;
-      min-width: 0;
-      flex-shrink: 0;
-      text-align: start;
-    }
-
-    .section-glass {
-      border-radius: var(--radius-xl);
-      padding: clamp(2rem, 5vw, 3.25rem);
-      background: rgba(18, 18, 20, 0.62);
-      border: 0.5px solid rgba(212, 175, 55, 0.28);
-      backdrop-filter: blur(40px) saturate(170%);
-      -webkit-backdrop-filter: blur(40px) saturate(170%);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .section-eyebrow {
-      display: inline-block;
-      align-self: flex-start;
-      width: fit-content;
-      max-width: 100%;
-      margin: 0 0 1rem;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold-shine);
-      background: rgba(212, 175, 55, 0.1);
-      border: 0.5px solid rgba(212, 175, 55, 0.35);
-      border-radius: 999px;
-    }
-
-    .section-glass .pillar h3,
-    .section-glass .property-card h3,
-    .section-glass .service-item h3 {
-      color: var(--white);
-    }
-
-    .section-glass .pillar p,
-    .section-glass .property-card p,
-    .section-glass .service-item p,
-    .section-glass .section-lead {
-      color: var(--text-silver);
-    }
-
-    .section-title {
-      margin: 0 0 1rem;
-      font-family: var(--font-brand);
-      font-size: clamp(2rem, 5vw, 2.85rem);
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      line-height: 1.1;
-      color: var(--white);
-    }
-
-    .section-lead {
-      margin: 0 0 2rem;
-      max-width: 40rem;
-      font-size: clamp(1rem, 2.2vw, 1.125rem);
-      line-height: 1.65;
-      color: var(--text-silver);
-    }
-
-    .section-lead:last-child {
-      margin-bottom: 0;
-    }
-
-    .pillars {
-      gap: 1.25rem;
-    }
-
-    .pillar {
-      padding: 1.35rem 1.25rem;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.04);
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
-      box-shadow: none;
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .pillar:hover {
-      border-color: rgba(212, 175, 55, 0.35);
-    }
-
-    .pillar-num {
-      display: block;
-      margin-bottom: 0.65rem;
-      font-family: var(--font-brand);
-      font-size: 1.75rem;
-      color: var(--gold);
-      line-height: 1;
-    }
-
-    .pillar h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .pillar p {
-      margin: 0;
-      font-size: 0.875rem;
-      line-height: 1.55;
-      color: var(--text-silver);
-    }
-
-    .property-card {
-      padding: 1.5rem 1.25rem 1.35rem;
-      border-radius: var(--radius-lg);
-      background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-      border: 0.5px solid rgba(255, 255, 255, 0.1);
-      border-top: 2px solid var(--gold);
-      box-shadow: none;
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .property-card:hover {
-      border-color: rgba(212, 175, 55, 0.35);
-    }
-
-    .property-card h3 {
-      margin: 0 0 0.45rem;
-      font-family: var(--font-brand);
-      font-size: 1.35rem;
-      font-weight: 600;
-    }
-
-    .property-card p {
-      margin: 0;
-      font-size: 0.8125rem;
-      line-height: 1.5;
-      color: var(--text-silver);
-    }
-
-    .property-tag {
-      display: inline-block;
-      margin-top: 0.85rem;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold-shine);
-    }
-
-    .service-list {
-      gap: 0.85rem;
-    }
-
-    .service-item {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1.1rem 1.15rem;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.03);
-      border: 0.5px solid rgba(255, 255, 255, 0.08);
-      box-shadow: none;
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .service-item:hover {
-      border-color: rgba(212, 175, 55, 0.35);
-    }
-
-    .service-item > div {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .service-icon {
-      flex-shrink: 0;
-      width: 2.25rem;
-      height: 2.25rem;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-family: var(--font-brand);
-      font-size: 1.1rem;
-      color: #1a1510;
-      background: var(--gradient-gold);
-      box-shadow: none;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .service-item h3 {
-      margin: 0 0 0.25rem;
-      font-size: 0.9375rem;
-      font-weight: 600;
-    }
-
-    .service-item p {
-      margin: 0;
-      font-size: 0.8125rem;
-      line-height: 1.5;
-      color: var(--text-silver);
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 2rem;
-    }
-
-    .btn-gold,
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.7rem 1.35rem;
-      border-radius: 999px;
-      font-size: 0.875rem;
-      letter-spacing: -0.01em;
-      text-decoration: none;
-      box-shadow: none;
-      cursor: pointer;
-      transition: transform 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple),
-        background 0.35s var(--ease-apple), color 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
-    }
-
-    .btn-gold {
-      border: 0.5px solid rgba(212, 175, 55, 0.55);
-      background: var(--gradient-gold);
-      color: #1a1510;
-      font-weight: 600;
-    }
-
-    .btn-gold:hover,
-    .btn-ghost:hover {
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    .btn-gold:hover {
-      border-color: var(--gold-bright);
-      background: var(--gradient-gold-hover);
-    }
-
-    .btn-ghost {
-      border: 0.5px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--white);
-      font-weight: 500;
-    }
-
-    .btn-ghost:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(212, 175, 55, 0.4);
-    }
-
-    .btn-gold:focus-visible {
-      outline: 2px solid var(--gold-bright);
-      outline-offset: 3px;
-    }
-
-    .btn-ghost:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 3px;
-    }
-
-    /* יצירת קשר — טקסט מינימלי + אייקוני זהב */
-    #contact .contact-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.35rem;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    #contact .contact-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-      background: none;
-      border: none;
-      box-shadow: none;
-    }
-
-    #contact .contact-row-icon {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5rem;
-      height: 2.5rem;
-      color: var(--gold);
-    }
-
-    #contact .contact-row-icon svg {
-      display: block;
-      width: 1.35rem;
-      height: 1.35rem;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.75;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    #contact .contact-row-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      min-width: 0;
-    }
-
-    #contact .contact-row-label {
-      margin: 0;
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-silver-muted);
-      line-height: 1.3;
-    }
-
-    #contact .contact-row-value,
-    #contact .contact-row-value:visited {
-      margin: 0;
-      font-size: 1.0625rem;
-      font-weight: 500;
-      line-height: 1.45;
-      color: var(--white);
-      text-decoration: none;
-      word-break: break-word;
-      text-shadow: none;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    #contact a.contact-row-value:hover {
-      color: var(--gold-bright);
-    }
-
-    #contact .cta-row {
-      margin-top: 2rem;
-    }
-
-    @media (min-width: 720px) {
-      .pillars {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
-        align-items: stretch;
-      }
-
-      .property-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        align-items: stretch;
-      }
-    }
-
-    .site-footer {
-      position: relative;
-      z-index: 1;
-      padding: 2.5rem clamp(1.25rem, 4vw, 2.5rem) 2rem;
-      border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-      background: rgba(8, 8, 10, 0.55);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .site-footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.25rem;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem 1.5rem;
-    }
-
-    .footer-links a {
-      color: var(--white-muted);
-      text-decoration: none;
-      font-size: 0.8125rem;
-      text-shadow: none;
-      transition: color 0.35s var(--ease-apple), text-shadow 0.35s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--gold-bright);
-    }
-
-    .footer-copy {
-      margin: 0;
-      font-size: 0.6875rem;
-      color: rgba(245, 245, 247, 0.4);
-    }
-
-    .hero-copy {
-      grid-column: 1;
-      max-width: 26rem;
-      justify-self: end;
-      text-align: start;
-      padding-inline-end: clamp(0.5rem, 2vw, 2rem);
-    }
-
-    .hero-eyebrow {
-      display: inline-block;
-      width: fit-content;
-      max-width: 100%;
-      margin: 0 0 1rem;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--gold-bright);
-      background: rgba(212, 175, 55, 0.12);
-      border: 0.5px solid rgba(212, 175, 55, 0.22);
-      border-radius: 999px;
-      backdrop-filter: blur(12px);
-    }
-
-    .hero-copy h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2.25rem, 5.5vw, 3.5rem);
-      font-weight: 600;
-      line-height: 1.05;
-      letter-spacing: -0.035em;
-      margin: 0 0 1.25rem;
-      color: var(--white);
-      text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35);
-    }
-
-    .hero-copy h1 em {
-      font-style: normal;
-      font-weight: 600;
-      background: linear-gradient(135deg, var(--white) 0%, var(--gold-bright) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-copy p {
-      margin: 0;
-      font-size: clamp(1rem, 2.2vw, 1.125rem);
-      color: var(--text-silver);
-      line-height: 1.55;
-      font-weight: 400;
-      letter-spacing: -0.015em;
-      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    .gold-line {
-      width: 40px;
-      height: 2px;
-      margin-top: 1.5rem;
-      border-radius: 2px;
-      background: linear-gradient(90deg, var(--gold-light), var(--gold-bright), transparent);
-      opacity: 0.9;
-    }
-
-    .chat-shell {
-      grid-column: 2;
-      width: 100%;
-      max-width: 480px;
-      justify-self: center;
-      scroll-margin-top: 5.5rem;
-    }
-
-    .chat-widget {
-      display: flex;
-      flex-direction: column;
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      border: 0.5px solid var(--glass-border);
-      background: var(--glass-strong);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(48px) saturate(180%);
-      -webkit-backdrop-filter: blur(48px) saturate(180%);
-      min-height: min(68dvh, 540px);
-      max-height: min(76dvh, 600px);
-      transition: transform 0.5s var(--ease-apple), box-shadow 0.5s var(--ease-apple);
-    }
-
-    .chat-header {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      padding: 1.15rem 1.25rem;
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .chat-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #3a3a3c 0%, #1c1c1e 100%);
-      border: 0.5px solid rgba(255, 255, 255, 0.12);
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    }
-
-    .chat-avatar img {
-      width: 24px;
-      height: 24px;
-      display: block;
-      object-fit: contain;
-      filter: drop-shadow(0 1px 5px rgba(212, 175, 55, 0.32));
-    }
-
-    .chat-header-text h2 {
-      margin: 0;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .chat-header-text p {
-      margin: 0.2rem 0 0;
-      font-size: 0.75rem;
-      color: var(--text-silver-muted);
-      letter-spacing: -0.01em;
-      font-weight: 400;
-    }
-
-    .chat-status {
-      margin-inline-start: auto;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #30d158;
-      box-shadow: 0 0 12px rgba(48, 209, 88, 0.6);
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.25rem 1.15rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .chat-messages::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 4px;
-    }
-
-    .msg {
-      max-width: 88%;
-      padding: 0.7rem 1rem;
-      border-radius: 18px;
-      font-size: 0.9375rem;
-      line-height: 1.45;
-      letter-spacing: -0.01em;
-      animation: msgIn 0.45s var(--ease-apple) both;
-      text-align: start;
-    }
-
-    @keyframes msgIn {
-      from {
-        opacity: 0;
-        transform: translateY(6px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .msg.assistant {
-      align-self: flex-start;
-      background: rgba(58, 58, 60, 0.85);
-      border: 0.5px solid rgba(255, 255, 255, 0.06);
-      color: var(--white);
-      border-end-end-radius: 6px;
-    }
-
-    .msg.user {
-      align-self: flex-end;
-      background: linear-gradient(180deg, #0a84ff 0%, #0066cc 100%);
-      border: none;
-      color: #fff;
-      border-end-start-radius: 6px;
-      box-shadow: 0 4px 16px rgba(10, 132, 255, 0.25);
-    }
-
-    .typing {
-      display: inline-flex;
-      gap: 4px;
-      padding: 0.35rem 0;
-    }
-
-    .typing span {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--text-silver-muted);
-      opacity: 0.65;
-      animation: bounce 1.2s var(--ease-apple) infinite;
-    }
-
-    .typing span:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .typing span:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    @keyframes bounce {
-      0%,
-      60%,
-      100% {
-        transform: translateY(0);
-        opacity: 0.35;
-      }
-      30% {
-        transform: translateY(-5px);
-        opacity: 1;
-      }
-    }
-
-    .chat-input-row {
-      display: flex;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem 1.1rem;
-      border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    .chat-input-row input {
-      flex: 1;
-      min-width: 0;
-      border: none;
-      border-radius: 999px;
-      padding: 0.7rem 1.15rem;
-      font-family: var(--font-ui);
-      font-size: 0.9375rem;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      color: var(--white);
-      background: rgba(118, 118, 128, 0.24);
-      outline: none;
-      transition: background 0.35s var(--ease-apple), box-shadow 0.35s var(--ease-apple);
-      direction: rtl;
-      text-align: right;
-    }
-
-    .chat-input-row input::placeholder {
-      color: rgba(235, 235, 245, 0.45);
-    }
-
-    .chat-input-row input:focus {
-      background: rgba(118, 118, 128, 0.36);
-      box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.2);
-    }
-
-    .send-btn {
-      flex-shrink: 0;
-      width: 36px;
-      height: 36px;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      background: #0a84ff;
-      color: #fff;
-      box-shadow: none;
-      transition: transform 0.35s var(--ease-spring), opacity 0.35s var(--ease-apple),
-        box-shadow 0.35s var(--ease-apple);
-    }
-
-    .send-btn:hover:not(:disabled) {
-      transform: scale(1.08);
-      opacity: 1;
-    }
-
-    .send-btn:focus-visible:not(:disabled) {
-      outline: 2px solid rgba(10, 132, 255, 0.8);
-      outline-offset: 3px;
-    }
-
-    .send-btn:active:not(:disabled) {
-      transform: scale(0.94);
-    }
-
-    .send-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .send-btn svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .quick-replies {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 0 1rem 0.75rem;
-      justify-content: flex-start;
-      flex-shrink: 0;
-    }
-
-    .quick-reply-btn {
-      font-family: var(--font-ui);
-      font-size: 0.8125rem;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      padding: 0.5rem 1rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: rgba(118, 118, 128, 0.28);
-      color: var(--white);
-      cursor: pointer;
-      backdrop-filter: blur(12px);
-      box-shadow: none;
-      outline: none;
-      transition: background 0.35s var(--ease-apple), transform 0.35s var(--ease-spring),
-        box-shadow 0.35s var(--ease-apple), border-color 0.35s var(--ease-apple);
-    }
-
-    .quick-reply-btn:hover:not(:disabled),
-    .quick-reply-btn:focus-visible:not(:disabled) {
-      background: rgba(118, 118, 128, 0.42);
-      transform: scale(1.02);
-      border-color: var(--chat-accent);
-    }
-
-    .quick-reply-btn:active:not(:disabled) {
-      transform: scale(0.96);
-    }
-
-    .quick-reply-btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .hero-aside {
-      grid-column: 3;
-      max-width: 13rem;
-      justify-self: start;
-      padding-inline-start: clamp(0.5rem, 2vw, 2rem);
-    }
-
-    .stat {
-      margin-bottom: 1.75rem;
-      padding: 1rem 0;
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .stat:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-
-    .stat strong {
-      display: block;
-      font-family: var(--font-display);
-      font-size: 2rem;
-      font-weight: 600;
-      letter-spacing: -0.04em;
-      font-variant-numeric: tabular-nums;
-      color: var(--white);
-    }
-
-    .stat span {
-      display: block;
-      margin-top: 0.25rem;
-      font-size: 0.75rem;
-      letter-spacing: -0.01em;
-      color: var(--text-silver-muted);
-      font-weight: 400;
-    }
-
-    footer {
-      padding: 1.25rem clamp(1.25rem, 5vw, 3rem);
-      text-align: center;
-      font-size: 0.6875rem;
-      letter-spacing: 0.02em;
-      font-weight: 400;
-      color: rgba(245, 245, 247, 0.4);
-      background: transparent;
-    }
-
-    @media (max-width: 1024px) {
-      .hero-section {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto;
-        justify-items: center;
-        text-align: center;
-        min-height: auto;
-        padding-bottom: 3rem;
-      }
-
-      .hero-copy {
-        grid-column: 1;
-        max-width: 36rem;
-        justify-self: center;
-        text-align: center;
-        padding-inline-end: 0;
-      }
-
-      .gold-line {
-        margin-inline: auto;
-        margin-top: 1.25rem;
-      }
-
-      .chat-shell {
-        grid-column: 1;
-        max-width: min(100%, 480px);
-      }
-
-      .hero-aside {
-        grid-column: 1;
-        max-width: none;
-        width: 100%;
-        justify-self: center;
-        padding-inline-start: 0;
-        border-inline-start: none;
-        border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-        padding-top: 1.5rem;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1.5rem 2.5rem;
-      }
-
-      .stat {
-        margin-bottom: 0;
-        text-align: center;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .chat-widget {
-        min-height: min(65dvh, 520px);
-        max-height: min(72dvh, 580px);
-        border-radius: var(--radius-lg);
-      }
-
-      .chat-input-row {
-        padding: 0.75rem 0.85rem 0.9rem;
-      }
-
-      .send-btn {
-        width: 44px;
-        height: 44px;
-      }
-    }
-
-    /* זוהר ואנימציות lift — רק מכשיר עם עכבר (לא נתקע במגע) */
-    @media (hover: hover) and (pointer: fine) {
-      .brand-wordmark-link:hover .brand-rule {
-        box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
-      }
-
-      nav a:not(.nav-cta):hover,
-      nav a.nav-cta:hover,
-      .btn-gold:hover,
-      .btn-ghost:hover {
-        box-shadow: var(--hover-glow);
-      }
-
-      nav a:not(.nav-cta):hover,
-      nav a.nav-cta:hover {
-        transform: scale(1.02);
-      }
-
-      nav a.nav-cta:hover {
-        background: var(--white);
-        color: #000;
-      }
-
-      .pillar:hover {
-        transform: translateY(-6px);
-        border-color: var(--gold);
-        box-shadow: 0 10px 30px var(--gold-glow);
-      }
-
-      .property-card:hover {
-        transform: translateY(-6px);
-        border-color: var(--gold);
-        border-top-color: var(--gold-bright);
-        box-shadow: 0 10px 30px var(--gold-glow);
-      }
-
-      .service-item:hover {
-        transform: translateY(-6px);
-        border-color: var(--gold);
-        box-shadow: 0 10px 30px var(--gold-glow);
-      }
-
-      .service-item:hover .service-icon {
-        box-shadow: 0 0 14px rgba(214, 175, 55, 0.4);
-      }
-
-
-      #contact a.contact-row-value:hover {
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-      }
-
-      .footer-links a:hover {
-        text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
-      }
-
-      .chat-widget:hover {
-        box-shadow: var(--shadow), 0 0 32px rgba(212, 175, 55, 0.08);
-      }
-
-      .send-btn:hover:not(:disabled),
-      .quick-reply-btn:hover:not(:disabled),
-      .quick-reply-btn:focus-visible:not(:disabled) {
-        box-shadow: var(--chat-btn-hover-glow);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .bg-motion-image {
-        animation: none;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        transform: scale3d(1.1, 1.1, 1);
-      }
-
-      .bg-glow-pulse {
-        opacity: 0.55;
-      }
-
-      .bg-overlay {
-        background: rgba(0, 0, 0, 0.58);
-      }
-
-      .msg,
-      .typing span {
-        animation: none;
-      }
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      body.has-custom-cursor,
-      body.has-custom-cursor a,
-      body.has-custom-cursor button,
-      body.has-custom-cursor .tab,
-      body.has-custom-cursor select {
-        cursor: none !important;
-      }
-
-      .custom-cursor-dot {
-        width: 6px;
-        height: 6px;
-        background-color: #d4af37;
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        z-index: 9999;
-        border-radius: 50%;
-        opacity: 0;
-        transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.2s;
-      }
-
-      .custom-cursor {
-        width: 30px;
-        height: 30px;
-        border: 1.5px solid #d4af37;
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        z-index: 9998;
-        border-radius: 50%;
-        opacity: 0;
-        transition: left 0.08s ease-out, top 0.08s ease-out, width 0.3s, height 0.3s,
-          background-color 0.3s, border-color 0.3s, opacity 0.2s;
-      }
-
-      body.has-custom-cursor .custom-cursor:not(.is-hidden),
-      body.has-custom-cursor .custom-cursor-dot:not(.is-hidden) {
-        opacity: 1;
-      }
-
-      body.has-custom-cursor.hovered .custom-cursor {
-        width: 45px;
-        height: 45px;
-        background-color: rgba(214, 175, 55, 0.1);
-        border-color: #fff;
-      }
-
-      body.has-custom-cursor.hovered .custom-cursor-dot {
-        background-color: #fff;
-      }
-    }
-
-    /* Scroll-driven reveal (Intersection Observer + CSS) */
-    :root {
-      --scroll-reveal-duration: 0.8s;
-      --scroll-reveal-ease: cubic-bezier(0.25, 1, 0.5, 1);
-      --scroll-reveal-offset-y: 30px;
-      --scroll-reveal-offset-x: 30px;
-    }
-
-    .fade-in-scroll,
-    .slide-up-scroll,
-    .slide-left-scroll,
-    .slide-right-scroll {
-      opacity: 0;
-      transition:
-        opacity var(--scroll-reveal-duration) var(--scroll-reveal-ease),
-        transform var(--scroll-reveal-duration) var(--scroll-reveal-ease);
-      will-change: opacity, transform;
-    }
-
-    .fade-in-scroll {
-      transform: translateY(18px);
-    }
-
-    .slide-up-scroll {
-      transform: translateY(var(--scroll-reveal-offset-y));
-    }
-
-    .slide-left-scroll {
-      transform: translateX(calc(-1 * var(--scroll-reveal-offset-x)));
-    }
-
-    .slide-right-scroll {
-      transform: translateX(var(--scroll-reveal-offset-x));
-    }
-
-    .fade-in-scroll.active,
-    .slide-up-scroll.active,
-    .slide-left-scroll.active,
-    .slide-right-scroll.active {
-      opacity: 1;
-      transform: none;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .fade-in-scroll,
-      .slide-up-scroll,
-      .slide-left-scroll,
-      .slide-right-scroll {
-        opacity: 1;
-        transform: none;
-        transition: none;
-        will-change: auto;
-      }
-    }
-
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="css/zfr.css" />
+  <link
+    rel="preload"
+    href="assets/%D7%A8%D7%A7%D7%A2%20%D7%9C%D7%90%D7%AA%D7%A8.mp4"
+    as="video"
+    type="video/mp4"
+  />
 </head>
 <body>
-  <div class="custom-cursor" aria-hidden="true"></div>
-  <div class="custom-cursor-dot" aria-hidden="true"></div>
-
   <div class="bg-canvas" aria-hidden="true">
     <div class="bg-motion">
+      <video
+        class="bg-motion-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="assets/poster.jpg"
+        preload="metadata"
+        aria-hidden="true"
+      >
+        <source src="assets/%D7%A8%D7%A7%D7%A2%20%D7%9C%D7%90%D7%AA%D7%A8.mp4" type="video/mp4" />
+      </video>
       <img
         class="bg-motion-image"
-        src="assets/image_15.png"
+        src="assets/poster.jpg"
         alt=""
         width="1920"
         height="1080"
@@ -1575,6 +80,22 @@
 
   <div class="page">
     <header>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="תפריט ניווט" aria-expanded="false" aria-controls="navDrawer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+      <div class="nav-drawer-backdrop" id="navBackdrop" hidden></div>
+      <div class="nav-drawer" id="navDrawer" aria-hidden="true">
+        <nav aria-label="ניווט נייד">
+          <a href="#about">אודותינו</a>
+          <a href="#properties">נכסים</a>
+          <a href="#trust">לקוחות</a>
+          <a href="#concierge-services">שירות</a>
+          <a href="#contact">צור קשר</a>
+          <a href="#concierge" class="nav-cta">יועץ אישי</a>
+        </nav>
+      </div>
       <a href="#home" class="brand-mark-link" aria-label="ZFR Estates — דף הבית">
         <span class="brand-mark" aria-hidden="true">
           <img src="assets/zfr-mark.svg" alt="" width="64" height="64" decoding="async" />
@@ -1584,6 +105,7 @@
         <nav aria-label="ניווט ראשי">
           <a href="#about" class="nav-keep-mobile">אודותינו</a>
           <a href="#properties">נכסים</a>
+          <a href="#trust">לקוחות</a>
           <a href="#concierge-services">שירות</a>
           <a href="#contact" class="nav-cta">סיור פרטי</a>
         </nav>
@@ -1601,61 +123,55 @@
       <section id="home" class="hero-section" aria-label="דף הבית">
       <div class="hero-copy">
         <p class="hero-eyebrow fade-in-scroll">נדל״ן יוקרתי</p>
-        <h1 class="slide-up-scroll">בתים נבחרים ל<em>חיים ברמה אחרת</em></h1>
+        <h1 class="slide-up-scroll">נכסי פרימיום, <em>ליווי אישי</em></h1>
         <div class="gold-line fade-in-scroll" data-scroll-delay="120" aria-hidden="true"></div>
         <p class="slide-up-scroll" data-scroll-delay="200">
-          מפנטהאוזים ועד אחוזות על קו המים — ZFR Estates מצמידה נכסים יוצאי דופן לשירות לבן־יחיד.
-          התחילו בשיחה עם העוזר הדיגיטלי שלנו כדי לקבל הצעות מותאמות אישית.
+          ZFR Estates מחברת בין לקוחות נבחרים לנכסים off-market — בדיסקרטיות, בדיוק, ובקצב שמתאים לכם.
         </p>
+        <div class="cta-row fade-in-scroll" data-scroll-delay="260">
+          <a href="#concierge" class="btn-gold">שיחה עם יועץ אישי</a>
+          <a href="#properties" class="btn-ghost">צפייה בנכסים</a>
+        </div>
       </div>
 
-      <div class="chat-shell slide-left-scroll" id="concierge" data-scroll-delay="280">
-        <div class="chat-widget" id="chatWidget" role="region" aria-label="יועץ נכסים אישי ZFR Estates">
-          <div class="chat-header">
-            <div class="chat-avatar" aria-hidden="true">
-              <img src="assets/zfr-mark.svg" alt="" width="24" height="24" decoding="async" />
+      <div class="chat-panel slide-left-scroll" data-scroll-delay="280">
+        <div class="chat-shell" id="concierge">
+          <div class="chat-widget" id="chatWidget" role="region" aria-label="יועץ נכסים אישי ZFR Estates">
+            <div class="chat-header">
+              <div class="chat-avatar" aria-hidden="true">
+                <img src="assets/zfr-mark.svg" alt="" width="24" height="24" decoding="async" />
+              </div>
+              <div class="chat-header-text">
+                <h2>יועץ נכסים אישי</h2>
+                <p>זמין עכשיו · ZFR Estates</p>
+              </div>
+              <span class="chat-status" aria-label="זמין"></span>
             </div>
-            <div class="chat-header-text">
-              <h2>יועץ נכסים אישי</h2>
-              <p>מבוסס בינה מלאכותית · ZFR Estates</p>
-            </div>
-            <span class="chat-status" aria-label="זמין"></span>
+            <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+            <p class="chat-privacy" id="chatPrivacy" hidden>
+              פרטיכם נשמרים לצורך יצירת קשר בלבד ·
+              <a href="#privacy">מדיניות פרטיות</a>
+            </p>
+            <form class="chat-input-row" id="chatForm" autocomplete="off">
+              <label for="chatInput" class="visually-hidden">הודעה</label>
+              <input
+                type="text"
+                id="chatInput"
+                inputmode="text"
+                name="message"
+                placeholder="תארו את הנכס האידיאלי עבורכם…"
+                maxlength="2000"
+                enterkeyhint="send"
+              />
+              <button type="submit" class="send-btn" aria-label="שליחת הודעה">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+              </button>
+            </form>
           </div>
-          <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-          <form class="chat-input-row" id="chatForm" autocomplete="off">
-            <label for="chatInput" class="visually-hidden">הודעה</label>
-            <input
-              type="text"
-              id="chatInput"
-              inputmode="text"
-              name="message"
-              placeholder="תארו את הנכס האידיאלי עבורכם…"
-              maxlength="2000"
-              enterkeyhint="send"
-            />
-            <button type="submit" class="send-btn" aria-label="שליחת הודעה">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-              </svg>
-            </button>
-          </form>
         </div>
       </div>
-
-      <aside class="hero-aside slide-right-scroll" aria-label="נתונים בולטים" data-scroll-delay="320">
-        <div class="stat fade-in-scroll" data-scroll-delay="380">
-          <strong>40+</strong>
-          <span>שנות אמון</span>
-        </div>
-        <div class="stat fade-in-scroll" data-scroll-delay="460">
-          <strong>גלובלי</strong>
-          <span>גישה לפורטפוליו</span>
-        </div>
-        <div class="stat fade-in-scroll" data-scroll-delay="540">
-          <strong>24/7</strong>
-          <span>קו לקוחות פרימיום</span>
-        </div>
-      </aside>
       </section>
 
       <section id="about" class="site-section" aria-labelledby="about-title">
@@ -1663,8 +179,8 @@
           <span class="section-eyebrow fade-in-scroll">הסיפור שלנו</span>
           <h2 id="about-title" class="section-title slide-up-scroll">אודות ZFR Estates</h2>
           <p class="section-lead fade-in-scroll" data-scroll-delay="80">
-            אנחנו בית סוכנות יוקרתי שמחבר בין אנשים לנכסים נדירים — לא ברשימות ציבוריות, אלא בחוויה אישית,
-            דיסקרטית ומדויקת. כל לקוח מקבל ליווי צמוד מהרגע הראשון ועד המפתח.
+            סוכנות boutique בתל אביב והמרכז — מחברים לקוחות לנכסים שלא תמיד מגיעים לרשת,
+            עם ליווי אישי מהשיחה הראשונה ועד מסירת המפתח.
           </p>
           <div class="pillars">
             <article class="pillar slide-up-scroll" data-scroll-delay="0">
@@ -1694,26 +210,34 @@
             מגדלי בוטיק, פנטהאוזים עם נוף לים ואחוזות עם פרטיות מוחלטת — אנחנו מציגים רק נכסים
             שעומדים בקריטריון אחד: להרגיש בבית מהרגע הראשון.
           </p>
-          <div class="property-grid">
-            <article class="property-card slide-up-scroll" data-scroll-delay="0">
-              <h3>פנטהאוזים</h3>
-              <p>מרפסות אינסופיות, תקרות גבוהות וחומרים שמדברים בשקט.</p>
-              <span class="property-tag">תל אביב · הרצליה · רמת אביב</span>
-            </article>
-            <article class="property-card slide-up-scroll" data-scroll-delay="120">
-              <h3>וילות יוקרה</h3>
-              <p>פרטיות, בריכה וגינה מעוצבת — חיים שקטים עם נגישות מושלמת.</p>
-              <span class="property-tag">סביון · כפר שמריהו · רעננה</span>
-            </article>
-            <article class="property-card slide-up-scroll" data-scroll-delay="240">
-              <h3>נדל״ן השקעה</h3>
-              <p>נכסים עם פוטנציאל תשואה וערך עתידי, לפני שהשוק מגלה אותם.</p>
-              <span class="property-tag">אוף־מרקט · בלעדי ללקוחות ZFR</span>
-            </article>
-          </div>
+          <p id="propertyGridStatus" class="property-grid-status" aria-live="polite">טוען נכסים…</p>
+          <div id="propertyFeatured" class="property-featured-wrap property-grid" aria-label="נכס מודגש"></div>
+          <div id="propertyGrid" class="property-grid" aria-label="רשימת נכסים"></div>
           <div class="cta-row fade-in-scroll" data-scroll-delay="160">
             <a href="#concierge" class="btn-gold">גלה נכסים מתאימים</a>
             <a href="#contact" class="btn-ghost">בקשת פרטים חסויים</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="trust" class="site-section" aria-labelledby="trust-title">
+        <div class="site-section-inner section-glass">
+          <span class="section-eyebrow fade-in-scroll">מה אומרים עלינו</span>
+          <h2 id="trust-title" class="section-title slide-up-scroll">אמון שנבנה בשקט</h2>
+          <div class="sold-strip fade-in-scroll" data-scroll-delay="60" aria-label="עסקאות אחרונות">
+            <span class="sold-strip-item"><strong>נמכר</strong> · פנטהאוז · הרצליה</span>
+            <span class="sold-strip-item"><strong>נמכר</strong> · וילה · סביון</span>
+            <span class="sold-strip-item"><strong>בבלעדיות</strong> · דירת גג · תל אביב</span>
+          </div>
+          <div class="trust-grid">
+            <figure class="trust-quote slide-up-scroll" data-scroll-delay="0">
+              <blockquote>ליווי מדויק מהשיחה הראשונה ועד החתימה — בלי לחץ, עם נכסים שלא ראינו ברשת.</blockquote>
+              <cite>לקוחה · הרצליה פיתוח</cite>
+            </figure>
+            <figure class="trust-quote slide-up-scroll" data-scroll-delay="120">
+              <blockquote>הצוות של ZFR סגר לנו עסקה off-market תוך שלושה שבועות, בדיסקרטיות מלאה.</blockquote>
+              <cite>לקוח · סביון</cite>
+            </figure>
           </div>
         </div>
       </section>
@@ -1723,14 +247,13 @@
           <span class="section-eyebrow fade-in-scroll">הבטחת ZFR</span>
           <h2 id="services-title" class="section-title slide-up-scroll">שירות אישי שמלווה אתכם</h2>
           <p class="section-lead fade-in-scroll" data-scroll-delay="80">
-            מעבר לחיפוש נכס — אנחנו בונים עבורכם מסלול מותאם: מהשיחה הראשונה עם היועץ הדיגיטלי,
-            דרך בחירת הנכס ועד חתימה ומסירה חלקה.
+            מסלול אחד, צוות אחד: מהשיחה עם היועץ האישי, דרך בחירת הנכס ועד חתימה ומסירה חלקה.
           </p>
           <div class="service-list">
             <div class="service-item slide-right-scroll" data-scroll-delay="0">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
-                <h3>יועץ נכסים חכם</h3>
+                <h3>יועץ נכסים אישי</h3>
                 <p>שיחה מיידית שמבינה תקציב, סגנון חיים ולוח זמנים — ומסננת רעש.</p>
               </div>
             </div>
@@ -1804,7 +327,21 @@
             </div>
             <div class="cta-row fade-in-scroll" data-scroll-delay="120">
               <a href="#concierge" class="btn-gold">דברו עם היועץ</a>
+              <a href="https://wa.me/972525240271" class="btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
+            <form id="contactQuickForm" class="contact-quick-form fade-in-scroll" data-scroll-delay="160" novalidate>
+              <p class="section-lead" style="margin:0 0 0.5rem;font-size:0.9375rem">או השאירו פרטים קצרים:</p>
+              <label>
+                שם מלא
+                <input type="text" name="clientName" autocomplete="name" required maxlength="120" />
+              </label>
+              <label>
+                טלפון
+                <input type="tel" name="phoneNumber" inputmode="numeric" autocomplete="tel" required maxlength="15" />
+              </label>
+              <button type="submit">שליחה לצוות ZFR</button>
+              <p id="contactFormStatus" class="contact-form-status" role="status" aria-live="polite" hidden></p>
+            </form>
           </div>
         </div>
       </section>
@@ -1813,808 +350,43 @@
     <footer class="site-footer">
       <div class="site-footer-inner fade-in-scroll">
         <p class="footer-copy">© ZFR Estates · נדל״ן יוקרתי</p>
+        <p id="privacy" class="footer-privacy">
+          מדיניות פרטיות: פרטים שנמסרו בשיחה (שם, טלפון, העדפות נכס) משמשים ליצירת קשר ולהתאמת הצעות בלבד.
+          לא מועברים לצד שלישי ללא הסכמה. לבקשת מחיקה: <a href="tel:+972525240271">052-524-0271</a>.
+        </p>
         <nav class="footer-links" aria-label="קישורי תחתית">
           <a href="#about">אודותינו</a>
           <a href="#properties">נכסים</a>
           <a href="#concierge-services">שירות</a>
           <a href="#contact">צור קשר</a>
-          <a href="#concierge">יועץ דיגיטלי</a>
+          <a href="#trust">לקוחות</a>
+          <a href="#concierge">יועץ אישי</a>
         </nav>
       </div>
     </footer>
   </div>
 
-  <script>
-    (function initPageScroll() {
-      if ("scrollRestoration" in history) {
-        history.scrollRestoration = "manual";
-      }
-      var hash = window.location.hash;
-      if (!hash || hash === "#home") {
-        window.scrollTo(0, 0);
-        window.addEventListener(
-          "load",
-          function () {
-            if (!window.location.hash || window.location.hash === "#home") {
-              window.scrollTo(0, 0);
-            }
-          },
-          { once: true }
-        );
-      }
-    })();
-
-    (function initHeaderScroll() {
-      var header = document.querySelector("header");
-      if (!header) return;
-      function onScroll() {
-        header.classList.toggle("is-scrolled", window.scrollY > 24);
-      }
-      onScroll();
-      window.addEventListener("scroll", onScroll, { passive: true });
-    })();
-
-    (function initScrollReveal() {
-      var selector =
-        ".fade-in-scroll, .slide-up-scroll, .slide-left-scroll, .slide-right-scroll";
-      var elements = document.querySelectorAll(selector);
-      if (!elements.length) return;
-
-      var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      function activate(el) {
-        var delay = el.getAttribute("data-scroll-delay");
-        if (delay && !reducedMotion) {
-          el.style.transitionDelay = delay + "ms";
-        }
-        el.classList.add("active");
-      }
-
-      if (reducedMotion) {
-        elements.forEach(activate);
-        return;
-      }
-
-      var observer = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            activate(entry.target);
-            observer.unobserve(entry.target);
-          });
-        },
-        {
-          root: null,
-          rootMargin: "0px 0px -10% 0px",
-          threshold: 0.12,
-        }
-      );
-
-      elements.forEach(function (el) {
-        observer.observe(el);
-      });
-
-      requestAnimationFrame(function () {
-        var viewH = window.innerHeight || document.documentElement.clientHeight;
-        elements.forEach(function (el) {
-          var rect = el.getBoundingClientRect();
-          if (rect.top < viewH * 0.92 && rect.bottom > viewH * 0.08) {
-            activate(el);
-            observer.unobserve(el);
-          }
-        });
-      });
-    })();
-
-    (function initChatFocusLinks() {
-      var chatInput = document.getElementById("chatInput");
-      if (!chatInput) return;
-
-      document.querySelectorAll('a[href="#concierge"]').forEach(function (link) {
-        link.addEventListener("click", function () {
-          window.setTimeout(function () {
-            if (!chatInput.disabled) {
-              chatInput.focus({ preventScroll: true });
-            }
-          }, 450);
-        });
-      });
-    })();
-
-    (function initCustomCursor() {
-      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      var cursor = document.querySelector(".custom-cursor");
-      var cursorDot = document.querySelector(".custom-cursor-dot");
-      if (!cursor || !cursorDot) return;
-
-      document.body.classList.add("has-custom-cursor");
-      cursor.classList.add("is-hidden");
-      cursorDot.classList.add("is-hidden");
-
-      window.addEventListener(
-        "mousemove",
-        function (e) {
-          cursor.classList.remove("is-hidden");
-          cursorDot.classList.remove("is-hidden");
-
-          cursorDot.style.left = e.clientX + "px";
-          cursorDot.style.top = e.clientY + "px";
-
-          cursor.style.left = e.clientX + "px";
-          cursor.style.top = e.clientY + "px";
-        },
-        { passive: true }
-      );
-
-      document.documentElement.addEventListener("mouseleave", function () {
-        cursor.classList.add("is-hidden");
-        cursorDot.classList.add("is-hidden");
-        document.body.classList.remove("hovered");
-      });
-
-      var cursorInteractive =
-        'a, button, .tab, [role="button"], .btn-gold, .btn-ghost, .nav-cta, .send-btn, .quick-reply-btn, .contact-row-value[href]';
-
-      document.addEventListener("mouseover", function (e) {
-        if (e.target.closest && e.target.closest(cursorInteractive)) {
-          document.body.classList.add("hovered");
-        }
-      });
-
-      document.addEventListener("mouseout", function (e) {
-        var from = e.target.closest ? e.target.closest(cursorInteractive) : null;
-        var to =
-          e.relatedTarget && e.relatedTarget.closest
-            ? e.relatedTarget.closest(cursorInteractive)
-            : null;
-        if (from && !to) {
-          document.body.classList.remove("hovered");
-        }
-      });
-    })();
-
-    (function () {
-      var DEFAULT_WELCOME =
-        "ברוכים הבאים ל-ZFR Estates. כאן תוכלו לקבל גישה לנכסים אקסקלוסיביים, כולל דירות באוף-מרקט שעדיין לא פורסמו ברשת. בואו נבדוק מה מתאים לכם.";
-
-      function getClientName() {
-        try {
-          var params = new URLSearchParams(window.location.search);
-          var raw = params.get("client");
-          if (!raw || !raw.trim()) return null;
-          return decodeURIComponent(raw.trim()).replace(/\+/g, " ");
-        } catch (e) {
-          return null;
-        }
-      }
-
-      function getWelcomeMessage() {
-        var name = getClientName();
-        if (name) {
-          return "שלום " + name + ", " + DEFAULT_WELCOME;
-        }
-        return DEFAULT_WELCOME;
-      }
-
-      var messagesEl = document.getElementById("chatMessages");
-      var form = document.getElementById("chatForm");
-      var input = document.getElementById("chatInput");
-      if (!messagesEl || !form || !input) return;
-
-      if (window.location.protocol === "file:") {
-        console.warn(
-          "%cZFR — האתר נפתח כקובץ מקומי (file://). לחיבור Make פתחו עם שרת מקומי, למשל: python3 -m http.server 8080",
-          "font-weight:bold;color:#fbbf24;"
-        );
-      }
-
-      var submitBtn = form.querySelector('button[type="submit"]');
-      var DEFAULT_INPUT_PLACEHOLDER = input.placeholder;
-
-      function focusChatInput() {
-        try {
-          input.focus({ preventScroll: true });
-        } catch (e) {
-          input.focus();
-        }
-      }
-
-      var prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-      var BETWEEN_BOT_MESSAGES_MS = prefersReducedMotion ? 200 : 1500;
-      var FIRST_MESSAGE_DELAY_MS = prefersReducedMotion ? 150 : 650;
-      var FINAL_STEP = 7;
-      var PHONE_STEP = 6;
-      var PHONE_DIGITS_ONLY = /^\d{9,15}$/;
-      var MORTGAGE_READY = "כן, מוכן לפעולה";
-      var MORTGAGE_IN_PROGRESS = "בתהליכים";
-      var HOUSING_OWNED = "בבעלותנו";
-      var HOUSING_RENTAL = "בשכירות";
-      var CALL_MORNING = "בוקר (09:00-12:00)";
-      var CALL_AFTERNOON = "צהריים (12:00-16:00)";
-      var CALL_EVENING = "ערב (16:00-20:00)";
-
-      /** מספר הבעלים לקבלת סיכומי לידים (0525240271 → בינלאומי) */
-      var OWNER_WHATSAPP_PHONE = "972525240271";
-      /**
-       * מפתח CallMeBot — הפעלה חד-פעמית:
-       * 1. הוסיפו לוואטסאפ את +34 644 33 66 63 בשם CallMeBot
-       * 2. שלחו לו: I allow callmebot to send me messages
-       * 3. העתיקו לכאן את ה-APIKEY שמתקבל בתשובה
-       */
-      var CALLMEBOT_API_KEY = "";
-
-      /** Webhook Make — שליחת לידים (JSON POST) */
-      var MAKE_WEBHOOK_URL =
-        "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv";
-      var leadSentToMake = false;
-
-      /** 0 = name, 1 = property requirements, 2 = budget, 3 = mortgage (QR), 4 = housing (QR), 5 = call time (QR), 6 = phone, 7 = done */
-      var surveyStep = 0;
-      var activeQuickRepliesEl = null;
-      var isBotBusy = false;
-      var botTimeouts = [];
-      var lead = {
-        name: null,
-        propertyRequirements: null,
-        initialMessage: null,
-        budget: null,
-        mortgageStatus: null,
-        housingStatus: null,
-        hasPropertyToSell: false,
-        preferredNeighborhood: null,
-        propertyType: null,
-        bestTimeToCall: null,
-        phoneNumber: null,
-      };
-
-      function isQuickReplyStep(step) {
-        return step === 3 || step === 4 || step === 5;
-      }
-
-      function setPhoneCaptureMode(active) {
-        if (active) {
-          input.setAttribute("inputmode", "numeric");
-          input.setAttribute("autocomplete", "tel");
-          input.setAttribute("maxlength", "15");
-          input.placeholder = "מספר טלפון (ספרות בלבד)…";
-        } else {
-          input.removeAttribute("inputmode");
-          input.setAttribute("autocomplete", "off");
-          input.setAttribute("maxlength", "2000");
-          input.placeholder = DEFAULT_INPUT_PLACEHOLDER;
-        }
-      }
-
-      function getPhoneInputRaw() {
-        return (input.value || "").trim();
-      }
-
-      function normalizePhoneDigits(raw) {
-        return String(raw || "").replace(/\D/g, "");
-      }
-
-      function validatePhoneNumber(digits) {
-        return PHONE_DIGITS_ONLY.test(digits);
-      }
-
-      function updateInputPlaceholderForStep() {
-        if (surveyStep >= FINAL_STEP) return;
-        if (surveyStep === PHONE_STEP) {
-          setPhoneCaptureMode(true);
-          return;
-        }
-        setPhoneCaptureMode(false);
-        if (surveyStep === 0) {
-          input.placeholder = "הקלידו את שמכם…";
-        } else if (surveyStep === 1) {
-          input.placeholder = "תארו דרישות נכס (אזור, סוג, חדרים…)…";
-        } else if (surveyStep === 2) {
-          input.placeholder = "לדוגמה: 3–5 מיליון ₪…";
-        } else {
-          input.placeholder = DEFAULT_INPUT_PLACEHOLDER;
-        }
-      }
-
-      function promptForValidPhone(userMessage, botMessage) {
-        appendBubble(userMessage, "user");
-        input.value = "";
-        setInputDisabled(true);
-        sendBotSequence([botMessage], function () {
-          setPhoneCaptureMode(true);
-          setInputDisabled(false);
-          focusChatInput();
-        });
-      }
-
-      function completePhoneCapture(phoneDigits) {
-        appendBubble(phoneDigits, "user");
-        input.value = "";
-        lead.phoneNumber = phoneDigits;
-        surveyStep = FINAL_STEP;
-        logLeadSummary();
-        setInputDisabled(true);
-        var name = lead.name || getClientName();
-        var opener = name ? "תודה " + name + "!" : "תודה רבה!";
-        sendBotSequence(
-          [
-            opener +
-              " הפרטים הועברו למחלקה הרלוונטית ב־ZFR. סוכן מומחה לאזור הזה יצור איתך קשר בזמן הקרוב.",
-          ],
-          setChatEnded
-        );
-      }
-
-      function scrollToBottom() {
-        requestAnimationFrame(function () {
-          messagesEl.scrollTop = messagesEl.scrollHeight;
-        });
-      }
-
-      function clearBotTimeouts() {
-        botTimeouts.forEach(function (id) {
-          window.clearTimeout(id);
-        });
-        botTimeouts = [];
-      }
-
-      function clearStaleTypingIndicators() {
-        messagesEl.querySelectorAll(".msg.assistant").forEach(function (el) {
-          if (el.querySelector(".typing")) el.remove();
-        });
-      }
-
-      function appendBubble(text, role) {
-        var div = document.createElement("div");
-        div.className = "msg " + role;
-        div.textContent = text;
-        messagesEl.appendChild(div);
-        scrollToBottom();
-        return div;
-      }
-
-      function showTyping() {
-        var wrap = document.createElement("div");
-        wrap.className = "msg assistant";
-        wrap.setAttribute("aria-hidden", "true");
-        wrap.innerHTML =
-          '<span class="typing"><span></span><span></span><span></span></span>';
-        messagesEl.appendChild(wrap);
-        scrollToBottom();
-        return wrap;
-      }
-
-      function setInputDisabled(disabled) {
-        input.disabled = disabled;
-        if (submitBtn) submitBtn.disabled = disabled;
-        if (disabled) input.blur();
-      }
-
-      function setQuickReplyMode(active) {
-        if (active) {
-          input.placeholder = "בחרו אחת מהאפשרויות למטה…";
-        } else {
-          input.placeholder = DEFAULT_INPUT_PLACEHOLDER;
-        }
-      }
-
-      function setChatEnded() {
-        clearBotTimeouts();
-        clearStaleTypingIndicators();
-        isBotBusy = false;
-        removeQuickReplies();
-        setQuickReplyMode(false);
-        setPhoneCaptureMode(false);
-        setInputDisabled(true);
-        input.placeholder = "השיחה הסתיימה — ניצור קשר בקרוב.";
-
-        if (isLeadConversationComplete()) {
-          sendLeadToMake();
-          sendLeadSummaryToOwnerWhatsApp();
-        }
-      }
-
-      function removeQuickReplies() {
-        if (activeQuickRepliesEl) {
-          activeQuickRepliesEl.remove();
-          activeQuickRepliesEl = null;
-        }
-      }
-
-      function showQuickReplies(labels, ariaLabel, onChoose) {
-        removeQuickReplies();
-        var wrap = document.createElement("div");
-        wrap.className = "quick-replies";
-        wrap.setAttribute("role", "group");
-        wrap.setAttribute("aria-label", ariaLabel);
-
-        labels.forEach(function (label) {
-          var btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "quick-reply-btn";
-          btn.textContent = label;
-          btn.addEventListener("click", function () {
-            if (isBotBusy) return;
-            wrap.querySelectorAll(".quick-reply-btn").forEach(function (b) {
-              b.disabled = true;
-            });
-            removeQuickReplies();
-            setQuickReplyMode(false);
-            appendBubble(label, "user");
-            onChoose(label);
-          });
-          wrap.appendChild(btn);
-        });
-
-        form.parentElement.insertBefore(wrap, form);
-        activeQuickRepliesEl = wrap;
-        setQuickReplyMode(true);
-        setInputDisabled(true);
-        scrollToBottom();
-      }
-
-      function showMortgageQuickReplies() {
-        showQuickReplies(
-          [MORTGAGE_READY, MORTGAGE_IN_PROGRESS],
-          "סטטוס משכנתא והון עצמי",
-          handleMortgageSelection
-        );
-      }
-
-      function showHousingQuickReplies() {
-        showQuickReplies(
-          [HOUSING_OWNED, HOUSING_RENTAL],
-          "סטטוס דיור נוכחי",
-          handleHousingSelection
-        );
-      }
-
-      function showCallTimeQuickReplies() {
-        showQuickReplies(
-          [CALL_MORNING, CALL_AFTERNOON, CALL_EVENING],
-          "זמן מועדף לשיחה",
-          handleCallTimeSelection
-        );
-      }
-
-      function handleMortgageSelection(choice) {
-        if (surveyStep !== 3) return;
-        lead.mortgageStatus = choice;
-        surveyStep = 4;
-        sendBotSequence(
-          ["האם הנכס שבו אתם גרים כעת הוא בבעלותכם או בשכירות?"],
-          showHousingQuickReplies
-        );
-      }
-
-      function handleHousingSelection(choice) {
-        if (surveyStep !== 4) return;
-        lead.housingStatus = choice;
-        lead.hasPropertyToSell = choice === HOUSING_OWNED;
-        surveyStep = 5;
-
-        var replies = [];
-        if (choice === HOUSING_OWNED) {
-          replies.push("נפלא! שדרוג נכס הוא המומחיות שלנו ב-ZFR.");
-        }
-        replies.push("מתי הכי נוח שסוכן מומחה יתקשר אליכם?");
-
-        sendBotSequence(replies, showCallTimeQuickReplies);
-      }
-
-      function handleCallTimeSelection(choice) {
-        if (surveyStep !== 5) return;
-        lead.bestTimeToCall = choice;
-        surveyStep = 6;
-        sendBotSequence(
-          [
-            "כדי שאוכל לשלוח לך תיק נכסים רלוונטי בוואטסאפ (כולל תמונות וסיורים וירטואליים), מה מספר הטלפון הכי טוב ליצירת קשר?",
-          ],
-          function () {
-            setPhoneCaptureMode(true);
-            setInputDisabled(false);
-            focusChatInput();
-          }
-        );
-      }
-
-      function buildLeadWhatsAppMessage() {
-        var lines = ["*ליד חדש — ZFR Estates*", ""];
-        var clientName = lead.name || getClientName();
-        if (clientName) lines.push("שם: " + clientName);
-        if (lead.phoneNumber) lines.push("טלפון לקוח: " + lead.phoneNumber);
-        if (lead.budget) lines.push("תקציב: " + lead.budget);
-        if (lead.mortgageStatus) lines.push("משכנתא / הון: " + lead.mortgageStatus);
-        if (lead.housingStatus) lines.push("דיור נוכחי: " + lead.housingStatus);
-        if (lead.bestTimeToCall) lines.push("זמן מועדף לשיחה: " + lead.bestTimeToCall);
-        if (lead.propertyRequirements) lines.push("דרישות נכס: " + lead.propertyRequirements);
-        if (lead.housingStatus === HOUSING_OWNED) {
-          lines.push("", "⭐ לקוח בבעלות — פוטנציאל שדרוג / מכירה");
-        }
-        if (lead.mortgageStatus === MORTGAGE_READY) {
-          lines.push("✓ מוכן לפעולה (משכנתא / הון זמין)");
-        }
-        lines.push("", "נשלח מהאתר · " + new Date().toLocaleString("he-IL"));
-        return lines.join("\n");
-      }
-
-      var LEAD_FIELD_FALLBACK = "Not specified";
-
-      function leadField(value) {
-        if (value === null || value === undefined) return LEAD_FIELD_FALLBACK;
-        var str = String(value).trim();
-        return str.length ? str : LEAD_FIELD_FALLBACK;
-      }
-
-      function isLeadConversationComplete() {
-        return surveyStep >= FINAL_STEP && !!lead.phoneNumber;
-      }
-
-      function buildMakeLeadPayload() {
-        var requirements =
-          lead.propertyRequirements != null && String(lead.propertyRequirements).trim()
-            ? lead.propertyRequirements
-            : lead.initialMessage;
-
-        return {
-          clientName: leadField(lead.name || getClientName()),
-          phoneNumber: leadField(lead.phoneNumber),
-          budget: leadField(lead.budget),
-          housingStatus: leadField(lead.housingStatus),
-          hasPropertyToSell:
-            lead.hasPropertyToSell === true
-              ? "כן"
-              : lead.hasPropertyToSell === false
-                ? "לא"
-                : LEAD_FIELD_FALLBACK,
-          mortgageStatus: leadField(lead.mortgageStatus),
-          bestTimeToCall: leadField(lead.bestTimeToCall),
-          propertyRequirements: leadField(requirements),
-          initialMessage: leadField(lead.initialMessage || requirements),
-          preferredNeighborhood: leadField(lead.preferredNeighborhood),
-          propertyType: leadField(lead.propertyType),
-        };
-      }
-
-      function sendLeadToMake() {
-        if (leadSentToMake || !MAKE_WEBHOOK_URL) return;
-        if (!isLeadConversationComplete()) {
-          console.warn(
-            "ZFR — Make send skipped: conversation not complete (step " +
-              surveyStep +
-              ", phone " +
-              (lead.phoneNumber || "missing") +
-              ")"
-          );
-          return;
-        }
-
-        var dataToSend = buildMakeLeadPayload();
-        leadSentToMake = true;
-
-        console.log("%cZFR — dataToSend (Make webhook)", "font-weight:bold;color:#c9a962;");
-        console.log(dataToSend);
-
-        fetch(MAKE_WEBHOOK_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSend),
-        })
-          .then(function () {
-            console.log(
-              "%cZFR — Lead JSON sent to Make webhook",
-              "color:#86efac;"
-            );
-          })
-          .catch(function (err) {
-            leadSentToMake = false;
-            console.error("ZFR — Make webhook error:", err);
-          });
-      }
-
-      /** לבדיקה: הריצו ב-Console כש-Make במצב "מאזין" — zfrDebugSendMake() */
-      window.zfrDebugSendMake = function () {
-        leadSentToMake = false;
-        surveyStep = FINAL_STEP;
-        if (!lead.phoneNumber) lead.phoneNumber = "0501234567";
-        if (!lead.name) lead.name = "בדיקת Console";
-        if (!lead.budget) lead.budget = "בדיקת חיבור Make";
-        if (!lead.propertyRequirements) lead.propertyRequirements = "בדיקה ידנית מה-Console";
-        sendLeadToMake();
-      };
-
-      function sendLeadSummaryToOwnerWhatsApp() {
-        var text = buildLeadWhatsAppMessage();
-        var ownerPhone = "+" + OWNER_WHATSAPP_PHONE;
-
-        if (!CALLMEBOT_API_KEY) {
-          console.warn(
-            "%cZFR — WhatsApp: הגדירו CALLMEBOT_API_KEY בקוד כדי לקבל סיכומי לידים אוטומטית ב-0525240271",
-            "font-weight:bold;color:#e4d4a5;"
-          );
-          console.info("תצוגה מקדימה של ההודעה:\n" + text);
-          return;
-        }
-
-        var url =
-          "https://api.callmebot.com/whatsapp.php?phone=" +
-          encodeURIComponent(ownerPhone) +
-          "&text=" +
-          encodeURIComponent(text) +
-          "&apikey=" +
-          encodeURIComponent(CALLMEBOT_API_KEY);
-
-        var pixel = new Image();
-        pixel.referrerPolicy = "no-referrer";
-        pixel.src = url;
-
-        fetch(url, { method: "GET", mode: "no-cors" }).catch(function () {
-          /* Image() above is the primary transport */
-        });
-      }
-
-      function logLeadSummary() {
-        var isOwner = lead.housingStatus === HOUSING_OWNED;
-        var summary = {
-          Name: lead.name || getClientName() || "—",
-          "Property requirements": lead.propertyRequirements || "—",
-          Budget: lead.budget || "—",
-          "Housing Status": lead.housingStatus || "—",
-          "Mortgage Status": lead.mortgageStatus || "—",
-          "Best Time to Call": lead.bestTimeToCall || "—",
-          "Phone Number": lead.phoneNumber || "—",
-        };
-
-        console.group("%cZFR Estates — Lead summary", "font-weight:bold;font-size:14px;color:#c9a962;");
-        console.table(summary);
-        if (isOwner) {
-          console.warn(
-            "%c★ Potential seller — client owns current home (upgrade opportunity) ★",
-            "font-weight:bold;color:#e4d4a5;"
-          );
-        }
-        if (lead.mortgageStatus === MORTGAGE_READY) {
-          console.log("%cMortgage: Ready to act — high-intent buyer", "color:#c9a962;");
-        }
-        console.log("Full lead object:", lead);
-        console.groupEnd();
-      }
-
-      function nextAssistantRepliesAfterUserMessage(userText) {
-        if (surveyStep === 0) {
-          lead.name = userText;
-          surveyStep = 1;
-          return ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"];
-        }
-        if (surveyStep === 1) {
-          lead.propertyRequirements = userText;
-          surveyStep = 2;
-          return ["מהו התקציב שלכם?"];
-        }
-        if (surveyStep === 2) {
-          lead.budget = userText;
-          surveyStep = 3;
-          return [
-            "האם כבר קיבלתם אישור עקרוני למשכנתא או שיש הון עצמי זמין?",
-          ];
-        }
-        if (surveyStep === 3 || surveyStep === 4 || surveyStep === 5 || surveyStep === 6) {
-          return [];
-        }
-        return [];
-      }
-
-      function sendBotSequence(messages, onDone) {
-        clearBotTimeouts();
-        clearStaleTypingIndicators();
-        isBotBusy = true;
-
-        if (!messages || !messages.length) {
-          isBotBusy = false;
-          onDone && onDone();
-          return;
-        }
-
-        var index = 0;
-        function next() {
-          if (index >= messages.length) {
-            isBotBusy = false;
-            onDone && onDone();
-            return;
-          }
-          var typing = showTyping();
-          var delay =
-            index === 0
-              ? FIRST_MESSAGE_DELAY_MS + (prefersReducedMotion ? 0 : Math.random() * 400)
-              : BETWEEN_BOT_MESSAGES_MS;
-          var timeoutId = window.setTimeout(function () {
-            if (typing.parentNode) typing.remove();
-            appendBubble(messages[index], "assistant");
-            index++;
-            next();
-          }, delay);
-          botTimeouts.push(timeoutId);
-        }
-        next();
-      }
-
-      setInputDisabled(true);
-      appendBubble(getWelcomeMessage(), "assistant");
-
-      (function startNameQuestion() {
-        var urlName = getClientName();
-        if (urlName) {
-          lead.name = urlName;
-          surveyStep = 1;
-          sendBotSequence(
-            ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"],
-            function () {
-              updateInputPlaceholderForStep();
-              setInputDisabled(false);
-              focusChatInput();
-            }
-          );
-          return;
-        }
-        sendBotSequence(["מה שמך?"], function () {
-          updateInputPlaceholderForStep();
-          setInputDisabled(false);
-          focusChatInput();
-        });
-      })();
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (surveyStep >= FINAL_STEP || isQuickReplyStep(surveyStep) || isBotBusy) return;
-
-        if (surveyStep === PHONE_STEP) {
-          var phoneRaw = getPhoneInputRaw();
-          if (!phoneRaw) return;
-
-          var phoneDigits = normalizePhoneDigits(phoneRaw);
-          if (!validatePhoneNumber(phoneDigits)) {
-            promptForValidPhone(
-              phoneRaw,
-              "כדי שנוכל לשלוח לך את תיק הנכסים בוואטסאפ, נא לשלוח מספר טלפון בלבד — ספרות בלבד, 9–15 ספרות (לדוגמה: 0501234567)."
-            );
-            return;
-          }
-
-          completePhoneCapture(phoneDigits);
-          return;
-        }
-
-        var text = (input.value || "").trim();
-        if (!text) return;
-        input.value = "";
-        appendBubble(text, "user");
-
-        var previousStep = surveyStep;
-        var replies = nextAssistantRepliesAfterUserMessage(text);
-        var awaitingMortgageChoice = previousStep === 2 && surveyStep === 3;
-        var awaitingCallTimeChoice = previousStep === 4 && surveyStep === 5;
-        setInputDisabled(true);
-
-        sendBotSequence(replies, function () {
-          if (surveyStep >= FINAL_STEP) {
-            setChatEnded();
-          } else if (awaitingMortgageChoice) {
-            showMortgageQuickReplies();
-          } else if (awaitingCallTimeChoice) {
-            showCallTimeQuickReplies();
-          } else {
-            updateInputPlaceholderForStep();
-            setInputDisabled(false);
-            focusChatInput();
-          }
-        });
-      });
-    })();
-  </script>
+  <div class="chat-backdrop" id="chatBackdrop" aria-hidden="true"></div>
+  <button type="button" class="chat-fab" id="chatFab" aria-label="פתיחת יועץ אישי" aria-expanded="false" aria-controls="chatWidget">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M21 15a4 4 0 0 1-4 4H8l-5 3 1.5-4.5A4 4 0 0 1 3 15V7a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z" />
+    </svg>
+  </button>
+  <a
+    class="whatsapp-fab"
+    href="https://wa.me/972525240271?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%99%D7%97%D7%94%20%D7%A2%D7%9D%20%D7%99%D7%95%D7%A2%D7%A5%20ZFR"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="WhatsApp ל-ZFR Estates"
+  >
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <script src="js/zfr-config.js"></script>
+  <script src="js/zfr-listings.js"></script>
+  <script src="js/zfr-site.js"></script>
+  <script src="js/zfr-chat.js"></script>
 </body>
 </html>
