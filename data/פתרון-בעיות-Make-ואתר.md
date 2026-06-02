@@ -1,6 +1,28 @@
 # למה הנכסים לא מופיעים מ-Google Sheets?
 
-## הבעיה הכי נפוצה (אצלך עכשיו)
+## הבעיה שלך (נמצאה בבדיקה — יוני 2026)
+
+Make **כן עובד**, אבל מחזיר JSON בפורmat שגוי:
+
+```json
+{ "listings": [{ "0": "", "1": "פנטהאוז...", "2": "תיאור...", "7": "availabl" }] }
+```
+
+במקום:
+
+```json
+{ "listings": [{ "id": "...", "title": "פנטהאוז...", "status": "available" }] }
+```
+
+**מה זה אומר:** ב-Make לא מיפית שמות עמודות — האתר קיבל מספרים במקום שמות.
+
+**תיקון באתר:** `zfr-listings.js` יודע עכשיו לתרגם את הפורmat הזה אוטומטית (כולל `availabl` → `available`).
+
+**תיקון ב-Make (מומלץ לטווח ארוך):** ראו למטה "Array Aggregator — מיפוי נכון".
+
+---
+
+## הבעיה הכי נפוצה (כללי)
 
 כשפותחים את כתובת ה-Webhook בדפדפן ורואים:
 
@@ -66,13 +88,35 @@ listingsLiveUrl: "https://hook.eu1.make.com/XXXXXXXXXXXXXXXX",
 
 ### 5. Google Sheets — עמודות
 
-שורה 1 = כותרות (באנגלית):
+שורה 1 = כותרות (באנגלית, **בדיוק** כך):
 
-`id | title | description | area | type | rooms | price | status | image | featured | sortOrder`
+`id | title | description | area | type | rooms | priceLabel | status | image | featured | sortOrder`
 
-- עמודת **price** או **priceLabel** — שניהם עובדים באתר
-- **status** = `available` / `sold` / `exclusive` / `hidden`
-- שורה 2 ומטה = נכסים אמיתיים
+- **status** = `available` (לא `availabl` — עם e בסוף!)
+- **featured** = `yes` / `no`
+- **id** — מזהה ייחודי (אפשר להשאיר ריק, האתר ייצור אוטומטית)
+
+### 5ב. Array Aggregator — מיפוי נכון (לתקן את 0,1,2)
+
+במודול **Array aggregator** → לחצו **Add item** לכל שדה:
+
+| שם בשדה | מקור (מ-Google Sheets) |
+|---------|-------------------------|
+| id | id |
+| title | title |
+| description | description |
+| area | area |
+| type | type |
+| rooms | rooms |
+| priceLabel | priceLabel |
+| status | status |
+| image | image |
+| featured | featured |
+| sortOrder | sortOrder |
+
+**לא** לבחור "Whole row" / "Row as array" — זה גורם ל-0,1,2.
+
+### 5ג. עמודות (ישן)
 
 ### 6. CORS (חובה)
 

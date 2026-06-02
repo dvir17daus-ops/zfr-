@@ -6,6 +6,8 @@ ZFR Estates — איך מעדכנים נכסים
 1. צרו גיליון לפי data/google-sheets-template.csv
 2. מלאו שורות — כל שורה = נכס
 3. בעמודת image: הדביקו קישור מלא לתמונה (Google Drive / Imgur)
+   images (אופציונלי): כמה תמונות — מפרידים ב-| או ,
+   sqm, floor, parking, year (אופציונלי): מופיעים בחלון פרטי הנכס
 4. חברו Make לפי data/MAKE-GOOGLE-SHEETS-SETUP.md
 5. הדביקו את כתובת ה-Webhook ב-js/zfr-config.js → listingsLiveUrl
 
