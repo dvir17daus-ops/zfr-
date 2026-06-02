@@ -418,6 +418,21 @@
   function sendLeadToMake() {
     var webhookUrl = String(MAKE_WEBHOOK_URL || "").trim();
     if (leadSentToMake || !webhookUrl) return;
+
+    var honeypot = form.querySelector('input[name="company"]');
+    if (honeypot && honeypot.value.trim()) {
+      if (ZFR_DEBUG) console.warn("ZFR — honeypot triggered, skipping Make send");
+      return;
+    }
+
+    try {
+      var lastLeadAt = sessionStorage.getItem("zfr_last_lead_at");
+      if (lastLeadAt && Date.now() - Number(lastLeadAt) < 45000) {
+        if (ZFR_DEBUG) console.warn("ZFR — rate limited, skipping Make send");
+        return;
+      }
+    } catch (e) {}
+
     if (!isLeadConversationComplete()) {
       console.warn(
         "ZFR — Make send skipped: conversation not complete (step " +
@@ -432,6 +447,9 @@
     var dataToSend = buildMakeLeadPayload();
     var payloadJson = JSON.stringify(dataToSend);
     leadSentToMake = true;
+    try {
+      sessionStorage.setItem("zfr_last_lead_at", String(Date.now()));
+    } catch (e) {}
     makeDeliveryDebug.route = "json";
     makeDeliveryDebug.status = "sending";
     makeDeliveryDebug.at = new Date().toISOString();

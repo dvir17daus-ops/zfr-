@@ -15,7 +15,7 @@
       --gold-shine: #e8d5a3;
       --gold-dim: rgba(212, 175, 55, 0.28);
       --gold-glow: rgba(214, 175, 55, 0.15);
-      --hover-glow: 0 0 22px rgba(214, 175, 55, 0.38), 0 8px 26px rgba(214, 175, 55, 0.22);
+      --hover-glow: 0 0 16px rgba(214, 175, 55, 0.22), 0 6px 20px rgba(0, 0, 0, 0.2);
       --chat-btn-hover-glow: 0 0 18px rgba(214, 175, 55, 0.42), 0 4px 14px rgba(214, 175, 55, 0.28);
       --chat-accent: rgba(212, 175, 55, 0.55);
       --gradient-gold: linear-gradient(135deg, #c5a059 0%, #f3e5ab 50%, #d4af37 100%);
@@ -127,7 +127,7 @@
       inset: 0;
       z-index: 2;
       pointer-events: none;
-      opacity: 0.58;
+      opacity: 0.38;
       background:
         radial-gradient(ellipse 28% 22% at 32% 58%, rgba(255, 196, 120, 0.14), transparent 70%),
         radial-gradient(ellipse 24% 20% at 62% 52%, rgba(255, 180, 90, 0.12), transparent 68%),
@@ -139,7 +139,7 @@
       position: absolute;
       inset: 0;
       z-index: 2;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.62);
     }
 
     .bg-overlay-warm {
@@ -239,17 +239,27 @@
       z-index: 2;
       text-decoration: none;
       color: inherit;
-      transition: opacity 0.35s var(--ease-apple);
+      transition: opacity 0.35s var(--ease-apple), transform 0.35s var(--ease-apple);
     }
 
     .brand-wordmark-link:hover {
       opacity: 0.94;
+      transform: translateY(-50%) scale(1.02);
     }
 
     .brand-wordmark-link:focus-visible {
       outline: 2px solid var(--gold);
       outline-offset: 4px;
       border-radius: 12px;
+    }
+
+    .brand-logo {
+      display: block;
+      height: clamp(2.85rem, 7vw, 3.85rem);
+      width: auto;
+      max-width: clamp(5.5rem, 15vw, 7.25rem);
+      object-fit: contain;
+      filter: drop-shadow(0 2px 16px rgba(212, 175, 55, 0.28));
     }
 
     .brand-mark {
@@ -317,7 +327,7 @@
       padding: 0.55rem 0.85rem;
       border-radius: 999px;
       background: var(--glass-strong);
-      border: 0.5px solid rgba(212, 175, 55, 0.35);
+      border: 0.5px solid rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(40px) saturate(180%);
       -webkit-backdrop-filter: blur(40px) saturate(180%);
       box-shadow: var(--shadow-soft);
@@ -479,11 +489,18 @@
     .section-glass {
       border-radius: var(--radius-xl);
       padding: clamp(2rem, 5vw, 3.25rem);
-      background: rgba(18, 18, 20, 0.62);
-      border: 0.5px solid rgba(212, 175, 55, 0.28);
-      backdrop-filter: blur(40px) saturate(170%);
-      -webkit-backdrop-filter: blur(40px) saturate(170%);
+      background: rgba(14, 14, 16, 0.72);
+      border: 0.5px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(32px) saturate(150%);
+      -webkit-backdrop-filter: blur(32px) saturate(150%);
       box-shadow: var(--shadow-soft);
+    }
+
+    .section-glass--minimal {
+      background: rgba(12, 12, 14, 0.78);
+      border-color: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
     }
 
     .section-eyebrow {
@@ -492,15 +509,15 @@
       width: fit-content;
       max-width: 100%;
       margin: 0 0 1rem;
-      padding: 0.35rem 0.75rem;
+      padding: 0;
       font-size: 0.6875rem;
       font-weight: 500;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--gold-shine);
-      background: rgba(212, 175, 55, 0.1);
-      border: 0.5px solid rgba(212, 175, 55, 0.35);
-      border-radius: 999px;
+      background: none;
+      border: none;
+      border-radius: 0;
     }
 
     .section-glass .pillar h3,
@@ -832,9 +849,8 @@
       flex-direction: column;
       height: 100%;
       border-radius: var(--radius-lg);
-      background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      background: rgba(255, 255, 255, 0.03);
       border: 0.5px solid rgba(255, 255, 255, 0.1);
-      border-top: 2px solid var(--gold);
       box-shadow: none;
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -948,8 +964,8 @@
 
     /* מודגש — אותו גודל, הדגשה עדינה (לא באנר full-width) */
     .property-card--featured {
-      border-top-color: var(--gold-bright);
-      box-shadow: 0 0 0 0.5px rgba(212, 175, 55, 0.22);
+      border-color: rgba(212, 175, 55, 0.28);
+      box-shadow: 0 0 0 0.5px rgba(212, 175, 55, 0.12);
     }
 
     .property-card--featured .property-card-media {
@@ -1058,7 +1074,7 @@
       width: 2.5rem;
       height: 2.5rem;
       border-radius: 12px;
-      border: 0.5px solid rgba(212, 175, 55, 0.35);
+      border: 0.5px solid rgba(255, 255, 255, 0.12);
       background: rgba(28, 28, 30, 0.85);
       color: var(--white);
       cursor: pointer;
@@ -1224,7 +1240,7 @@
 
     @media (max-width: 1024px) {
       body {
-        padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
       }
 
       /* בוט גלוי בגיבור — לא מחכה ל-FAB */
@@ -1259,7 +1275,7 @@
         white-space: nowrap;
         color: var(--white);
         background: rgba(18, 18, 20, 0.92);
-        border: 0.5px solid rgba(212, 175, 55, 0.35);
+        border: 0.5px solid rgba(255, 255, 255, 0.12);
         border-radius: 999px;
         pointer-events: none;
       }
@@ -1373,7 +1389,7 @@
       gap: 0.25rem;
     }
 
-    .service-icon {
+    .service-num {
       flex-shrink: 0;
       width: 2.25rem;
       height: 2.25rem;
@@ -1381,11 +1397,12 @@
       display: grid;
       place-items: center;
       font-family: var(--font-brand);
-      font-size: 1.1rem;
-      color: #1a1510;
-      background: var(--gradient-gold);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      background: rgba(255, 255, 255, 0.04);
+      border: 0.5px solid rgba(255, 255, 255, 0.1);
       box-shadow: none;
-      transition: box-shadow 0.3s ease;
     }
 
     .service-item h3 {
@@ -1614,16 +1631,16 @@
       width: fit-content;
       max-width: 100%;
       margin: 0 0 1rem;
-      padding: 0.35rem 0.75rem;
+      padding: 0;
       font-size: 0.6875rem;
       font-weight: 500;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--gold-bright);
-      background: rgba(212, 175, 55, 0.12);
-      border: 0.5px solid rgba(212, 175, 55, 0.22);
-      border-radius: 999px;
-      backdrop-filter: blur(12px);
+      background: none;
+      border: none;
+      border-radius: 0;
+      backdrop-filter: none;
     }
 
     .hero-copy h1 {
@@ -1710,11 +1727,19 @@
     }
 
     .chat-avatar img {
-      width: 24px;
-      height: 24px;
       display: block;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 50%;
       filter: drop-shadow(0 1px 5px rgba(212, 175, 55, 0.32));
+    }
+
+    .chat-avatar-photo--logo {
+      object-fit: contain;
+      object-position: center center;
+      padding: 0.15rem;
     }
 
     .chat-header-text h2 {
@@ -2055,10 +2080,9 @@
       }
 
       .property-card:hover {
-        transform: translateY(-6px);
-        border-color: var(--gold);
-        border-top-color: var(--gold-bright);
-        box-shadow: 0 10px 30px var(--gold-glow);
+        transform: translateY(-4px);
+        border-color: rgba(212, 175, 55, 0.35);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
       }
 
       .service-item:hover {
@@ -2067,8 +2091,8 @@
         box-shadow: 0 10px 30px var(--gold-glow);
       }
 
-      .service-item:hover .service-icon {
-        box-shadow: 0 0 14px rgba(214, 175, 55, 0.4);
+      .service-item:hover .service-num {
+        border-color: rgba(212, 175, 55, 0.35);
       }
 
 
@@ -2287,25 +2311,42 @@
     }
 
     .team-portrait-ring {
+      position: relative;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       width: clamp(9rem, 22vw, 11rem);
       height: clamp(9rem, 22vw, 11rem);
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(212, 175, 55, 0.22), rgba(0, 0, 0, 0.35));
-      border: 1px solid rgba(212, 175, 55, 0.45);
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35), inset 0 0 32px rgba(212, 175, 55, 0.08);
+      background: radial-gradient(circle at 30% 25%, rgba(212, 175, 55, 0.14), rgba(0, 0, 0, 0.35));
+      border: 1px solid rgba(212, 175, 55, 0.32);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
-    .team-portrait-ring img {
-      width: 42%;
-      height: auto;
-      opacity: 0.95;
+    .team-portrait-ring img.team-portrait-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      object-fit: cover;
+      object-position: center top;
+      opacity: 1;
+      filter: none;
+    }
+
+    .team-portrait-name {
+      margin: 0;
+      font-family: var(--font-brand);
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--white);
     }
 
     .team-portrait-caption {
-      margin: 0;
+      margin: 0.35rem 0 0;
       font-size: 0.75rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -2582,7 +2623,7 @@
     .property-modal-badge--available {
       color: var(--gold-bright);
       background: rgba(212, 175, 55, 0.12);
-      border: 0.5px solid rgba(212, 175, 55, 0.35);
+      border: 0.5px solid rgba(255, 255, 255, 0.12);
     }
 
     .property-modal-body h2 {
@@ -2663,3 +2704,214 @@
       object-fit: contain;
       padding: 2rem;
     }
+
+    /* —— Values section —— */
+    .values-list {
+      display: grid;
+      gap: 0.85rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    @media (min-width: 720px) {
+      .values-list {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+    }
+
+    .values-item {
+      padding: 1.15rem 1.2rem;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+      border: 0.5px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .values-item strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-family: var(--font-brand);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .values-item span {
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: var(--text-silver);
+    }
+
+    /* —— Contact (bot-first) —— */
+    .contact-panel {
+      text-align: center;
+      align-items: center;
+    }
+
+    .contact-panel .section-eyebrow,
+    .contact-panel .section-title,
+    .contact-panel .section-lead {
+      align-self: center;
+      text-align: center;
+      margin-inline: auto;
+    }
+
+    .contact-primary {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-gold--wide {
+      min-width: min(100%, 18rem);
+      padding: 0.85rem 1.75rem;
+      font-size: 0.9375rem;
+    }
+
+    .contact-note {
+      margin: 1.25rem 0 0;
+      font-size: 0.875rem;
+      color: var(--text-silver-muted);
+    }
+
+    .contact-note a {
+      color: var(--gold-shine);
+      text-decoration: none;
+      border-bottom: 0.5px solid rgba(212, 175, 55, 0.35);
+    }
+
+    .contact-note a:hover {
+      color: var(--gold-bright);
+    }
+
+    .contact-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      color: rgba(245, 245, 247, 0.45);
+    }
+
+    /* —— Team portrait placeholder —— */
+    .team-portrait-placeholder {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(212, 175, 55, 0.12), transparent 55%),
+        rgba(255, 255, 255, 0.03);
+    }
+
+    .team-portrait-ring.is-empty .team-portrait-placeholder {
+      display: block;
+    }
+
+    .team-portrait-ring.is-empty .team-portrait-photo {
+      display: none;
+    }
+
+    /* —— Footer contact line —— */
+    .footer-contact {
+      margin: 0;
+      font-size: 0.75rem;
+      color: rgba(245, 245, 247, 0.5);
+    }
+
+    .footer-contact a {
+      color: rgba(245, 245, 247, 0.55);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-contact a:hover {
+      color: var(--gold-bright);
+    }
+
+    .footer-contact span {
+      margin-inline: 0.35rem;
+      opacity: 0.45;
+    }
+
+    .site-footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    /* —— Chat honeypot —— */
+    .chat-honeypot {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* —— Legal page —— */
+    body.legal-page {
+      background: var(--obsidian);
+      color: var(--white);
+      min-height: 100dvh;
+    }
+
+    .legal-wrap {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .legal-back {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: var(--gold-shine);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .legal-wrap h1 {
+      font-family: var(--font-brand);
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+    }
+
+    .legal-updated {
+      margin: 0 0 2rem;
+      font-size: 0.8125rem;
+      color: var(--text-silver-muted);
+    }
+
+    .legal-wrap section {
+      margin-bottom: 1.75rem;
+    }
+
+    .legal-wrap h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      color: var(--white-soft);
+    }
+
+    .legal-wrap p {
+      margin: 0;
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      color: var(--text-silver);
+    }
+
+    .legal-wrap a {
+      color: var(--gold-shine);
+    }
+

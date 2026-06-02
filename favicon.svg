@@ -1,31 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="ZFR Estates">
   <defs>
-    <linearGradient id="bg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#141416" />
-      <stop offset="100%" stop-color="#060608" />
-    </linearGradient>
-    <linearGradient id="zfrGold" x1="14" y1="10" x2="50" y2="54" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#fff8ec" />
-      <stop offset="38%" stop-color="#f3e5ab" />
-      <stop offset="100%" stop-color="#b8942e" />
+    <linearGradient id="gold" x1="8" y1="4" x2="24" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5e6b8"/>
+      <stop offset="45%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#a67c00"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="15" fill="url(#bg)" />
-  <rect
-    x="2"
-    y="2"
-    width="60"
-    height="60"
-    rx="13"
+  <rect width="32" height="32" rx="8" fill="#0a0a0c"/>
+  <!-- ממורכז גאומטרית: 32×32, קווי מתאר ~14.7×23.8 -->
+  <g
     fill="none"
-    stroke="rgba(212, 175, 55, 0.22)"
-    stroke-width="1"
-  />
-  <path
-    d="M17 18H47M47 18L17 46M17 46H47"
-    stroke="url(#zfrGold)"
-    stroke-width="5.75"
+    stroke="url(#gold)"
+    stroke-width="2.6"
     stroke-linecap="round"
     stroke-linejoin="round"
-  />
+    transform="translate(3 1.15)"
+  >
+    <path d="M6.5 25.5V13.5c0-1.8 1.9-4 1.9-4s1.9 2.2 1.9 4v12"/>
+    <path d="M10.8 25.5V7.5c0-3 2.7-5.8 2.7-5.8s2.7 2.8 2.7 5.8v18"/>
+    <path d="M16.8 25.5V14.5c0-1.5 2.2-2.5 2.2-2.5s2.2 1 2.2 2.5v11"/>
+  </g>
 </svg>
