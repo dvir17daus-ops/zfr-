@@ -130,32 +130,57 @@
   var backdrop = document.getElementById("chatBackdrop");
   if (!fab || !backdrop) return;
 
+  function isMobileChatLayout() {
+    return window.matchMedia("(max-width: 1024px)").matches;
+  }
+
+  function focusChatInput() {
+    var input = document.getElementById("chatInput");
+    if (input && !input.disabled) {
+      window.setTimeout(function () {
+        input.focus({ preventScroll: true });
+      }, 320);
+    }
+  }
+
+  function scrollToChat() {
+    var concierge = document.getElementById("concierge");
+    if (concierge) {
+      concierge.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
   function setChatOpen(open) {
-    document.body.classList.toggle("chat-open", open);
     fab.setAttribute("aria-expanded", open ? "true" : "false");
+    fab.classList.toggle("is-active", open);
+
+    if (isMobileChatLayout()) {
+      document.body.classList.toggle("chat-open", open);
+      if (open) focusChatInput();
+      return;
+    }
+
+    document.body.classList.remove("chat-open");
     if (open) {
-      var input = document.getElementById("chatInput");
-      if (input && !input.disabled) {
-        window.setTimeout(function () {
-          input.focus({ preventScroll: true });
-        }, 320);
-      }
+      scrollToChat();
+      focusChatInput();
     }
   }
 
   fab.addEventListener("click", function () {
-    setChatOpen(!document.body.classList.contains("chat-open"));
+    if (isMobileChatLayout()) {
+      setChatOpen(!document.body.classList.contains("chat-open"));
+      return;
+    }
+    setChatOpen(true);
   });
+
   backdrop.addEventListener("click", function () {
     setChatOpen(false);
   });
 
   window.zfrOpenChat = function () {
     setChatOpen(true);
-    var concierge = document.getElementById("concierge");
-    if (concierge && window.matchMedia("(min-width: 1025px)").matches) {
-      concierge.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
   };
 })();
 

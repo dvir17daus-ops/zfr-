@@ -610,6 +610,59 @@
       color: var(--text-silver-muted);
     }
 
+    .property-grid-status.is-loading::after {
+      content: "";
+      display: inline-block;
+      width: 0.85rem;
+      height: 0.85rem;
+      margin-inline-start: 0.5rem;
+      vertical-align: -0.15em;
+      border: 2px solid rgba(212, 175, 55, 0.25);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: zfrSpin 0.7s linear infinite;
+    }
+
+    @keyframes zfrSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .property-grid-skeleton {
+      display: grid;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 720px) {
+      .property-grid-skeleton {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .property-skeleton-card {
+      aspect-ratio: 16 / 10;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(
+        110deg,
+        rgba(255, 255, 255, 0.04) 25%,
+        rgba(212,  175, 55, 0.12) 50%,
+        rgba(255, 255, 255, 0.04) 75%
+      );
+      background-size: 200% 100%;
+      animation: zfrShimmer 1.2s ease-in-out infinite;
+    }
+
+    @keyframes zfrShimmer {
+      0% {
+        background-position: 100% 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
+    }
+
     .property-grid-error {
       margin: 0;
       color: var(--text-silver);
@@ -856,32 +909,46 @@
 
     .chat-fab,
     .whatsapp-fab {
-      display: none;
+      display: inline-flex;
       position: fixed;
-      z-index: 120;
+      z-index: 200;
       border: none;
       border-radius: 999px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-soft);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.12);
       transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+    }
+
+    .chat-fab:hover,
+    .whatsapp-fab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .whatsapp-fab:hover {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 211, 102, 0.35);
     }
 
     .chat-fab {
       bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
       left: 1.25rem;
-      width: 3.25rem;
-      height: 3.25rem;
+      width: 3.5rem;
+      height: 3.5rem;
       background: var(--gradient-gold);
       color: #1a1510;
+    }
+
+    .chat-fab.is-active {
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.45), 0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
     .whatsapp-fab {
       bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
       right: 1.25rem;
-      width: 3.25rem;
-      height: 3.25rem;
+      width: 3.5rem;
+      height: 3.5rem;
       background: #25d366;
       color: #fff;
       text-decoration: none;
@@ -935,11 +1002,6 @@
     }
 
     @media (max-width: 1024px) {
-      .chat-fab,
-      .whatsapp-fab {
-        display: inline-flex;
-      }
-
       .hero-section .chat-panel {
         position: fixed;
         inset: auto 0 0 0;
@@ -1426,11 +1488,11 @@
 
     .msg.user {
       align-self: flex-end;
-      background: linear-gradient(180deg, #0a84ff 0%, #0066cc 100%);
-      border: none;
-      color: #fff;
+      background: linear-gradient(165deg, rgba(212, 175, 55, 0.35) 0%, rgba(140, 110, 40, 0.5) 100%);
+      border: 0.5px solid rgba(212, 175, 55, 0.45);
+      color: var(--white);
       border-end-start-radius: 6px;
-      box-shadow: 0 4px 16px rgba(10, 132, 255, 0.25);
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.15);
     }
 
     .typing {
@@ -1501,7 +1563,7 @@
 
     .chat-input-row input:focus {
       background: rgba(118, 118, 128, 0.36);
-      box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.2);
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.22);
     }
 
     .send-btn {
@@ -1513,8 +1575,8 @@
       cursor: pointer;
       display: grid;
       place-items: center;
-      background: #0a84ff;
-      color: #fff;
+      background: var(--gradient-gold);
+      color: #1a1510;
       box-shadow: none;
       transition: transform 0.35s var(--ease-spring), opacity 0.35s var(--ease-apple),
         box-shadow 0.35s var(--ease-apple);
@@ -1526,7 +1588,7 @@
     }
 
     .send-btn:focus-visible:not(:disabled) {
-      outline: 2px solid rgba(10, 132, 255, 0.8);
+      outline: 2px solid rgba(212, 175, 55, 0.85);
       outline-offset: 3px;
     }
 

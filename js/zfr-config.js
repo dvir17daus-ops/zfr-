@@ -9,12 +9,11 @@ window.ZFR_CONFIG = {
   listingsJsonUrl: "data/listings.json",
 
   /**
-   * Webhook Make מסוג Custom (GET) שמחזיר JSON של נכסים מהגיליון.
-   * חובה ב-Webhook Response ב-Make: Access-Control-Allow-Origin (* או דומיין האתר)
-   * אם CORS נכשל — האתר עובר אוטומטית ל-listingsJsonUrl
+   * Make GET — נכסים מ-Google Sheets (תרחיש נפרד מלידים/WhatsApp).
+   * חובה: Webhook response עם JSON { "listings": [ ... ] } + CORS header.
+   * בדיקה: פתחו את ה-URL בדפדפן — JSON תקין, לא "Accepted" / gibberish.
    */
-  listingsLiveUrl:
-    "https://yn0b1zpowfk4mh15lpogmflnfawohsxr@hook.eu1.make.com",
+  listingsLiveUrl: "https://hook.eu1.make.com/iznyfdparmxkv38sdlz4eyih3qgnygc0",
 
   /** שליחת לידים מהבוט */
   makeLeadWebhook: "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv",

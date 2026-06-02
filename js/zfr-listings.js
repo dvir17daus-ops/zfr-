@@ -1,3 +1,7 @@
+/**
+ * משיכת נכסים מ-Make (GET) + גיבוי מקומי.
+ * מבנה JSON צפוי: { updatedAt, listings: [{ id, title, description, price, image, ... }] }
+ */
 (function initZfrListings() {
   var cfg = window.ZFR_CONFIG || {};
   var gridEl = document.getElementById("propertyGrid");
@@ -5,6 +9,20 @@
   var statusEl = document.getElementById("propertyGridStatus");
 
   if (!gridEl) return;
+
+  /** תיקון כתובת שהועתקה בפורמט user@hook... → hook.../user */
+  function normalizeWebhookUrl(url) {
+    var u = String(url || "").trim();
+    var match = u.match(/^https:\/\/([^/@]+)@hook\.(eu\d+)\.make\.com\/?$/i);
+    if (match) {
+      return "https://hook." + match[2] + ".make.com/" + match[1];
+    }
+    return u;
+  }
+
+  function getPriceLabel(item) {
+    return item.priceLabel || item.price || "";
+  }
 
   var MEDIA_BADGE_LABELS = {
     sold: "נמכר!",
@@ -46,23 +64,67 @@
     return url;
   }
 
-  function normalizePayload(data) {
-    if (!data) return [];
+  function isMakeNonJsonBody(text) {
+    var t = String(text || "").trim();
+    if (!t) return true;
+    if (/^accepted$/i.test(t)) return true;
+    if (/no scenario listening/i.test(t)) return true;
+    if (/map\s*\(\s*\d+\.array/i.test(t)) return true;
+    if (/"[^"]+"\s*;\s*[^"]/i.test(t)) return true;
+    return false;
+  }
+
+  /**
+   * מצפה ל-{ listings: [...] } (או מערך ישיר בגיבוי מקומי).
+   * @param {object} data
+   * @param {{ requireListingsKey?: boolean }} opts
+   */
+  function extractListingsArray(data, opts) {
+    opts = opts || {};
+    if (!data) {
+      throw new Error("Empty listings payload");
+    }
     if (Array.isArray(data)) return data;
     if (Array.isArray(data.listings)) return data.listings;
     if (data.body && Array.isArray(data.body.listings)) return data.body.listings;
+    if (opts.requireListingsKey) {
+      throw new Error('Make must return JSON: { "listings": [ ... ] }');
+    }
     return [];
   }
 
-  function isValidListingsArray(list) {
-    return Array.isArray(list);
+  function parseListingsJson(text, opts) {
+    opts = opts || {};
+    var raw = String(text || "").trim();
+
+    if (isMakeNonJsonBody(raw)) {
+      throw new Error(
+        "Make returned non-JSON (e.g. Accepted or template text) — fix Webhook response in Make"
+      );
+    }
+
+    var parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (parseErr) {
+      throw new Error(
+        "Invalid JSON from Make — fix Webhook response body (see data/MAKE-GOOGLE-SHEETS-SETUP.md)"
+      );
+    }
+
+    return extractListingsArray(parsed, opts);
   }
 
-  function fetchJson(url) {
+  function fetchJson(url, opts) {
+    opts = opts || {};
     return fetch(url, {
+      method: "GET",
       cache: "no-store",
       mode: "cors",
       credentials: "omit",
+      headers: {
+        Accept: "application/json",
+      },
     })
       .then(function (res) {
         if (!res.ok) {
@@ -71,12 +133,10 @@
         return res.text();
       })
       .then(function (text) {
-        var parsed;
-        try {
-          parsed = JSON.parse(text);
-        } catch (parseErr) {
-          throw new Error("Invalid JSON response");
+        if (opts.asListingsArray) {
+          return parseListingsJson(text, { requireListingsKey: !!opts.requireListingsKey });
         }
+        var parsed = JSON.parse(text);
         return parsed;
       });
   }
@@ -86,17 +146,63 @@
     if (reason) {
       console.warn("ZFR — switching to local listings.json:", reason);
     }
-    return fetchJson(localUrl);
+    return fetchJson(localUrl, { asListingsArray: true, requireListingsKey: false }).catch(
+      function () {
+        return fetch(localUrl, { cache: "no-store" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+          })
+          .then(function (data) {
+            return extractListingsArray(data, { requireListingsKey: false });
+          });
+      }
+    );
+  }
+
+  function fetchListingsFromWebhook(webhookUrl) {
+    var url = normalizeWebhookUrl(webhookUrl);
+    if (!url) {
+      return Promise.reject(new Error("Missing webhook URL"));
+    }
+    return fetchJson(url, { asListingsArray: true, requireListingsKey: true });
+  }
+
+  window.ZFR_fetchListings = function () {
+    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
+    if (liveUrl) {
+      return fetchListingsFromWebhook(liveUrl).catch(function (err) {
+        return loadLocalListings(err && err.message);
+      });
+    }
+    return loadLocalListings();
+  };
+
+  function showLoadingState() {
+    if (statusEl) {
+      statusEl.textContent = "טוען נכסים מהמערכת…";
+      statusEl.hidden = false;
+      statusEl.classList.add("is-loading");
+    }
+    gridEl.innerHTML =
+      '<div class="property-grid-skeleton" aria-hidden="true">' +
+      '<div class="property-skeleton-card"></div>'.repeat(3) +
+      "</div>";
+    if (featuredEl) featuredEl.innerHTML = "";
+  }
+
+  function clearLoadingState() {
+    if (statusEl) statusEl.classList.remove("is-loading");
   }
 
   function loadListings() {
-    var liveUrl = String(cfg.listingsLiveUrl || "").trim();
+    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
 
     if (!liveUrl) {
       return loadLocalListings();
     }
 
-    return fetchJson(liveUrl).catch(function (err) {
+    return fetchListingsFromWebhook(liveUrl).catch(function (err) {
       var msg =
         (err && err.message) ||
         (err && String(err)) ||
@@ -164,8 +270,9 @@
     var type = item.type
       ? '<span class="property-meta-item">' + escapeHtml(item.type) + "</span>"
       : "";
-    var price = item.priceLabel
-      ? '<span class="property-price">' + escapeHtml(item.priceLabel) + "</span>"
+    var priceText = getPriceLabel(item);
+    var price = priceText
+      ? '<span class="property-price">' + escapeHtml(priceText) + "</span>"
       : "";
 
     var bodyStatusBadge = "";
@@ -264,20 +371,18 @@
     }
   }
 
-  if (statusEl) {
-    statusEl.textContent = "טוען נכסים…";
-    statusEl.hidden = false;
-  }
+  showLoadingState();
 
   loadListings()
-    .then(function (data) {
-      var listings = normalizePayload(data);
-      if (!isValidListingsArray(listings)) {
+    .then(function (listings) {
+      clearLoadingState();
+      if (!Array.isArray(listings)) {
         throw new Error("Listings payload is not a valid array");
       }
       render(listings);
     })
     .catch(function (err) {
+      clearLoadingState();
       console.warn("ZFR — listings could not be loaded from any source:", err);
       showGracefulFailure();
     });

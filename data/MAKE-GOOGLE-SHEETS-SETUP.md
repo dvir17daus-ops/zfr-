@@ -21,18 +21,28 @@
 1. ב-Make: **Create a new scenario**
 2. מודול 1: **Webhooks → Custom webhook** → הגדירו **GET**
 3. מודול 2: **Google Sheets → Search rows** (בחרו את הגיליון, ללא פילטר = כל השורות)
-4. מודול 3: **Array aggregator** / **JSON** — בניית מערך `listings`
+4. מודול 3: **Flow control → Array aggregator** (חייב **אחרי** Google Sheets — לא לפניו!)
+
+> **סדר נכון:** Webhook → Google Sheets → Array Aggregator → Webhook response  
+> **סדר שגוי:** Webhook → Array Aggregator → Google Sheets (האגרגטור לא יודע מה לאסוף)
+   - Source: מודול Google Sheets
+   - שדות: `id`, `title`, `description`, `area`, `type`, `rooms`, `priceLabel`, `status`, `image`, `featured`, `sortOrder`
+
 5. מודול 4: **Webhooks → Webhook response**
    - Status: `200`
-   - Body type: `JSON`
-   - Body:
+   - Body type: **Raw**
+   - Body (בחרו מהמיפוי את `array` של Aggregator):
 
 ```json
 {
   "updatedAt": "{{formatDate(now; \"YYYY-MM-DDTHH:mm:ssZ\")}}",
-  "listings": [ ... מערך מהגיליון ... ]
+  "listings": {{json(3.array)}}
 }
 ```
+
+(המספר `3` = מספר מודול Aggregator אצלכם — לא תמיד 3.)
+
+**אם בדפדפן רואים `map(9.array` או נקודה-פסיק `;` בין שדות — זה לא JSON והאתר לא יציג נכסים מ-Make.** ראו `data/פתרון-בעיות-Make-ואתר.md`.
 
 ### CORS (קריטי — אחרת הדפדפן יחסום)
 
