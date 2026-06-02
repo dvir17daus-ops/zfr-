@@ -1,7 +1,9 @@
 (function () {
   var ZFR_DEBUG = !!(window.ZFR_CONFIG && window.ZFR_CONFIG.debug);
   var DEFAULT_WELCOME =
-    "ברוכים הבאים ל-ZFR Estates. כאן תוכלו לקבל גישה לנכסים אקסקלוסיביים, כולל דירות באוף-מרקט שעדיין לא פורסמו ברשת. בואו נבדוק מה מתאים לכם.";
+    "ברוכים הבאים ל-ZFR Estates. השאלון הבא עוזר לנו להתאים נכסים רלוונטיים — כולל מבחר off-market. זה לוקח בערך דקה.";
+
+  var DEFAULT_INPUT_PLACEHOLDER = "תארו את הנכס האידיאלי עבורכם…";
 
   function getClientName() {
     try {
@@ -35,7 +37,6 @@
   }
 
   var submitBtn = form.querySelector('button[type="submit"]');
-  var DEFAULT_INPUT_PLACEHOLDER = input.placeholder;
 
   function focusChatInput() {
     try {
@@ -174,7 +175,7 @@
     sendBotSequence(
       [
         opener +
-          " הפרטים הועברו למחלקה הרלוונטית ב־ZFR. סוכן מומחה לאזור הזה יצור איתך קשר בזמן הקרוב.",
+          " הפרטים הועברו לצוות ZFR. סוכן בכיר יחזור אליכם תוך שעתיים בימי עסקים.",
       ],
       setChatEnded
     );
@@ -699,6 +700,11 @@
     setInputDisabled(true);
 
     sendBotSequence(replies, function () {
+      if (surveyStep === 1 && window.ZFR_pendingPropertyInquiry) {
+        input.value = window.ZFR_pendingPropertyInquiry;
+        delete window.ZFR_pendingPropertyInquiry;
+      }
+
       if (surveyStep >= FINAL_STEP) {
         setChatEnded();
       } else if (awaitingMortgageChoice) {
@@ -712,4 +718,51 @@
       }
     });
   });
+
+  window.zfrInquireAboutProperty = function (item) {
+    if (!item) return;
+
+    var inquiry =
+      "סיור פרטי — " +
+      (item.title || "נכס") +
+      (item.area ? ", " + item.area : "") +
+      (item.id ? " (" + item.id + ")" : "");
+
+    if (window.location.hash !== "#concierge") {
+      window.location.hash = "#concierge";
+    }
+
+    if (typeof window.zfrOpenChat === "function") {
+      window.zfrOpenChat();
+    }
+
+    if (surveyStep >= FINAL_STEP) {
+      window.open(
+        "https://wa.me/972525240271?text=" + encodeURIComponent("שלום, " + inquiry),
+        "_blank",
+        "noopener,noreferrer"
+      );
+      return;
+    }
+
+    if (surveyStep === 0) {
+      window.ZFR_pendingPropertyInquiry = inquiry;
+      window.setTimeout(focusChatInput, 450);
+      return;
+    }
+
+    if (surveyStep === 1) {
+      input.value = inquiry;
+      lead.propertyRequirements = inquiry;
+      window.setTimeout(focusChatInput, 450);
+      return;
+    }
+
+    if (surveyStep > 1 && surveyStep < FINAL_STEP) {
+      lead.propertyRequirements =
+        (lead.propertyRequirements ? lead.propertyRequirements + " · " : "") + inquiry;
+    }
+
+    window.setTimeout(focusChatInput, 300);
+  };
 })();

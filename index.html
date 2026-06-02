@@ -20,16 +20,18 @@
       "@context": "https://schema.org",
       "@type": "RealEstateAgent",
       "name": "ZFR Estates",
-      "description": "נדל״ן יוקרתי וליווי אישי",
-      "telephone": "+972-52-524-0271",
+      "description": "נדל״ן יוקרתי מירושלים — ליווי אישי בכל הארץ",
+      "telephone": "+972-54-753-2972",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Jerusalem",
+        "addressCountry": "IL"
+      },
       "areaServed": "IL",
       "url": "https://zfr-estates.com"
     }
   </script>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-  <link rel="shortcut icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <link rel="manifest" href="site.webmanifest" />
   <meta name="theme-color" content="#09090b" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,12 +41,8 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="css/zfr.css" />
-  <link
-    rel="preload"
-    href="assets/%D7%A8%D7%A7%D7%A2%20%D7%9C%D7%90%D7%AA%D7%A8.mp4"
-    as="video"
-    type="video/mp4"
-  />
+  <link rel="preload" href="assets/hero-bg.mp4" as="video" type="video/mp4" media="(min-width: 769px)" />
+  <link rel="preload" href="assets/poster.jpg" as="image" />
 </head>
 <body>
   <div class="bg-canvas" aria-hidden="true">
@@ -59,7 +57,7 @@
         preload="metadata"
         aria-hidden="true"
       >
-        <source src="assets/%D7%A8%D7%A7%D7%A2%20%D7%9C%D7%90%D7%AA%D7%A8.mp4" type="video/mp4" />
+        <source src="assets/hero-bg.mp4" type="video/mp4" />
       </video>
       <img
         class="bg-motion-image"
@@ -88,12 +86,13 @@
       <div class="nav-drawer-backdrop" id="navBackdrop" hidden></div>
       <div class="nav-drawer" id="navDrawer" aria-hidden="true">
         <nav aria-label="ניווט נייד">
-          <a href="#about">אודותינו</a>
           <a href="#properties">נכסים</a>
-          <a href="#trust">לקוחות</a>
+          <a href="#about">אודותינו</a>
+          <a href="#team">צוות</a>
           <a href="#concierge-services">שירות</a>
+          <a href="#trust">לקוחות</a>
           <a href="#contact">צור קשר</a>
-          <a href="#concierge" class="nav-cta">יועץ אישי</a>
+          <a href="#concierge" class="nav-cta">בקשת התאמה</a>
         </nav>
       </div>
       <a href="#home" class="brand-mark-link" aria-label="ZFR Estates — דף הבית">
@@ -103,11 +102,13 @@
       </a>
       <div class="header-inner">
         <nav aria-label="ניווט ראשי">
-          <a href="#about" class="nav-keep-mobile">אודותינו</a>
-          <a href="#properties">נכסים</a>
-          <a href="#trust">לקוחות</a>
+          <a href="#properties" class="nav-keep-mobile">נכסים</a>
+          <a href="#about">אודותינו</a>
+          <a href="#team">צוות</a>
           <a href="#concierge-services">שירות</a>
-          <a href="#contact" class="nav-cta">סיור פרטי</a>
+          <a href="#trust">לקוחות</a>
+          <a href="#contact">צור קשר</a>
+          <a href="#concierge" class="nav-cta">בקשת התאמה</a>
         </nav>
       </div>
       <a href="#home" class="brand-wordmark-link" aria-label="ZFR Estates — דף הבית">
@@ -129,23 +130,34 @@
           ZFR Estates מחברת בין לקוחות נבחרים לנכסים off-market — בדיסקרטיות, בדיוק, ובקצב שמתאים לכם.
         </p>
         <div class="cta-row fade-in-scroll" data-scroll-delay="260">
-          <a href="#concierge" class="btn-gold">שיחה עם יועץ אישי</a>
+          <a href="#concierge" class="btn-gold">התחילו שאלון התאמה</a>
           <a href="#properties" class="btn-ghost">צפייה בנכסים</a>
         </div>
       </div>
 
       <div class="chat-panel slide-left-scroll" data-scroll-delay="280">
         <div class="chat-shell" id="concierge">
-          <div class="chat-widget" id="chatWidget" role="region" aria-label="יועץ נכסים אישי ZFR Estates">
+          <div class="chat-widget" id="chatWidget" role="region" aria-label="שאלון התאמת נכסים ZFR Estates">
             <div class="chat-header">
               <div class="chat-avatar" aria-hidden="true">
                 <img src="assets/zfr-mark.svg" alt="" width="24" height="24" decoding="async" />
               </div>
               <div class="chat-header-text">
-                <h2>יועץ נכסים אישי</h2>
-                <p>זמין עכשיו · ZFR Estates</p>
+                <h2>שאלון התאמה דיסקרטי</h2>
+                <p>כמה שאלות קצרות · ZFR Estates</p>
               </div>
               <span class="chat-status" aria-label="זמין"></span>
+              <button
+                type="button"
+                class="chat-close"
+                id="chatClose"
+                aria-label="סגירת צ'אט"
+                hidden
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+              </button>
             </div>
             <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
             <p class="chat-privacy" id="chatPrivacy" hidden>
@@ -174,13 +186,34 @@
       </div>
       </section>
 
+      <section id="properties" class="site-section" aria-labelledby="properties-title">
+        <div class="site-section-inner">
+          <div class="section-glass properties-intro">
+            <span class="section-eyebrow fade-in-scroll">פורטפוליו נבחר</span>
+            <h2 id="properties-title" class="section-title slide-up-scroll">נכסים שמגדירים סטנדרט</h2>
+            <p class="section-lead fade-in-scroll" data-scroll-delay="80">
+              מגדלי בוטיק, פנטהאוזים עם נוף לים ואחוזות עם פרטיות מוחלטת — אנחנו מציגים רק נכסים
+              שעומדים בקריטריון אחד: להרגיש בבית מהרגע הראשון.
+            </p>
+          </div>
+          <div class="properties-showcase section-glass section-glass--sharp">
+            <p id="propertyGridStatus" class="property-grid-status" aria-live="polite">טוען נכסים…</p>
+            <div id="propertyGrid" class="property-grid property-grid--adaptive" aria-label="רשימת נכסים"></div>
+            <div class="cta-row fade-in-scroll" data-scroll-delay="160">
+              <a href="#concierge" class="btn-gold">גלה נכסים מתאימים</a>
+              <a href="#contact" class="btn-ghost">בקשת פרטים חסויים</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="about" class="site-section" aria-labelledby="about-title">
         <div class="site-section-inner section-glass">
           <span class="section-eyebrow fade-in-scroll">הסיפור שלנו</span>
           <h2 id="about-title" class="section-title slide-up-scroll">אודות ZFR Estates</h2>
           <p class="section-lead fade-in-scroll" data-scroll-delay="80">
-            סוכנות boutique בתל אביב והמרכז — מחברים לקוחות לנכסים שלא תמיד מגיעים לרשת,
-            עם ליווי אישי מהשיחה הראשונה ועד מסירת המפתח.
+            סוכנות boutique מירושלים — מחברים לקוחות לנכסים שלא תמיד מגיעים לרשת,
+            עם ליווי אישי בכל הארץ, מהשיחה הראשונה ועד מסירת המפתח.
           </p>
           <div class="pillars">
             <article class="pillar slide-up-scroll" data-scroll-delay="0">
@@ -191,7 +224,7 @@
             <article class="pillar slide-up-scroll" data-scroll-delay="100">
               <span class="pillar-num">02</span>
               <h3>מומחיות מקומית</h3>
-              <p>סוכנים שחיים את השכונה, מכירים את הקצב ואת הערך האמיתי של כל כתובת.</p>
+              <p>מומחיות בירושלים ובשוק הארצי — מכירים את הערך האמיתי של כל כתובת.</p>
             </article>
             <article class="pillar slide-up-scroll" data-scroll-delay="200">
               <span class="pillar-num">03</span>
@@ -202,42 +235,30 @@
         </div>
       </section>
 
-      <section id="properties" class="site-section" aria-labelledby="properties-title">
-        <div class="site-section-inner section-glass">
-          <span class="section-eyebrow fade-in-scroll">פורטפוליו נבחר</span>
-          <h2 id="properties-title" class="section-title slide-up-scroll">נכסים שמגדירים סטנדרט</h2>
-          <p class="section-lead fade-in-scroll" data-scroll-delay="80">
-            מגדלי בוטיק, פנטהאוזים עם נוף לים ואחוזות עם פרטיות מוחלטת — אנחנו מציגים רק נכסים
-            שעומדים בקריטריון אחד: להרגיש בבית מהרגע הראשון.
-          </p>
-          <p id="propertyGridStatus" class="property-grid-status" aria-live="polite">טוען נכסים…</p>
-          <div id="propertyFeatured" class="property-featured-wrap property-grid" aria-label="נכס מודגש"></div>
-          <div id="propertyGrid" class="property-grid" aria-label="רשימת נכסים"></div>
-          <div class="cta-row fade-in-scroll" data-scroll-delay="160">
-            <a href="#concierge" class="btn-gold">גלה נכסים מתאימים</a>
-            <a href="#contact" class="btn-ghost">בקשת פרטים חסויים</a>
+      <section id="team" class="site-section site-section--editorial" aria-labelledby="team-title">
+        <div class="site-section-inner team-layout">
+          <div class="team-portrait fade-in-scroll">
+            <div class="team-portrait-ring" aria-hidden="true">
+              <img src="assets/zfr-mark.svg" alt="" width="80" height="80" decoding="async" />
+            </div>
+            <p class="team-portrait-caption">ZFR Estates · ירושלים</p>
           </div>
-        </div>
-      </section>
-
-      <section id="trust" class="site-section" aria-labelledby="trust-title">
-        <div class="site-section-inner section-glass">
-          <span class="section-eyebrow fade-in-scroll">מה אומרים עלינו</span>
-          <h2 id="trust-title" class="section-title slide-up-scroll">אמון שנבנה בשקט</h2>
-          <div class="sold-strip fade-in-scroll" data-scroll-delay="60" aria-label="עסקאות אחרונות">
-            <span class="sold-strip-item"><strong>נמכר</strong> · פנטהאוז · הרצליה</span>
-            <span class="sold-strip-item"><strong>נמכר</strong> · וילה · סביון</span>
-            <span class="sold-strip-item"><strong>בבלעדיות</strong> · דירת גג · תל אביב</span>
-          </div>
-          <div class="trust-grid">
-            <figure class="trust-quote slide-up-scroll" data-scroll-delay="0">
-              <blockquote>ליווי מדויק מהשיחה הראשונה ועד החתימה — בלי לחץ, עם נכסים שלא ראינו ברשת.</blockquote>
-              <cite>לקוחה · הרצליה פיתוח</cite>
-            </figure>
-            <figure class="trust-quote slide-up-scroll" data-scroll-delay="120">
-              <blockquote>הצוות של ZFR סגר לנו עסקה off-market תוך שלושה שבועות, בדיסקרטיות מלאה.</blockquote>
-              <cite>לקוח · סביון</cite>
-            </figure>
+          <div class="team-copy section-glass">
+            <span class="section-eyebrow fade-in-scroll">מי אנחנו</span>
+            <h2 id="team-title" class="section-title slide-up-scroll">ליווי אישי, לא מוקד שירות</h2>
+            <p class="section-lead fade-in-scroll" data-scroll-delay="80">
+              ZFR Estates היא סוכנות boutique מירושלים, המתמחה בנכסי פרימיום off-market בכל הארץ. כל לקוח מקבל
+              סוכן בכיר אחד — מהשיחה הראשונה, דרך סיורים פרטיים, ועד חתימה ומסירה.
+            </p>
+            <ul class="team-stats fade-in-scroll" data-scroll-delay="120">
+              <li><strong>ירושלים</strong><span>משרד ראשי · פגישות בתיאום</span></li>
+              <li><strong>כל הארץ</strong><span>נכסים וליווי בפריסה ארצית</span></li>
+              <li><strong>End-to-end</strong><span>משפטי · משכנתא · שיפוץ</span></li>
+            </ul>
+            <div class="cta-row fade-in-scroll" data-scroll-delay="160">
+              <a href="#concierge" class="btn-gold">בקשת התאמה אישית</a>
+              <a href="#contact" class="btn-ghost">יצירת קשר ישירה</a>
+            </div>
           </div>
         </div>
       </section>
@@ -253,8 +274,8 @@
             <div class="service-item slide-right-scroll" data-scroll-delay="0">
               <span class="service-icon" aria-hidden="true">◆</span>
               <div>
-                <h3>יועץ נכסים אישי</h3>
-                <p>שיחה מיידית שמבינה תקציב, סגנון חיים ולוח זמנים — ומסננת רעש.</p>
+                <h3>שאלון התאמה אישי</h3>
+                <p>כמה שאלות קצרות שמבינות תקציב, סגנון חיים ולוח זמנים — ומסננות רעש.</p>
               </div>
             </div>
             <div class="service-item slide-right-scroll" data-scroll-delay="100">
@@ -278,6 +299,28 @@
         </div>
       </section>
 
+      <section id="trust" class="site-section" aria-labelledby="trust-title">
+        <div class="site-section-inner section-glass">
+          <span class="section-eyebrow fade-in-scroll">מה אומרים עלינו</span>
+          <h2 id="trust-title" class="section-title slide-up-scroll">אמון שנבנה בשקט</h2>
+          <div class="sold-strip fade-in-scroll" data-scroll-delay="60" aria-label="עסקאות אחרונות">
+            <span class="sold-strip-item"><strong>נמכר</strong> · פנטהאוז · הרצליה · 2025</span>
+            <span class="sold-strip-item"><strong>נמכר</strong> · וילה · סביון · 2025</span>
+            <span class="sold-strip-item"><strong>בבלעדיות</strong> · דירת גג · תל אביב</span>
+          </div>
+          <div class="trust-grid">
+            <figure class="trust-quote slide-up-scroll" data-scroll-delay="0">
+              <blockquote>ליווי מדויק מהשיחה הראשונה ועד החתימה — בלי לחץ, עם נכסים שלא ראינו ברשת.</blockquote>
+              <cite>ש. כ. · רופא · הרצליה פיתוח</cite>
+            </figure>
+            <figure class="trust-quote slide-up-scroll" data-scroll-delay="120">
+              <blockquote>הצוות של ZFR סגר לנו עסקה off-market תוך שלושה שבועות, בדיסקרטיות מלאה.</blockquote>
+              <cite>א. ו. · יזם · סביון</cite>
+            </figure>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" class="site-section" aria-labelledby="contact-title">
         <div class="site-section-inner">
           <div class="section-glass">
@@ -294,7 +337,7 @@
                 </span>
                 <div class="contact-row-text">
                   <span class="contact-row-label">טלפון</span>
-                  <a class="contact-row-value" href="tel:+972525240271">052-524-0271</a>
+                  <a class="contact-row-value" href="tel:+972547532972">054-753-2972</a>
                 </div>
               </div>
               <div class="contact-row slide-left-scroll" data-scroll-delay="80" role="listitem">
@@ -321,16 +364,16 @@
                 </span>
                 <div class="contact-row-text">
                   <span class="contact-row-label">משרדים</span>
-                  <span class="contact-row-value">תל אביב · פגישות בתיאום מראש</span>
+                  <span class="contact-row-value">ירושלים · פגישות בתיאום מראש · פריסה ארצית</span>
                 </div>
               </div>
             </div>
             <div class="cta-row fade-in-scroll" data-scroll-delay="120">
               <a href="#concierge" class="btn-gold">דברו עם היועץ</a>
-              <a href="https://wa.me/972525240271" class="btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+              <a href="https://wa.me/972547532972" class="btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
             <form id="contactQuickForm" class="contact-quick-form fade-in-scroll" data-scroll-delay="160" novalidate>
-              <p class="section-lead" style="margin:0 0 0.5rem;font-size:0.9375rem">או השאירו פרטים קצרים:</p>
+              <p class="contact-quick-form-lead">או השאירו פרטים קצרים:</p>
               <label>
                 שם מלא
                 <input type="text" name="clientName" autocomplete="name" required maxlength="120" />
@@ -352,18 +395,52 @@
         <p class="footer-copy">© ZFR Estates · נדל״ן יוקרתי</p>
         <p id="privacy" class="footer-privacy">
           מדיניות פרטיות: פרטים שנמסרו בשיחה (שם, טלפון, העדפות נכס) משמשים ליצירת קשר ולהתאמת הצעות בלבד.
-          לא מועברים לצד שלישי ללא הסכמה. לבקשת מחיקה: <a href="tel:+972525240271">052-524-0271</a>.
+          לא מועברים לצד שלישי ללא הסכמה. לבקשת מחיקה: <a href="tel:+972547532972">054-753-2972</a>.
         </p>
         <nav class="footer-links" aria-label="קישורי תחתית">
-          <a href="#about">אודותינו</a>
           <a href="#properties">נכסים</a>
+          <a href="#about">אודותינו</a>
+          <a href="#team">צוות</a>
           <a href="#concierge-services">שירות</a>
-          <a href="#contact">צור קשר</a>
           <a href="#trust">לקוחות</a>
-          <a href="#concierge">יועץ אישי</a>
+          <a href="#contact">צור קשר</a>
+          <a href="#concierge">שאלון התאמה</a>
         </nav>
       </div>
     </footer>
+  </div>
+
+  <div
+    class="property-modal"
+    id="propertyModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="propertyModalTitle"
+    hidden
+  >
+    <div class="property-modal-backdrop" id="propertyModalBackdrop"></div>
+    <div class="property-modal-panel">
+      <button type="button" class="property-modal-close" id="propertyModalClose" aria-label="סגירת פרטי נכס">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="property-modal-gallery-wrap">
+        <div class="property-modal-gallery" id="propertyModalGallery" aria-label="גלריית תמונות"></div>
+        <div class="property-modal-thumbs" id="propertyModalThumbs" hidden></div>
+      </div>
+      <div class="property-modal-body">
+        <div class="property-modal-badges" id="propertyModalBadges"></div>
+        <h2 id="propertyModalTitle"></h2>
+        <p class="property-modal-area" id="propertyModalArea"></p>
+        <p class="property-modal-desc" id="propertyModalDesc"></p>
+        <dl class="property-modal-specs" id="propertyModalSpecs"></dl>
+        <div class="property-modal-actions">
+          <button type="button" class="btn-gold" id="propertyModalCta">קבעו סיור פרטי לנכס זה</button>
+          <a href="#contact" class="btn-ghost" id="propertyModalContact">בקשת פרטים חסויים</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="chat-backdrop" id="chatBackdrop" aria-hidden="true"></div>
@@ -371,8 +448,8 @@
     type="button"
     class="chat-fab"
     id="chatFab"
-    title="יועץ נכסים אישי — שיחה באתר"
-    aria-label="יועץ נכסים אישי — פתיחת צ'אט"
+    title="שאלון התאמת נכסים — ZFR Estates"
+    aria-label="שאלון התאמת נכסים — פתיחה"
     aria-expanded="false"
     aria-controls="chatWidget"
   >
@@ -382,7 +459,7 @@
   </button>
   <a
     class="whatsapp-fab"
-    href="https://wa.me/972525240271?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%99%D7%97%D7%94%20%D7%A2%D7%9D%20%D7%99%D7%95%D7%A2%D7%A5%20ZFR"
+    href="https://wa.me/972547532972?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%99%D7%97%D7%94%20%D7%A2%D7%9D%20%D7%99%D7%95%D7%A2%D7%A5%20ZFR"
     target="_blank"
     rel="noopener noreferrer"
     title="WhatsApp — שיחה מהירה"

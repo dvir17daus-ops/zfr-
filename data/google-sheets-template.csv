@@ -1,3 +1,3 @@
-id,title,description,area,type,rooms,priceLabel,status,image,featured,sortOrder
-penthouse-herzliya-01,פנטהאוז עם נוף לים,מרפסת אינסופית ותקרות גבוהות,הרצליה פיתוח,פנטהאוז,5,בקשת פרטים,exclusive,https://drive.google.com/file/d/EXAMPLE/view,yes,1
-villa-savyon-01,וילה עם בריכה,פרטיות מוחלטת,סביון,וילה,6,18.5M ₪,available,https://i.imgur.com/EXAMPLE.jpg,no,2
+id,title,description,area,type,rooms,sqm,floor,parking,year,priceLabel,status,image,images,featured,sortOrder
+penthouse-herzliya-01,פנטהאוז עם נוף לים,מרפסת אינסופית ותקרות גבוהות,הרצליה פיתוח,פנטהאוז,5,320,20+,2,,בקשת פרטים,exclusive,https://drive.google.com/file/d/EXAMPLE/view,https://drive.google.com/file/d/EXAMPLE2/view|https://drive.google.com/file/d/EXAMPLE3/view,yes,1
+villa-savyon-01,וילה עם בריכה,פרטיות מוחלטת,סביון,וילה,6,480,,3,2019,18.5M ₪,available,https://i.imgur.com/EXAMPLE.jpg,,no,2

@@ -1,16 +1,17 @@
 /**
- * משיכת נכסים מ-Make (GET) + גיבוי מקומי.
- * מבנה JSON צפוי: { updatedAt, listings: [{ id, title, description, price, image, ... }] }
+ * משיכת נכסים מ-Make (GET) + גיבוי מקומי + תצוגת פרטי נכס.
+ * מבנה JSON: { updatedAt, listings: [{ id, title, description, priceLabel, image, images, ... }] }
  */
 (function initZfrListings() {
   var cfg = window.ZFR_CONFIG || {};
   var gridEl = document.getElementById("propertyGrid");
-  var featuredEl = document.getElementById("propertyFeatured");
   var statusEl = document.getElementById("propertyGridStatus");
+  var modalEl = document.getElementById("propertyModal");
+  var listingsById = Object.create(null);
+  var activeListing = null;
 
   if (!gridEl) return;
 
-  /** תיקון כתובת שהועתקה בפורמט user@hook... → hook.../user */
   function normalizeWebhookUrl(url) {
     var u = String(url || "").trim();
     var match = u.match(/^https:\/\/([^/@]+)@hook\.(eu\d+)\.make\.com\/?$/i);
@@ -41,27 +42,216 @@
       .replace(/"/g, "&quot;");
   }
 
-  /**
-   * תומך ב-URL מלא (Drive, Imgur, CDN) או בנתיב יחסי באתר.
-   * קישורי Google Drive "שיתוף" מומרים לתצוגה ישירה כשאפשר.
-   */
-  function resolveImageUrl(raw) {
-    var url = String(raw || "").trim();
-    if (!url) return "";
+  function getDriveFileId(url) {
+    var str = String(url || "");
+    var fileIdMatch = str.match(/drive\.google\.com\/file\/d\/([^/?]+)/i);
+    if (fileIdMatch) return fileIdMatch[1];
+    var openIdMatch = str.match(/[?&]id=([^&]+)/i);
+    if (/drive\.google\.com/i.test(str) && openIdMatch) return openIdMatch[1];
+    return null;
+  }
 
-    if (/^https?:\/\//i.test(url)) {
-      var fileIdMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
-      if (fileIdMatch) {
-        return "https://drive.google.com/uc?export=view&id=" + fileIdMatch[1];
-      }
-      var openIdMatch = url.match(/[?&]id=([^&]+)/i);
-      if (/drive\.google\.com/i.test(url) && openIdMatch) {
-        return "https://drive.google.com/uc?export=view&id=" + openIdMatch[1];
-      }
-      return url;
+  var MIN_CARD_IMAGE_WIDTH = 720;
+
+  function getLocalListingImageCandidates(item) {
+    if (!item || !item.id) return [];
+    var id = String(item.id).trim();
+    return [
+      "assets/listings/" + id + ".webp",
+      "assets/listings/" + id + ".jpg",
+      "assets/listings/" + id + ".jpeg",
+      "assets/listings/" + id + ".png",
+    ];
+  }
+
+  function getImageFallbacks(raw) {
+    var url = String(raw || "").trim();
+    if (!url) return [];
+
+    var fileId = getDriveFileId(url);
+    if (fileId) {
+      return [
+        "https://lh3.googleusercontent.com/d/" + fileId + "=w1920",
+        "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1920",
+        "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1200",
+        "https://drive.google.com/uc?export=download&id=" + fileId,
+      ];
     }
 
-    return url;
+    if (/^https?:\/\//i.test(url)) return [url];
+    return [url];
+  }
+
+  function resolveImageUrl(raw) {
+    var fallbacks = getImageFallbacks(raw);
+    return fallbacks[0] || "";
+  }
+
+  function escapeJsonAttr(value) {
+    return JSON.stringify(value).replace(/"/g, "&quot;");
+  }
+
+  function tuneImageSharpness(img) {
+    var media = img.closest(".property-card-media, .property-modal-gallery");
+    if (!media) return;
+
+    function apply() {
+      var naturalW = img.naturalWidth || 0;
+      var displayW = media.clientWidth || 0;
+      if (naturalW > 0 && displayW > 0 && naturalW < Math.min(displayW, MIN_CARD_IMAGE_WIDTH)) {
+        media.classList.add("property-card-media--native-size");
+      } else {
+        media.classList.remove("property-card-media--native-size");
+      }
+    }
+
+    if (img.complete) apply();
+    else img.addEventListener("load", apply, { once: true });
+  }
+
+  function bindImageFallbacks(root) {
+    if (!root) return;
+    root.querySelectorAll("img[data-fallbacks]").forEach(function (img) {
+      var list = [];
+      try {
+        list = JSON.parse(img.getAttribute("data-fallbacks") || "[]");
+      } catch (e) {
+        list = [];
+      }
+      if (!list.length) return;
+
+      var idx = 0;
+      img.addEventListener("load", function () {
+        tuneImageSharpness(img);
+      });
+      img.addEventListener("error", function onErr() {
+        idx += 1;
+        if (idx < list.length) {
+          img.src = list[idx];
+        } else {
+          img.removeEventListener("error", onErr);
+          img.classList.add("property-image--failed");
+        }
+      });
+
+      if (img.complete) tuneImageSharpness(img);
+    });
+  }
+
+  function buildPropertyImageMarkupFromChain(chain, alt, opts) {
+    opts = opts || {};
+    if (!chain.length) return "";
+
+    var attrs =
+      ' src="' +
+      escapeHtml(chain[0]) +
+      '" alt="' +
+      escapeHtml(alt || "נכס") +
+      '" decoding="async" referrerpolicy="no-referrer" data-fallbacks="' +
+      escapeJsonAttr(chain) +
+      '"';
+
+    if (opts.priority) {
+      attrs += ' loading="eager" fetchpriority="high"';
+    } else {
+      attrs += ' loading="lazy"';
+    }
+
+    return "<img" + attrs + " />";
+  }
+
+  function buildPropertyImageMarkup(raw, alt, opts) {
+    return buildPropertyImageMarkupFromChain(getImageFallbacks(raw), alt, opts);
+  }
+
+  function dedupeImageSources(sources) {
+    var seen = Object.create(null);
+    var out = [];
+    sources.forEach(function (src) {
+      var trimmed = String(src || "").trim();
+      if (!trimmed) return;
+      var key = getDriveFileId(trimmed) || trimmed;
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push(trimmed);
+    });
+    return out;
+  }
+
+  /** תמונות מהגיליון / Make בלבד — לספירה ולגלריה */
+  function getListingRemoteImageSources(item) {
+    if (!item) return [];
+
+    var sources = [];
+
+    if (Array.isArray(item.images)) {
+      item.images.forEach(function (src) {
+        if (src != null && String(src).trim() !== "") {
+          sources.push(String(src).trim());
+        }
+      });
+    } else if (typeof item.images === "string" && item.images.trim()) {
+      item.images
+        .split(/[,;|]/)
+        .map(function (part) {
+          return part.trim();
+        })
+        .filter(Boolean)
+        .forEach(function (src) {
+          sources.push(src);
+        });
+    }
+
+    var single = item.image || item.imageUrl;
+    if (single) {
+      sources.push(String(single).trim());
+    }
+
+    return dedupeImageSources(sources);
+  }
+
+  function getPhotoCountLabel(count) {
+    if (count <= 0) return "";
+    if (count === 1) return "תמונה אחת";
+    return String(count) + " תמונות";
+  }
+
+  function buildPhotoCountBadge(item) {
+    var count = getListingRemoteImageSources(item).length;
+    if (count === 0) return "";
+    return (
+      '<span class="property-photo-count" aria-hidden="true">' +
+      escapeHtml(getPhotoCountLabel(count)) +
+      "</span>"
+    );
+  }
+
+  function getListingImageSources(item) {
+    if (!item) return [];
+
+    var sources = getLocalListingImageCandidates(item).slice();
+
+    getListingRemoteImageSources(item).forEach(function (src) {
+      if (sources.indexOf(src) === -1) {
+        sources.push(src);
+      }
+    });
+
+    return sources;
+  }
+
+  function getListingImageFallbackChain(item) {
+    var chain = [];
+    getListingImageSources(item).forEach(function (source) {
+      getImageFallbacks(source).forEach(function (url) {
+        if (chain.indexOf(url) === -1) chain.push(url);
+      });
+    });
+    return chain;
+  }
+
+  function getListingImages(item) {
+    return getListingImageSources(item).map(resolveImageUrl).filter(Boolean);
   }
 
   function isMakeNonJsonBody(text) {
@@ -70,15 +260,188 @@
     if (/^accepted$/i.test(t)) return true;
     if (/no scenario listening/i.test(t)) return true;
     if (/map\s*\(\s*\d+\.array/i.test(t)) return true;
-    if (/"[^"]+"\s*;\s*[^"]/i.test(t)) return true;
+    if (/\"[^\"]+\"\s*;\s*[^\"]/i.test(t)) return true;
     return false;
   }
 
-  /**
-   * מצפה ל-{ listings: [...] } (או מערך ישיר בגיבוי מקומי).
-   * @param {object} data
-   * @param {{ requireListingsKey?: boolean }} opts
-   */
+  /** סדר עמודות ב-Google Sheets — כש-Make מחזיר 0,1,2 במקום id,title,... */
+  var MAKE_SHEET_COLUMN_ORDER = [
+    "id",
+    "title",
+    "description",
+    "area",
+    "type",
+    "rooms",
+    "priceLabel",
+    "status",
+    "image",
+    "featured",
+    "sortOrder",
+    "sqm",
+    "floor",
+    "parking",
+    "year",
+    "images",
+  ];
+
+  var MAKE_STATUS_ALIASES = {
+    availabl: "available",
+    avaliable: "available",
+    available: "available",
+    sold: "sold",
+    exclusive: "exclusive",
+    hidden: "hidden",
+    "זמין": "available",
+    "נמכר": "sold",
+    "בבלעדיות": "exclusive",
+  };
+
+  var HEBREW_FIELD_MAP = {
+    "תמונה": "image",
+    "מחיר": "priceLabel",
+    "כותרת": "title",
+    "תיאור": "description",
+    "אזור": "area",
+    "סוג": "type",
+    "חדרים": "rooms",
+    "סטטוס": "status",
+    "מודגש": "featured",
+  };
+
+  function slugifyId(text) {
+    var base = String(text || "listing")
+      .trim()
+      .slice(0, 48)
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]/g, "");
+    return base || "listing-" + Date.now();
+  }
+
+  function rowFromNumericKeys(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    var hasNumeric = Object.keys(raw).some(function (k) {
+      return /^\d+$/.test(k);
+    });
+    if (!hasNumeric) return null;
+
+    var out = {};
+    MAKE_SHEET_COLUMN_ORDER.forEach(function (field, idx) {
+      var val = raw[String(idx)];
+      if (val != null && String(val).trim() !== "") {
+        out[field] = val;
+      }
+    });
+    return out;
+  }
+
+  function normalizeListingItem(raw) {
+    if (!raw || typeof raw !== "object") return raw;
+
+    var item = Object.assign({}, raw);
+    var fromNumeric = rowFromNumericKeys(raw);
+
+    if (fromNumeric) {
+      /* fromNumeric אחרון — שדות מ-Google Sheets דרך Make (0,1,2…) גוברים */
+      item = Object.assign({}, raw, fromNumeric);
+    }
+
+    Object.keys(raw).forEach(function (key) {
+      var mapped = HEBREW_FIELD_MAP[key];
+      if (mapped && (item[mapped] == null || String(item[mapped]).trim() === "")) {
+        item[mapped] = raw[key];
+      }
+    });
+
+    if (!item.image && (item.imageUrl || item.Image || item["תמונה"])) {
+      item.image = item.imageUrl || item.Image || item["תמונה"];
+    }
+    if (!item.priceLabel && (item.price || item["מחיר"])) {
+      item.priceLabel = item.price || item["מחיר"];
+    }
+
+    if (!item.title && (item.name || item.Name)) {
+      item.title = item.name || item.Name;
+    }
+    if (!item.priceLabel && item.price) {
+      item.priceLabel = item.price;
+    }
+    if (!item.id || !String(item.id).trim()) {
+      item.id = slugifyId(item.title);
+    }
+
+    var statusKey = String(item.status || "available")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "");
+    item.status = MAKE_STATUS_ALIASES[statusKey] || statusKey || "available";
+
+    if (item.rooms != null && item.rooms !== "") {
+      var roomsNum = Number(item.rooms);
+      if (!isNaN(roomsNum)) item.rooms = roomsNum;
+    }
+
+    var featuredRaw = String(item.featured || "").trim().toLowerCase();
+    item.featured =
+      item.featured === true ||
+      featuredRaw === "yes" ||
+      featuredRaw === "כן" ||
+      featuredRaw === "true" ||
+      featuredRaw === "1";
+
+    /* גיבוי אחרון — מפתחות 0,1,2… ישירות מ-Make */
+    MAKE_SHEET_COLUMN_ORDER.forEach(function (field, idx) {
+      if (item[field] != null && String(item[field]).trim() !== "") return;
+      var numericVal = raw[String(idx)];
+      if (numericVal != null && String(numericVal).trim() !== "") {
+        item[field] = numericVal;
+      }
+    });
+
+    return item;
+  }
+
+  function getPropertyDetailRows(item) {
+    if (!item) return [];
+    var rows = [];
+    var priceText = getPriceLabel(item);
+
+    if (priceText) rows.push({ label: "מחיר", value: priceText });
+    if (item.rooms != null && item.rooms !== "") {
+      rows.push({ label: "חדרים", value: String(item.rooms) });
+    }
+    if (item.type) rows.push({ label: "סוג", value: String(item.type) });
+    if (item.sqm != null && item.sqm !== "") {
+      rows.push({ label: "שטח", value: String(item.sqm) + ' מ"ר' });
+    }
+    if (item.floor != null && item.floor !== "") {
+      rows.push({ label: "קומה", value: String(item.floor) });
+    }
+    if (item.parking != null && item.parking !== "") {
+      rows.push({ label: "חניה", value: String(item.parking) });
+    }
+    if (item.year != null && item.year !== "") {
+      rows.push({ label: "שנת בנייה", value: String(item.year) });
+    }
+
+    return rows;
+  }
+
+  function resolveListingItem(itemOrId) {
+    if (!itemOrId) return null;
+    if (typeof itemOrId === "string") return listingsById[itemOrId] || null;
+    if (itemOrId.id && listingsById[itemOrId.id]) return listingsById[itemOrId.id];
+    return itemOrId;
+  }
+
+  function normalizeListingsArray(list) {
+    if (!Array.isArray(list)) return [];
+    return list
+      .map(normalizeListingItem)
+      .filter(function (item) {
+        return item && String(item.title || "").trim();
+      });
+  }
+
   function extractListingsArray(data, opts) {
     opts = opts || {};
     if (!data) {
@@ -112,7 +475,7 @@
       );
     }
 
-    return extractListingsArray(parsed, opts);
+    return normalizeListingsArray(extractListingsArray(parsed, opts));
   }
 
   function fetchJson(url, opts) {
@@ -154,7 +517,9 @@
             return res.json();
           })
           .then(function (data) {
-            return extractListingsArray(data, { requireListingsKey: false });
+            return normalizeListingsArray(
+              extractListingsArray(data, { requireListingsKey: false })
+            );
           });
       }
     );
@@ -186,9 +551,9 @@
     }
     gridEl.innerHTML =
       '<div class="property-grid-skeleton" aria-hidden="true">' +
-      '<div class="property-skeleton-card"></div>'.repeat(3) +
+      '<div class="property-skeleton-card"></div>'.repeat(2) +
       "</div>";
-    if (featuredEl) featuredEl.innerHTML = "";
+    applyGridLayout(0);
   }
 
   function clearLoadingState() {
@@ -220,11 +585,7 @@
   }
 
   function isFeatured(item) {
-    return (
-      item.featured === true ||
-      String(item.featured).toLowerCase() === "yes" ||
-      item.featured === "כן"
-    );
+    return item.featured === true;
   }
 
   function activateScrollEl(el, delayMs) {
@@ -233,9 +594,19 @@
     el.classList.add("active");
   }
 
-  function buildMediaBlock(item, status) {
-    var imgSrc = resolveImageUrl(item.image || item.imageUrl);
-    if (!imgSrc) return "";
+  function activateListingCards() {
+    if (typeof window.ZFR_activateScrollElements === "function") {
+      window.ZFR_activateScrollElements(gridEl);
+      return;
+    }
+    gridEl.querySelectorAll(".slide-up-scroll").forEach(function (el, idx) {
+      activateScrollEl(el, idx * 80);
+    });
+  }
+
+  function buildMediaBlock(item, status, isFeaturedCard) {
+    var chain = getListingImageFallbackChain(item);
+    if (!chain.length) return "";
 
     var overlayBadge = "";
     if (status === "sold" || status === "exclusive") {
@@ -247,33 +618,41 @@
         "</span>";
     }
 
+    var photoCount = buildPhotoCountBadge(item);
+
     return (
       '<div class="property-card-media">' +
-      '<img src="' +
-      escapeHtml(imgSrc) +
-      '" alt="' +
-      escapeHtml(item.title || "נכס") +
-      '" loading="lazy" decoding="async" referrerpolicy="no-referrer" />' +
+      buildPropertyImageMarkupFromChain(chain, item.title || "נכס", {
+        priority: !!isFeaturedCard,
+      }) +
       overlayBadge +
+      photoCount +
       "</div>"
     );
+  }
+
+  function buildCardMetaHtml(item) {
+    return getPropertyDetailRows(item)
+      .filter(function (row) {
+        return row.label === "מחיר" || row.label === "חדרים" || row.label === "סוג";
+      })
+      .map(function (row) {
+        if (row.label === "מחיר") {
+          return '<span class="property-price">' + escapeHtml(row.value) + "</span>";
+        }
+        if (row.label === "חדרים") {
+          return '<span class="property-meta-item">' + escapeHtml(row.value) + " חדרים</span>";
+        }
+        return '<span class="property-meta-item">' + escapeHtml(row.value) + "</span>";
+      })
+      .join("");
   }
 
   function renderListing(item, index, isFeaturedCard) {
     var status = String(item.status || "available").toLowerCase().trim();
     if (status === "hidden") return null;
 
-    var rooms =
-      item.rooms != null && item.rooms !== ""
-        ? '<span class="property-meta-item">' + escapeHtml(item.rooms) + " חדרים</span>"
-        : "";
-    var type = item.type
-      ? '<span class="property-meta-item">' + escapeHtml(item.type) + "</span>"
-      : "";
-    var priceText = getPriceLabel(item);
-    var price = priceText
-      ? '<span class="property-price">' + escapeHtml(priceText) + "</span>"
-      : "";
+    var price = buildCardMetaHtml(item);
 
     var bodyStatusBadge = "";
     if (status === "available" && BODY_STATUS_LABELS.available) {
@@ -285,14 +664,21 @@
 
     var article = document.createElement("article");
     article.className =
-      "property-card slide-up-scroll" +
+      "property-card property-card--interactive property-card--visible" +
       (isFeaturedCard ? " property-card--featured" : "") +
       (status === "sold" ? " property-card--sold" : "") +
       (status === "exclusive" ? " property-card--exclusive" : "");
     article.setAttribute("data-scroll-delay", String((index % 3) * 120));
+    article.setAttribute("data-listing-id", String(item.id || ""));
+    article.setAttribute("tabindex", "0");
+    article.setAttribute("role", "button");
+    article.setAttribute(
+      "aria-label",
+      "צפייה בפרטים: " + (item.title || "נכס") + ", " + (item.area || "")
+    );
 
     article.innerHTML =
-      buildMediaBlock(item, status) +
+      buildMediaBlock(item, status, isFeaturedCard) +
       '<div class="property-card-body">' +
       bodyStatusBadge +
       "<h3>" +
@@ -303,26 +689,59 @@
       "</p>" +
       '<div class="property-meta">' +
       price +
-      rooms +
-      type +
       "</div>" +
       '<span class="property-tag">' +
       escapeHtml(item.area) +
       "</span>" +
+      '<span class="property-card-cta">לפרטים והזמנת סיור ←</span>' +
       "</div>";
+
+    article.addEventListener("click", function () {
+      openPropertyModal(item.id || item);
+    });
+    article.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openPropertyModal(item.id || item);
+      }
+    });
 
     return article;
   }
 
+  function indexListings(listings) {
+    listingsById = Object.create(null);
+    listings.forEach(function (item) {
+      if (item && item.id) listingsById[item.id] = item;
+    });
+  }
+
+  function applyGridLayout(count) {
+    var showcase = gridEl.closest(".properties-showcase");
+    if (!showcase) return;
+
+    showcase.classList.forEach(function (cls) {
+      if (cls.indexOf("properties-showcase--count-") === 0) {
+        showcase.classList.remove(cls);
+      }
+    });
+
+    var bucket = count <= 1 ? 1 : count === 2 ? 2 : count === 3 ? 3 : count === 4 ? 4 : "many";
+    showcase.classList.add("properties-showcase--count-" + bucket);
+    showcase.dataset.propertyCount = String(count);
+  }
+
   function render(listings) {
+    indexListings(listings);
+
     var visible = sortListings(listings).filter(function (item) {
       return String(item.status || "").toLowerCase().trim() !== "hidden";
     });
 
     gridEl.innerHTML = "";
-    if (featuredEl) featuredEl.innerHTML = "";
 
     if (!visible.length) {
+      applyGridLayout(0);
       if (statusEl) {
         statusEl.textContent = "אין נכסים זמינים כרגע — נשמח להתאים הצעה אישית בשיחה.";
         statusEl.hidden = false;
@@ -332,44 +751,186 @@
 
     if (statusEl) statusEl.hidden = true;
 
-    var featured = visible.filter(isFeatured);
-    var regular = visible.filter(function (l) {
-      return !isFeatured(l);
-    });
-
-    if (featured.length && featuredEl) {
-      featured.forEach(function (item, i) {
-        var card = renderListing(item, i, true);
-        if (card) featuredEl.appendChild(card);
-      });
-    } else if (featured.length) {
-      regular = visible;
-    }
-
-    regular.forEach(function (item, i) {
-      var card = renderListing(item, i, false);
+    visible.forEach(function (item, i) {
+      var card = renderListing(item, i, isFeatured(item));
       if (card) gridEl.appendChild(card);
     });
 
-    var toActivate = document.querySelectorAll(
-      "#propertyFeatured .slide-up-scroll, #propertyGrid .slide-up-scroll"
-    );
-    toActivate.forEach(function (el, idx) {
-      window.setTimeout(function () {
-        activateScrollEl(el, idx * 80);
-      }, 60);
-    });
+    applyGridLayout(visible.length);
+
+    bindImageFallbacks(gridEl);
   }
 
   function showGracefulFailure() {
     gridEl.innerHTML = "";
-    if (featuredEl) featuredEl.innerHTML = "";
+    applyGridLayout(0);
     if (statusEl) {
       statusEl.innerHTML =
-        'לא ניתן לטעון נכסים כרגע. <a href="#concierge">דברו עם היועץ</a> — נשמח לעזור.';
+        'לא ניתן לטעון נכסים כרגע. <a href="#concierge">דברו איתנו</a> — נשמח לשלוח תיק נכסים מותאם.';
       statusEl.hidden = false;
     }
   }
+
+  function setGalleryImage(galleryEl, rawSource, alt, item) {
+    var chain = item ? getListingImageFallbackChain(item) : getImageFallbacks(rawSource);
+    galleryEl.innerHTML = buildPropertyImageMarkupFromChain(chain, alt, { priority: true });
+    bindImageFallbacks(galleryEl);
+  }
+
+  function renderModalGallery(item) {
+    var galleryEl = document.getElementById("propertyModalGallery");
+    var thumbsEl = document.getElementById("propertyModalThumbs");
+    if (!galleryEl || !thumbsEl) return;
+
+    var sources = getListingRemoteImageSources(item);
+    galleryEl.innerHTML = "";
+    thumbsEl.innerHTML = "";
+
+    if (!sources.length) {
+      var fallbackChain = getListingImageFallbackChain(item);
+      if (!fallbackChain.length) {
+        galleryEl.innerHTML =
+          '<div class="property-modal-no-image" aria-hidden="true">תמונה בקרוב</div>';
+        thumbsEl.hidden = true;
+        return;
+      }
+      setGalleryImage(galleryEl, getListingImageSources(item)[0], item.title || "נכס", item);
+      thumbsEl.hidden = true;
+      return;
+    }
+
+    setGalleryImage(galleryEl, sources[0], item.title || "נכס", item);
+
+    if (sources.length <= 1) {
+      thumbsEl.hidden = true;
+      return;
+    }
+
+    thumbsEl.hidden = false;
+    sources.forEach(function (rawSource, idx) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "property-modal-thumb" + (idx === 0 ? " is-active" : "");
+      btn.setAttribute("aria-label", "תמונה " + (idx + 1));
+      btn.innerHTML = buildPropertyImageMarkup(rawSource, "");
+      btn.addEventListener("click", function () {
+        setGalleryImage(galleryEl, rawSource, item.title || "נכס", item);
+        thumbsEl.querySelectorAll(".property-modal-thumb").forEach(function (el) {
+          el.classList.remove("is-active");
+        });
+        btn.classList.add("is-active");
+      });
+      thumbsEl.appendChild(btn);
+    });
+
+    bindImageFallbacks(thumbsEl);
+  }
+
+  function renderModalSpecs(item) {
+    var specsEl = document.getElementById("propertyModalSpecs");
+    if (!specsEl) return;
+    specsEl.innerHTML = "";
+
+    getPropertyDetailRows(item).forEach(function (spec) {
+      var dt = document.createElement("dt");
+      dt.textContent = spec.label;
+      var dd = document.createElement("dd");
+      dd.textContent = spec.value;
+      specsEl.appendChild(dt);
+      specsEl.appendChild(dd);
+    });
+  }
+
+  function renderModalBadges(item) {
+    var badgesEl = document.getElementById("propertyModalBadges");
+    if (!badgesEl) return;
+    badgesEl.innerHTML = "";
+
+    var status = String(item.status || "available").toLowerCase().trim();
+    if (status === "sold" || status === "exclusive") {
+      var badge = document.createElement("span");
+      badge.className = "property-modal-badge property-modal-badge--" + status;
+      badge.textContent = MEDIA_BADGE_LABELS[status] || status;
+      badgesEl.appendChild(badge);
+    } else if (status === "available") {
+      var avail = document.createElement("span");
+      avail.className = "property-modal-badge property-modal-badge--available";
+      avail.textContent = BODY_STATUS_LABELS.available;
+      badgesEl.appendChild(avail);
+    }
+  }
+
+  function openPropertyModal(itemOrId) {
+    var item = resolveListingItem(itemOrId);
+    if (!modalEl || !item) return;
+    activeListing = item;
+
+    var titleEl = document.getElementById("propertyModalTitle");
+    var areaEl = document.getElementById("propertyModalArea");
+    var descEl = document.getElementById("propertyModalDesc");
+
+    if (titleEl) titleEl.textContent = item.title || "נכס";
+    if (areaEl) areaEl.textContent = item.area || "";
+    if (descEl) descEl.textContent = item.description || "";
+
+    renderModalBadges(item);
+    renderModalGallery(item);
+    renderModalSpecs(item);
+
+    modalEl.hidden = false;
+    document.body.classList.add("property-modal-open");
+
+    var closeBtn = document.getElementById("propertyModalClose");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closePropertyModal() {
+    if (!modalEl) return;
+    modalEl.hidden = true;
+    document.body.classList.remove("property-modal-open");
+    activeListing = null;
+  }
+
+  window.ZFR_openPropertyModal = openPropertyModal;
+  window.ZFR_closePropertyModal = closePropertyModal;
+
+  function initPropertyModal() {
+    if (!modalEl) return;
+
+    var backdrop = document.getElementById("propertyModalBackdrop");
+    var closeBtn = document.getElementById("propertyModalClose");
+    var ctaBtn = document.getElementById("propertyModalCta");
+    var contactLink = document.getElementById("propertyModalContact");
+
+    if (backdrop) backdrop.addEventListener("click", closePropertyModal);
+    if (closeBtn) closeBtn.addEventListener("click", closePropertyModal);
+
+    if (ctaBtn) {
+      ctaBtn.addEventListener("click", function () {
+        if (!activeListing) return;
+        closePropertyModal();
+        if (typeof window.zfrInquireAboutProperty === "function") {
+          window.zfrInquireAboutProperty(activeListing);
+        } else {
+          window.location.hash = "#concierge";
+        }
+      });
+    }
+
+    if (contactLink) {
+      contactLink.addEventListener("click", function () {
+        closePropertyModal();
+      });
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modalEl.hidden) {
+        closePropertyModal();
+      }
+    });
+  }
+
+  initPropertyModal();
 
   showLoadingState();
 

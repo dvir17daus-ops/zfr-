@@ -1,3 +1,33 @@
+(function initBgVideo() {
+  var video = document.querySelector(".bg-motion-video");
+  if (!video) return;
+
+  var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var narrow = window.matchMedia("(max-width: 768px)").matches;
+  var saveData = navigator.connection && navigator.connection.saveData;
+
+  function disableVideo() {
+    video.pause();
+    video.removeAttribute("autoplay");
+    var source = video.querySelector("source");
+    if (source) source.removeAttribute("src");
+    video.load();
+  }
+
+  if (prefersReduced || narrow || saveData) {
+    disableVideo();
+    return;
+  }
+
+  video.addEventListener(
+    "error",
+    function () {
+      disableVideo();
+    },
+    { once: true }
+  );
+})();
+
 (function initPageScroll() {
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
@@ -30,12 +60,11 @@
 (function initScrollReveal() {
   var selector =
     ".fade-in-scroll, .slide-up-scroll, .slide-left-scroll, .slide-right-scroll";
-  var elements = document.querySelectorAll(selector);
-  if (!elements.length) return;
-
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var scrollObserver = null;
 
   function activate(el) {
+    if (!el || el.classList.contains("active")) return;
     var delay = el.getAttribute("data-scroll-delay");
     if (delay && !reducedMotion) {
       el.style.transitionDelay = delay + "ms";
@@ -43,40 +72,56 @@
     el.classList.add("active");
   }
 
-  if (reducedMotion) {
-    elements.forEach(activate);
-    return;
+  function observeElements(elements) {
+    if (!elements.length) return;
+
+    if (reducedMotion) {
+      elements.forEach(activate);
+      return;
+    }
+
+    if (!scrollObserver) {
+      scrollObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            activate(entry.target);
+            scrollObserver.unobserve(entry.target);
+          });
+        },
+        {
+          root: null,
+          rootMargin: "0px 0px -10% 0px",
+          threshold: 0.12,
+        }
+      );
+    }
+
+    elements.forEach(function (el) {
+      if (el.classList.contains("active")) return;
+      scrollObserver.observe(el);
+    });
+
+    requestAnimationFrame(function () {
+      var viewH = window.innerHeight || document.documentElement.clientHeight;
+      elements.forEach(function (el) {
+        if (el.classList.contains("active")) return;
+        var rect = el.getBoundingClientRect();
+        if (rect.top < viewH * 0.92 && rect.bottom > viewH * 0.08) {
+          activate(el);
+          scrollObserver.unobserve(el);
+        }
+      });
+    });
   }
 
-  var observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        activate(entry.target);
-        observer.unobserve(entry.target);
-      });
-    },
-    {
-      root: null,
-      rootMargin: "0px 0px -10% 0px",
-      threshold: 0.12,
-    }
-  );
+  window.ZFR_activateScrollElements = function (container) {
+    var scope = container && container.querySelectorAll ? container : document;
+    var nodes = scope.querySelectorAll(selector);
+    observeElements(Array.prototype.slice.call(nodes));
+  };
 
-  elements.forEach(function (el) {
-    observer.observe(el);
-  });
-
-  requestAnimationFrame(function () {
-    var viewH = window.innerHeight || document.documentElement.clientHeight;
-    elements.forEach(function (el) {
-      var rect = el.getBoundingClientRect();
-      if (rect.top < viewH * 0.92 && rect.bottom > viewH * 0.08) {
-        activate(el);
-        observer.unobserve(el);
-      }
-    });
-  });
+  observeElements(Array.prototype.slice.call(document.querySelectorAll(selector)));
 })();
 
 (function initChatFocusLinks() {
@@ -128,10 +173,34 @@
 (function initChatFab() {
   var fab = document.getElementById("chatFab");
   var backdrop = document.getElementById("chatBackdrop");
+  var closeBtn = document.getElementById("chatClose");
+  var chatPanel = document.querySelector(".hero-section .chat-panel");
   if (!fab || !backdrop) return;
 
   function isMobileChatLayout() {
     return window.matchMedia("(max-width: 1024px)").matches;
+  }
+
+  function isChatNearViewport() {
+    var shell = document.getElementById("concierge");
+    if (!shell) return false;
+    var rect = shell.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top < vh * 0.55 && rect.bottom > vh * 0.15;
+  }
+
+  function syncMobileChatChrome(open) {
+    if (!isMobileChatLayout()) {
+      document.body.classList.remove("chat-open");
+      if (closeBtn) closeBtn.hidden = true;
+      backdrop.setAttribute("aria-hidden", "true");
+      return;
+    }
+    if (closeBtn) closeBtn.hidden = !open;
+    backdrop.setAttribute("aria-hidden", open ? "false" : "true");
+    if (chatPanel) {
+      chatPanel.classList.add("active");
+    }
   }
 
   function focusChatInput() {
@@ -155,12 +224,21 @@
     fab.classList.toggle("is-active", open);
 
     if (isMobileChatLayout()) {
+      if (open && isChatNearViewport()) {
+        document.body.classList.remove("chat-open");
+        syncMobileChatChrome(false);
+        scrollToChat();
+        focusChatInput();
+        return;
+      }
       document.body.classList.toggle("chat-open", open);
+      syncMobileChatChrome(open);
       if (open) focusChatInput();
       return;
     }
 
     document.body.classList.remove("chat-open");
+    syncMobileChatChrome(false);
     if (open) {
       scrollToChat();
       focusChatInput();
@@ -169,6 +247,11 @@
 
   fab.addEventListener("click", function () {
     if (isMobileChatLayout()) {
+      if (isChatNearViewport()) {
+        scrollToChat();
+        focusChatInput();
+        return;
+      }
       setChatOpen(!document.body.classList.contains("chat-open"));
       return;
     }
@@ -179,9 +262,34 @@
     setChatOpen(false);
   });
 
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      setChatOpen(false);
+    });
+  }
+
   window.zfrOpenChat = function () {
+    if (isMobileChatLayout() && isChatNearViewport()) {
+      scrollToChat();
+      focusChatInput();
+      return;
+    }
     setChatOpen(true);
   };
+
+  if (chatPanel) {
+    chatPanel.classList.add("active");
+  }
+
+  window.addEventListener(
+    "resize",
+    function () {
+      if (!isMobileChatLayout() && document.body.classList.contains("chat-open")) {
+        setChatOpen(false);
+      }
+    },
+    { passive: true }
+  );
 })();
 
 (function initContactQuickForm() {
@@ -256,7 +364,7 @@
         showStatus("תודה! נחזור אליכם בהקדם.", false);
       })
       .catch(function () {
-        showStatus("לא הצלחנו לשלוח — התקשרו אלינו: 052-524-0271", true);
+        showStatus("לא הצלחנו לשלוח — התקשרו אלינו: 054-753-2972", true);
       })
       .finally(function () {
         if (btn) btn.disabled = false;
