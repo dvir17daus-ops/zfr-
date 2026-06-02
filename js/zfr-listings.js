@@ -720,7 +720,7 @@
     var showcase = gridEl.closest(".properties-showcase");
     if (!showcase) return;
 
-    showcase.classList.forEach(function (cls) {
+    Array.prototype.forEach.call(showcase.classList, function (cls) {
       if (cls.indexOf("properties-showcase--count-") === 0) {
         showcase.classList.remove(cls);
       }
@@ -749,7 +749,10 @@
       return;
     }
 
-    if (statusEl) statusEl.hidden = true;
+    if (statusEl) {
+      statusEl.textContent = "";
+      statusEl.hidden = true;
+    }
 
     visible.forEach(function (item, i) {
       var card = renderListing(item, i, isFeatured(item));
