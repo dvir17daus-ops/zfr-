@@ -914,6 +914,25 @@
       box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.35);
     }
 
+    .property-card-slides {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .property-card-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.7s var(--ease-apple);
+      pointer-events: none;
+    }
+
+    .property-card-slide.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .property-card-media img {
       position: absolute;
       inset: 0;
@@ -929,6 +948,43 @@
       transition: transform 0.55s var(--ease-apple);
     }
 
+    .property-card-dots {
+      position: absolute;
+      bottom: 0.7rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .property-card-dot {
+      width: 7px;
+      height: 7px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+      transition: background 0.3s ease, transform 0.3s ease, width 0.3s ease;
+    }
+
+    .property-card-dot:hover {
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .property-card-dot.is-active {
+      width: 18px;
+      background: var(--white, #fff);
+    }
+
     .property-card:hover .property-card-media img {
       transform: translateZ(0);
     }
@@ -941,6 +997,12 @@
 
     .property-card-media--native-size::before {
       opacity: 0.35;
+    }
+
+    .property-card-media--native-size .property-card-slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .property-card-media--native-size img {
@@ -2657,12 +2719,89 @@
       height: 1.1rem;
     }
 
+    .property-image-lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      padding: 0;
+      border: 0.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--white);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .property-image-lightbox-nav[hidden] {
+      display: none;
+    }
+
+    .property-image-lightbox-nav:hover {
+      background: rgba(0, 0, 0, 0.75);
+    }
+
+    .property-image-lightbox-nav svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    /* גלריה RTL: "הקודמת" בצד ימין, "הבאה" בצד שמאל */
+    .property-image-lightbox-prev {
+      right: -1.25rem;
+    }
+
+    .property-image-lightbox-next {
+      left: -1.25rem;
+    }
+
+    .property-image-lightbox-counter {
+      position: absolute;
+      bottom: -2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.55);
+      color: var(--white);
+      font-size: 0.8125rem;
+      letter-spacing: 0.02em;
+    }
+
+    .property-image-lightbox-counter[hidden] {
+      display: none;
+    }
+
     @media (max-width: 640px) {
       .property-image-lightbox-close {
         top: 0.5rem;
         left: 0.5rem;
         position: fixed;
         z-index: 2;
+      }
+
+      .property-image-lightbox-prev {
+        right: 0.5rem;
+      }
+
+      .property-image-lightbox-next {
+        left: 0.5rem;
+      }
+
+      .property-image-lightbox-nav {
+        width: 2.75rem;
+        height: 2.75rem;
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .property-image-lightbox-counter {
+        bottom: 0.75rem;
       }
     }
 

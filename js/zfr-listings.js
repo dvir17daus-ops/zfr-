@@ -9,6 +9,8 @@
   var modalEl = document.getElementById("propertyModal");
   var listingsById = Object.create(null);
   var activeListing = null;
+  var galleryState = { sources: [], index: 0, alt: "" };
+  var lightboxState = { sources: [], index: 0, alt: "" };
 
   if (!gridEl) return;
 
@@ -310,6 +312,30 @@
       });
     });
     return chain;
+  }
+
+  /**
+   * שרשרת fallback נפרדת לכל תמונה אמיתית בנכס — לשימוש בקרוסלה בכרטיס.
+   * התמונה הראשונה כוללת גם את מועמדי הקובץ המקומיים (id.webp/jpg…).
+   */
+  function getListingSlideChains(item) {
+    var remote = getListingRemoteImageSources(item);
+    var localCandidates = getLocalListingImageCandidates(item);
+    var slides = [];
+
+    if (remote.length) {
+      remote.forEach(function (src, i) {
+        var chain = i === 0 ? localCandidates.slice() : [];
+        getImageFallbacks(src).forEach(function (url) {
+          if (chain.indexOf(url) === -1) chain.push(url);
+        });
+        if (chain.length) slides.push(chain);
+      });
+    } else if (localCandidates.length) {
+      slides.push(localCandidates.slice());
+    }
+
+    return slides;
   }
 
   function getListingImages(item) {
@@ -673,8 +699,46 @@
   }
 
   function buildMediaBlock(item, status, isFeaturedCard) {
-    var chain = getListingImageFallbackChain(item);
-    if (!chain.length) return "";
+    var slideChains = getListingSlideChains(item);
+    if (!slideChains.length) {
+      var fallbackChain = getListingImageFallbackChain(item);
+      if (fallbackChain.length) slideChains = [fallbackChain];
+    }
+    if (!slideChains.length) return "";
+
+    var title = item.title || "נכס";
+    var slideCount = slideChains.length;
+
+    var slidesHtml = slideChains
+      .map(function (chain, idx) {
+        var imgMarkup = buildPropertyImageMarkupFromChain(chain, title, {
+          priority: idx === 0 && !!isFeaturedCard,
+        });
+        return (
+          '<div class="property-card-slide' +
+          (idx === 0 ? " is-active" : "") +
+          '">' +
+          imgMarkup +
+          "</div>"
+        );
+      })
+      .join("");
+
+    var dotsHtml = "";
+    if (slideCount > 1) {
+      var dots = "";
+      for (var i = 0; i < slideCount; i += 1) {
+        dots +=
+          '<button type="button" class="property-card-dot' +
+          (i === 0 ? " is-active" : "") +
+          '" data-slide-index="' +
+          i +
+          '" aria-label="הצגת תמונה ' +
+          (i + 1) +
+          '"></button>';
+      }
+      dotsHtml = '<div class="property-card-dots" aria-hidden="false">' + dots + "</div>";
+    }
 
     var overlayBadge = "";
     if (status === "sold" || status === "exclusive") {
@@ -689,12 +753,15 @@
     var photoCount = buildPhotoCountBadge(item);
 
     return (
-      '<div class="property-card-media">' +
-      buildPropertyImageMarkupFromChain(chain, item.title || "נכס", {
-        priority: !!isFeaturedCard,
-      }) +
+      '<div class="property-card-media" data-slide-count="' +
+      slideCount +
+      '">' +
+      '<div class="property-card-slides">' +
+      slidesHtml +
+      "</div>" +
       overlayBadge +
       photoCount +
+      dotsHtml +
       "</div>"
     );
   }
@@ -777,6 +844,151 @@
     return article;
   }
 
+  var CAROUSEL_INTERVAL_MS = 3500;
+
+  function prefersReducedMotion() {
+    return (
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+  }
+
+  function setupCardCarousel(media) {
+    var count = parseInt(media.getAttribute("data-slide-count"), 10) || 0;
+    var slides = media.querySelectorAll(".property-card-slide");
+    var dots = media.querySelectorAll(".property-card-dot");
+    if (count <= 1 || slides.length <= 1) return;
+
+    var index = 0;
+    var timer = null;
+    var isVisible = true;
+    var isHovered = false;
+
+    function goTo(next) {
+      var total = slides.length;
+      index = ((next % total) + total) % total;
+      slides.forEach(function (slide, i) {
+        slide.classList.toggle("is-active", i === index);
+      });
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle("is-active", i === index);
+      });
+    }
+
+    function stop() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function start() {
+      stop();
+      if (prefersReducedMotion() || !isVisible || isHovered) return;
+      timer = setInterval(function () {
+        goTo(index + 1);
+      }, CAROUSEL_INTERVAL_MS);
+    }
+
+    dots.forEach(function (dot) {
+      function jump(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var target = parseInt(dot.getAttribute("data-slide-index"), 10) || 0;
+        goTo(target);
+        start();
+      }
+      dot.addEventListener("click", jump);
+      dot.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") jump(e);
+      });
+    });
+
+    media.addEventListener("mouseenter", function () {
+      isHovered = true;
+      stop();
+    });
+    media.addEventListener("mouseleave", function () {
+      isHovered = false;
+      start();
+    });
+
+    /* החלקה במגע — מעבר בין תמונות בלי לפתוח את הכרטיס */
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchActive = false;
+    var swiped = false;
+
+    media.addEventListener(
+      "touchstart",
+      function (e) {
+        if (!e.touches || e.touches.length !== 1) {
+          touchActive = false;
+          return;
+        }
+        touchActive = true;
+        swiped = false;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        stop();
+      },
+      { passive: true }
+    );
+
+    media.addEventListener(
+      "touchend",
+      function (e) {
+        if (!touchActive) return;
+        touchActive = false;
+        var touch = (e.changedTouches && e.changedTouches[0]) || null;
+        start();
+        if (!touch) return;
+        var dx = touch.clientX - touchStartX;
+        var dy = touch.clientY - touchStartY;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+        swiped = true;
+        /* RTL: החלקה שמאלה = הבאה, ימינה = הקודמת */
+        goTo(index + (dx < 0 ? 1 : -1));
+        start();
+      },
+      { passive: true }
+    );
+
+    /* מניעת פתיחת המודל אם המשתמש החליק על התמונה */
+    media.addEventListener(
+      "click",
+      function (e) {
+        if (swiped) {
+          e.stopPropagation();
+          e.preventDefault();
+          swiped = false;
+        }
+      },
+      true
+    );
+
+    if (typeof window.IntersectionObserver === "function") {
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            isVisible = entry.isIntersecting;
+            if (isVisible) start();
+            else stop();
+          });
+        },
+        { threshold: 0.25 }
+      );
+      observer.observe(media);
+    }
+
+    start();
+  }
+
+  function initCardCarousels(root) {
+    if (!root) return;
+    root.querySelectorAll(".property-card-media[data-slide-count]").forEach(setupCardCarousel);
+  }
+
   function indexListings(listings) {
     listingsById = Object.create(null);
     listings.forEach(function (item) {
@@ -830,6 +1042,7 @@
     applyGridLayout(visible.length);
 
     bindImageFallbacks(gridEl);
+    initCardCarousels(gridEl);
   }
 
   function showGracefulFailure() {
@@ -870,12 +1083,67 @@
     return document.getElementById("propertyImageLightbox");
   }
 
-  function openImageLightbox(src, alt) {
+  function updateLightboxControls() {
+    var prevBtn = document.getElementById("propertyImageLightboxPrev");
+    var nextBtn = document.getElementById("propertyImageLightboxNext");
+    var counterEl = document.getElementById("propertyImageLightboxCounter");
+    var total = lightboxState.sources.length;
+    var hasMultiple = total > 1;
+
+    if (prevBtn) prevBtn.hidden = !hasMultiple;
+    if (nextBtn) nextBtn.hidden = !hasMultiple;
+    if (counterEl) {
+      counterEl.hidden = !hasMultiple;
+      if (hasMultiple) {
+        counterEl.textContent = String(lightboxState.index + 1) + " / " + String(total);
+      }
+    }
+  }
+
+  function renderLightboxImage() {
+    var img = document.getElementById("propertyImageLightboxImg");
+    if (!img) return;
+    var raw = lightboxState.sources[lightboxState.index];
+    var chain = getImageFallbacks(raw);
+    var idx = 0;
+
+    img.classList.remove("property-image--failed");
+    img.alt = lightboxState.alt || "";
+    img.onerror = function () {
+      idx += 1;
+      if (idx < chain.length) {
+        img.src = chain[idx];
+      } else {
+        img.onerror = null;
+        img.classList.add("property-image--failed");
+      }
+    };
+    img.src = chain[0] || "";
+
+    updateLightboxControls();
+  }
+
+  function stepLightbox(delta) {
+    var total = lightboxState.sources.length;
+    if (total <= 1) return;
+    lightboxState.index = (lightboxState.index + delta + total) % total;
+    renderLightboxImage();
+
+    /* שמירה על סנכרון עם הגלריה במודל */
+    galleryState.index = lightboxState.index;
+    showGalleryImage(lightboxState.index, { skipLightboxSync: true });
+  }
+
+  function openImageLightbox(sources, index, alt) {
     var lb = getImageLightboxEl();
     var img = document.getElementById("propertyImageLightboxImg");
-    if (!lb || !img || !src) return;
-    img.src = src;
-    img.alt = alt || "";
+    if (!lb || !img || !sources || !sources.length) return;
+
+    lightboxState.sources = sources.slice();
+    lightboxState.index = Math.max(0, Math.min(index || 0, sources.length - 1));
+    lightboxState.alt = alt || "";
+
+    renderLightboxImage();
     lb.hidden = false;
     document.body.classList.add("property-lightbox-open");
   }
@@ -886,7 +1154,11 @@
     lb.hidden = true;
     document.body.classList.remove("property-lightbox-open");
     var img = document.getElementById("propertyImageLightboxImg");
-    if (img) img.removeAttribute("src");
+    if (img) {
+      img.onerror = null;
+      img.removeAttribute("src");
+    }
+    lightboxState.sources = [];
   }
 
   function bindGalleryZoom(galleryEl) {
@@ -897,10 +1169,41 @@
     btn.addEventListener("click", function () {
       var img = btn.querySelector("img");
       if (!img || img.classList.contains("property-image--failed")) return;
-      var src = img.currentSrc || img.src;
-      if (!src) return;
-      openImageLightbox(src, img.alt || "");
+      var sources = galleryState.sources.length
+        ? galleryState.sources
+        : [img.currentSrc || img.src];
+      if (!sources.length) return;
+      openImageLightbox(sources, galleryState.index, galleryState.alt || img.alt || "");
     });
+  }
+
+  function showGalleryImage(idx, opts) {
+    opts = opts || {};
+    var galleryEl = document.getElementById("propertyModalGallery");
+    var thumbsEl = document.getElementById("propertyModalThumbs");
+    var total = galleryState.sources.length;
+    if (!galleryEl || !total) return;
+
+    var safeIdx = ((idx % total) + total) % total;
+    galleryState.index = safeIdx;
+
+    setGalleryImage(galleryEl, galleryState.sources[safeIdx], galleryState.alt || "נכס");
+
+    if (thumbsEl) {
+      var thumbs = thumbsEl.querySelectorAll(".property-modal-thumb");
+      thumbs.forEach(function (el, i) {
+        el.classList.toggle("is-active", i === safeIdx);
+      });
+    }
+
+    /* אם ה-lightbox פתוח — סנכרון התמונה המוגדלת */
+    if (!opts.skipLightboxSync) {
+      var lb = getImageLightboxEl();
+      if (lb && !lb.hidden && lightboxState.sources.length) {
+        lightboxState.index = safeIdx;
+        renderLightboxImage();
+      }
+    }
   }
 
   function renderModalGallery(item) {
@@ -911,6 +1214,7 @@
     var sources = getListingRemoteImageSources(item);
     galleryEl.innerHTML = "";
     thumbsEl.innerHTML = "";
+    galleryState = { sources: sources.slice(), index: 0, alt: item.title || "נכס" };
 
     if (!sources.length) {
       var fallbackChain = getListingImageFallbackChain(item);
@@ -940,11 +1244,7 @@
       btn.setAttribute("aria-label", "הצגת תמונה " + (idx + 1));
       btn.innerHTML = buildPropertyImageMarkup(rawSource, "תמונה " + (idx + 1));
       btn.addEventListener("click", function () {
-        setGalleryImage(galleryEl, rawSource, item.title || "נכס");
-        thumbsEl.querySelectorAll(".property-modal-thumb").forEach(function (el) {
-          el.classList.remove("is-active");
-        });
-        btn.classList.add("is-active");
+        showGalleryImage(idx);
       });
       thumbsEl.appendChild(btn);
     });
@@ -1053,17 +1353,79 @@
     var lightboxEl = getImageLightboxEl();
     var lightboxBackdrop = document.getElementById("propertyImageLightboxBackdrop");
     var lightboxClose = document.getElementById("propertyImageLightboxClose");
+    var lightboxPrev = document.getElementById("propertyImageLightboxPrev");
+    var lightboxNext = document.getElementById("propertyImageLightboxNext");
 
     if (lightboxBackdrop) lightboxBackdrop.addEventListener("click", closeImageLightbox);
     if (lightboxClose) lightboxClose.addEventListener("click", closeImageLightbox);
 
+    /* בגלריה RTL: חץ שמאלי = הבאה, חץ ימני = הקודמת */
+    if (lightboxPrev) {
+      lightboxPrev.addEventListener("click", function () {
+        stepLightbox(-1);
+      });
+    }
+    if (lightboxNext) {
+      lightboxNext.addEventListener("click", function () {
+        stepLightbox(1);
+      });
+    }
+
+    if (lightboxEl) {
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var touchActive = false;
+
+      lightboxEl.addEventListener(
+        "touchstart",
+        function (e) {
+          if (!e.touches || e.touches.length !== 1) {
+            touchActive = false;
+            return;
+          }
+          touchActive = true;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        },
+        { passive: true }
+      );
+
+      lightboxEl.addEventListener(
+        "touchend",
+        function (e) {
+          if (!touchActive) return;
+          touchActive = false;
+          var touch = (e.changedTouches && e.changedTouches[0]) || null;
+          if (!touch) return;
+          var dx = touch.clientX - touchStartX;
+          var dy = touch.clientY - touchStartY;
+          if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+          /* החלקה שמאלה = התמונה הבאה, ימינה = הקודמת */
+          stepLightbox(dx < 0 ? 1 : -1);
+        },
+        { passive: true }
+      );
+    }
+
     document.addEventListener("keydown", function (e) {
-      if (e.key !== "Escape") return;
       if (lightboxEl && !lightboxEl.hidden) {
-        closeImageLightbox();
+        if (e.key === "Escape") {
+          closeImageLightbox();
+          return;
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          stepLightbox(1);
+          return;
+        }
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          stepLightbox(-1);
+          return;
+        }
         return;
       }
-      if (!modalEl.hidden) closePropertyModal();
+      if (e.key === "Escape" && !modalEl.hidden) closePropertyModal();
     });
   }
 
