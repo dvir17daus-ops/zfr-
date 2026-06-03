@@ -51,8 +51,21 @@
   ).matches;
   var BETWEEN_BOT_MESSAGES_MS = prefersReducedMotion ? 200 : 1500;
   var FIRST_MESSAGE_DELAY_MS = prefersReducedMotion ? 150 : 650;
-  var FINAL_STEP = 7;
-  var PHONE_STEP = 6;
+
+  /* שלבי השאלון — שמות במקום מספרים, כדי שקל להוסיף/לשנות שאלות */
+  var STEP_NAME = 0;
+  var STEP_DESCRIPTION = 1;
+  var STEP_ROOMS = 2;
+  var STEP_FLOOR = 3;
+  var STEP_AIR = 4;
+  var STEP_NOTES = 5;
+  var STEP_BUDGET = 6;
+  var STEP_MORTGAGE = 7;
+  var STEP_HOUSING = 8;
+  var STEP_CALLTIME = 9;
+  var STEP_PHONE = 10;
+  var FINAL_STEP = 11;
+  var PHONE_STEP = STEP_PHONE;
   var PHONE_DIGITS_ONLY = /^\d{9,15}$/;
   var MORTGAGE_READY = "כן, מוכן לפעולה";
   var MORTGAGE_IN_PROGRESS = "בתהליכים";
@@ -85,8 +98,8 @@
     error: null,
   };
 
-  /** 0 = name, 1 = property requirements, 2 = budget, 3 = mortgage (QR), 4 = housing (QR), 5 = call time (QR), 6 = phone, 7 = done */
-  var surveyStep = 0;
+  /** רצף: שם → תיאור → חדרים → קומה → כיווני אוויר → הערה → תקציב → משכנתא(QR) → דיור(QR) → זמן שיחה(QR) → טלפון → סיום */
+  var surveyStep = STEP_NAME;
   var activeQuickRepliesEl = null;
   var isBotBusy = false;
   var botTimeouts = [];
@@ -94,6 +107,10 @@
     name: null,
     propertyRequirements: null,
     initialMessage: null,
+    rooms: null,
+    floorPreference: null,
+    airDirections: null,
+    notes: null,
     budget: null,
     mortgageStatus: null,
     housingStatus: null,
@@ -105,7 +122,7 @@
   };
 
   function isQuickReplyStep(step) {
-    return step === 3 || step === 4 || step === 5;
+    return step === STEP_MORTGAGE || step === STEP_HOUSING || step === STEP_CALLTIME;
   }
 
   function setPhoneCaptureMode(active) {
@@ -141,11 +158,19 @@
       return;
     }
     setPhoneCaptureMode(false);
-    if (surveyStep === 0) {
+    if (surveyStep === STEP_NAME) {
       input.placeholder = "הקלידו את שמכם…";
-    } else if (surveyStep === 1) {
-      input.placeholder = "תארו דרישות נכס (אזור, סוג, חדרים…)…";
-    } else if (surveyStep === 2) {
+    } else if (surveyStep === STEP_DESCRIPTION) {
+      input.placeholder = "תארו את הנכס שאתם מחפשים (אזור, סוג)…";
+    } else if (surveyStep === STEP_ROOMS) {
+      input.placeholder = "לדוגמה: 4–5 חדרים…";
+    } else if (surveyStep === STEP_FLOOR) {
+      input.placeholder = "לדוגמה: קומה גבוהה / קרקע / ללא העדפה…";
+    } else if (surveyStep === STEP_AIR) {
+      input.placeholder = "לדוגמה: 3–4 כיווני אוויר / נוף פתוח…";
+    } else if (surveyStep === STEP_NOTES) {
+      input.placeholder = "לדוגמה: שכונה חרדית, קרבה לבית כנסת…";
+    } else if (surveyStep === STEP_BUDGET) {
       input.placeholder = "לדוגמה: 3–5 מיליון ₪…";
     } else {
       input.placeholder = DEFAULT_INPUT_PLACEHOLDER;
@@ -314,9 +339,9 @@
   }
 
   function handleMortgageSelection(choice) {
-    if (surveyStep !== 3) return;
+    if (surveyStep !== STEP_MORTGAGE) return;
     lead.mortgageStatus = choice;
-    surveyStep = 4;
+    surveyStep = STEP_HOUSING;
     sendBotSequence(
       ["האם הנכס שבו אתם גרים כעת הוא בבעלותכם או בשכירות?"],
       showHousingQuickReplies
@@ -324,10 +349,10 @@
   }
 
   function handleHousingSelection(choice) {
-    if (surveyStep !== 4) return;
+    if (surveyStep !== STEP_HOUSING) return;
     lead.housingStatus = choice;
     lead.hasPropertyToSell = choice === HOUSING_OWNED;
-    surveyStep = 5;
+    surveyStep = STEP_CALLTIME;
 
     var replies = [];
     if (choice === HOUSING_OWNED) {
@@ -339,9 +364,9 @@
   }
 
   function handleCallTimeSelection(choice) {
-    if (surveyStep !== 5) return;
+    if (surveyStep !== STEP_CALLTIME) return;
     lead.bestTimeToCall = choice;
-    surveyStep = 6;
+    surveyStep = STEP_PHONE;
     var privacyEl = document.getElementById("chatPrivacy");
     if (privacyEl) privacyEl.hidden = false;
 
@@ -362,11 +387,15 @@
     var clientName = lead.name || getClientName();
     if (clientName) lines.push("שם: " + clientName);
     if (lead.phoneNumber) lines.push("טלפון לקוח: " + lead.phoneNumber);
+    if (lead.propertyRequirements) lines.push("תיאור הנכס: " + lead.propertyRequirements);
+    if (lead.rooms) lines.push("חדרים: " + lead.rooms);
+    if (lead.floorPreference) lines.push("העדפת קומה: " + lead.floorPreference);
+    if (lead.airDirections) lines.push("כיווני אוויר: " + lead.airDirections);
+    if (lead.notes) lines.push("הערות / מיוחד: " + lead.notes);
     if (lead.budget) lines.push("תקציב: " + lead.budget);
     if (lead.mortgageStatus) lines.push("משכנתא / הון: " + lead.mortgageStatus);
     if (lead.housingStatus) lines.push("דיור נוכחי: " + lead.housingStatus);
     if (lead.bestTimeToCall) lines.push("זמן מועדף לשיחה: " + lead.bestTimeToCall);
-    if (lead.propertyRequirements) lines.push("דרישות נכס: " + lead.propertyRequirements);
     if (lead.housingStatus === HOUSING_OWNED) {
       lines.push("", "⭐ לקוח בבעלות — פוטנציאל שדרוג / מכירה");
     }
@@ -398,6 +427,11 @@
     return {
       clientName: leadField(lead.name || getClientName()),
       phoneNumber: leadField(lead.phoneNumber),
+      propertyRequirements: leadField(requirements),
+      rooms: leadField(lead.rooms),
+      floorPreference: leadField(lead.floorPreference),
+      airDirections: leadField(lead.airDirections),
+      notes: leadField(lead.notes),
       budget: leadField(lead.budget),
       housingStatus: leadField(lead.housingStatus),
       hasPropertyToSell:
@@ -408,7 +442,6 @@
             : LEAD_FIELD_FALLBACK,
       mortgageStatus: leadField(lead.mortgageStatus),
       bestTimeToCall: leadField(lead.bestTimeToCall),
-      propertyRequirements: leadField(requirements),
       initialMessage: leadField(lead.initialMessage || requirements),
       preferredNeighborhood: leadField(lead.preferredNeighborhood),
       propertyType: leadField(lead.propertyType),
@@ -580,6 +613,10 @@
     var summary = {
       Name: lead.name || getClientName() || "—",
       "Property requirements": lead.propertyRequirements || "—",
+      Rooms: lead.rooms || "—",
+      "Floor preference": lead.floorPreference || "—",
+      "Air directions": lead.airDirections || "—",
+      Notes: lead.notes || "—",
       Budget: lead.budget || "—",
       "Housing Status": lead.housingStatus || "—",
       "Mortgage Status": lead.mortgageStatus || "—",
@@ -603,25 +640,45 @@
   }
 
   function nextAssistantRepliesAfterUserMessage(userText) {
-    if (surveyStep === 0) {
+    if (surveyStep === STEP_NAME) {
       lead.name = userText;
-      surveyStep = 1;
-      return ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"];
+      surveyStep = STEP_DESCRIPTION;
+      return ["נעים מאוד! ספרו לי על הנכס שאתם מחפשים — אזור וסוג נכס (דירה, פנטהאוז, וילה…)."];
     }
-    if (surveyStep === 1) {
+    if (surveyStep === STEP_DESCRIPTION) {
       lead.propertyRequirements = userText;
-      surveyStep = 2;
-      return ["מהו התקציב שלכם?"];
+      if (!lead.initialMessage) lead.initialMessage = userText;
+      surveyStep = STEP_ROOMS;
+      return ["כמה חדרים אתם צריכים?"];
     }
-    if (surveyStep === 2) {
+    if (surveyStep === STEP_ROOMS) {
+      lead.rooms = userText;
+      surveyStep = STEP_FLOOR;
+      return ["יש העדפה לקומה? (גבוהה / נמוכה / קרקע / ללא העדפה)"];
+    }
+    if (surveyStep === STEP_FLOOR) {
+      lead.floorPreference = userText;
+      surveyStep = STEP_AIR;
+      return ["כיווני אוויר מועדפים? (לדוגמה: 3–4 כיוונים, נוף פתוח, ללא העדפה)"];
+    }
+    if (surveyStep === STEP_AIR) {
+      lead.airDirections = userText;
+      surveyStep = STEP_NOTES;
+      return [
+        "משהו נוסף שחשוב לכם בנכס? (לדוגמה: שכונה חרדית, קרבה לבית כנסת, חניה, מעלית…)",
+      ];
+    }
+    if (surveyStep === STEP_NOTES) {
+      lead.notes = userText;
+      surveyStep = STEP_BUDGET;
+      return ["מצוין. מהו התקציב שלכם?"];
+    }
+    if (surveyStep === STEP_BUDGET) {
       lead.budget = userText;
-      surveyStep = 3;
+      surveyStep = STEP_MORTGAGE;
       return [
         "האם כבר קיבלתם אישור עקרוני למשכנתא או שיש הון עצמי זמין?",
       ];
-    }
-    if (surveyStep === 3 || surveyStep === 4 || surveyStep === 5 || surveyStep === 6) {
-      return [];
     }
     return [];
   }
@@ -667,9 +724,9 @@
     var urlName = getClientName();
     if (urlName) {
       lead.name = urlName;
-      surveyStep = 1;
+      surveyStep = STEP_DESCRIPTION;
       sendBotSequence(
-        ["מהן דרישות הנכס שאתם מחפשים? (אזור, סוג נכס, חדרים וכו')"],
+        ["ספרו לי על הנכס שאתם מחפשים — אזור וסוג נכס (דירה, פנטהאוז, וילה…)."],
         function () {
           updateInputPlaceholderForStep();
           setInputDisabled(false);
@@ -713,12 +770,12 @@
 
     var previousStep = surveyStep;
     var replies = nextAssistantRepliesAfterUserMessage(text);
-    var awaitingMortgageChoice = previousStep === 2 && surveyStep === 3;
-    var awaitingCallTimeChoice = previousStep === 4 && surveyStep === 5;
+    var awaitingMortgageChoice = previousStep === STEP_BUDGET && surveyStep === STEP_MORTGAGE;
+    var awaitingCallTimeChoice = previousStep === STEP_HOUSING && surveyStep === STEP_CALLTIME;
     setInputDisabled(true);
 
     sendBotSequence(replies, function () {
-      if (surveyStep === 1 && window.ZFR_pendingPropertyInquiry) {
+      if (surveyStep === STEP_DESCRIPTION && window.ZFR_pendingPropertyInquiry) {
         input.value = window.ZFR_pendingPropertyInquiry;
         delete window.ZFR_pendingPropertyInquiry;
       }
@@ -763,20 +820,20 @@
       return;
     }
 
-    if (surveyStep === 0) {
+    if (surveyStep === STEP_NAME) {
       window.ZFR_pendingPropertyInquiry = inquiry;
       window.setTimeout(focusChatInput, 450);
       return;
     }
 
-    if (surveyStep === 1) {
+    if (surveyStep === STEP_DESCRIPTION) {
       input.value = inquiry;
       lead.propertyRequirements = inquiry;
       window.setTimeout(focusChatInput, 450);
       return;
     }
 
-    if (surveyStep > 1 && surveyStep < FINAL_STEP) {
+    if (surveyStep > STEP_DESCRIPTION && surveyStep < FINAL_STEP) {
       lead.propertyRequirements =
         (lead.propertyRequirements ? lead.propertyRequirements + " · " : "") + inquiry;
     }

@@ -93,9 +93,51 @@ listingsLiveUrl: "https://hook.eu1.make.com/XXXXXXXX",
 3. רעננו → סקשן "נכסים"
 4. אם Make חסום — בקונסול: `switching to local listings.json`
 
-## 6. לידים (קיים)
+## 6. לידים מהבוט → וואטסאפ (זרם נפרד)
 
-Webhook נפרד ללידים מהבוט: `makeLeadWebhook` ב-`js/zfr-config.js`.
+> חשוב: זה **לא** קשור ל-Google Sheets. הנכסים מגיעים לאתר דרך Google Sheets;
+> הלידים מהבוט נשלחים ל-Make ומשם להודעת **וואטסאפ** לבעלים.
+
+הבוט שולח **POST** עם גוף **JSON** ל-Webhook של הלידים (`makeLeadWebhook` ב-`js/zfr-config.js`).
+ה-JSON כבר כולל את כל השדות הבאים — אין צורך לשנות כלום בבוט.
+
+| מפתח (key) ב-JSON | תיאור | שאלת הבוט |
+| --- | --- | --- |
+| `clientName` | שם הלקוח | "מה שמך?" |
+| `phoneNumber` | טלפון (ספרות בלבד) | שלב הטלפון בסוף |
+| `propertyRequirements` | תיאור הנכס (אזור + סוג) | "ספרו לי על הנכס שאתם מחפשים" |
+| `rooms` | מספר חדרים | "כמה חדרים אתם צריכים?" |
+| `floorPreference` | העדפת קומה | "יש העדפה לקומה?" |
+| `airDirections` | כיווני אוויר | "כיווני אוויר מועדפים?" |
+| `notes` | הערות / דרישות מיוחדות | "משהו נוסף שחשוב לכם?" |
+| `budget` | תקציב | "מהו התקציב שלכם?" |
+| `mortgageStatus` | סטטוס משכנתא / הון עצמי | כפתורי בחירה |
+| `housingStatus` | דיור נוכחי (בעלות / שכירות) | כפתורי בחירה |
+| `hasPropertyToSell` | האם יש נכס למכירה ("כן"/"לא") | נגזר מ-housingStatus |
+| `bestTimeToCall` | זמן מועדף לשיחה | כפתורי בחירה |
+| `initialMessage` | ההודעה הראשונה של הלקוח | — |
+| `preferredNeighborhood` | שכונה מועדפת (לשימוש עתידי) | — |
+| `propertyType` | סוג נכס (לשימוש עתידי) | — |
+
+**מה צריך לעשות ב-Make כדי שהשאלות החדשות יופיעו בוואטסאפ:**
+במודול שבונה את הודעת הוואטסאפ, הוסיפו לתבנית הטקסט את השדות החדשים, לדוגמה:
+
+```
+ליד חדש — ZFR Estates
+שם: {{clientName}}
+טלפון: {{phoneNumber}}
+תיאור הנכס: {{propertyRequirements}}
+חדרים: {{rooms}}
+העדפת קומה: {{floorPreference}}
+כיווני אוויר: {{airDirections}}
+הערות: {{notes}}
+תקציב: {{budget}}
+משכנתא / הון: {{mortgageStatus}}
+דיור נוכחי: {{housingStatus}}
+זמן מועדף לשיחה: {{bestTimeToCall}}
+```
+
+> השדות `rooms`, `floorPreference`, `airDirections`, `notes` הם החדשים — בלי להוסיף אותם לתבנית ב-Make הם פשוט לא יוצגו בהודעה (אבל הם כן נשלחים ב-JSON).
 
 ## 7. סדר טעינה ב-index.html
 
