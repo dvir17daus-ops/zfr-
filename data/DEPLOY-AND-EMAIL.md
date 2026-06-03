@@ -6,7 +6,7 @@
 |--------|--------|
 | `zfr-estates.com` DNS | **לא קיים (NXDOMAIN)** — הדומיין לא רשום / לא מחובר |
 | אתר חי | **503 / לא זמין** |
-| `hello@zfr-estates.com` | **לא ניתן לאימות** — בלי דומיין + MX records המייל לא יעבוד |
+| `shlomo0632@gmail.com` | Gmail — פעיל (לא דורש MX על דומיין) |
 
 ## מה צריך לעשות לפני מסירה ללקוח
 
@@ -25,11 +25,8 @@
 **אפשרות ב — Netlify / Cloudflare Pages**
 - חיבור ל-repo + build command ריק (static site)
 
-### 3. דוא״ל `hello@zfr-estates.com`
-אחרי שהדומיין פעיל:
-1. Google Workspace / Zoho / Microsoft 365 — יצירת תיבה
-2. או forwarding מה-registrar ל-Gmail של שלמה
-3. בדיקה: שליחת מייל test ל-`hello@zfr-estates.com`
+### 3. דוא״ל `shlomo0632@gmail.com`
+כתובת Gmail פעילה — מוצגת באתר ובפוטר.
 
 ### 4. אימות אחרי deploy
 פתחו בדפדפן (Ctrl+Shift+R):

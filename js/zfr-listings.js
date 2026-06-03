@@ -842,10 +842,65 @@
     }
   }
 
-  function setGalleryImage(galleryEl, rawSource, alt, item) {
-    var chain = item ? getListingImageFallbackChain(item) : getImageFallbacks(rawSource);
-    galleryEl.innerHTML = buildPropertyImageMarkupFromChain(chain, alt, { priority: true });
+  function setGalleryImage(galleryEl, rawSource, alt) {
+    if (!galleryEl) return;
+    var chain = [];
+    if (rawSource && String(rawSource).trim()) {
+      chain = getImageFallbacks(rawSource);
+    }
+
+    if (!chain.length) {
+      galleryEl.innerHTML =
+        '<div class="property-modal-no-image" aria-hidden="true">תמונה בקרוב</div>';
+      return;
+    }
+
+    galleryEl.innerHTML =
+      '<button type="button" class="property-modal-gallery-zoom" aria-label="הגדלת תמונה — ' +
+      escapeHtml(alt || "נכס") +
+      '">' +
+      buildPropertyImageMarkupFromChain(chain, alt || "נכס", { priority: true }) +
+      '<span class="property-modal-zoom-hint" aria-hidden="true">לחיצה להגדלה</span>' +
+      "</button>";
     bindImageFallbacks(galleryEl);
+    bindGalleryZoom(galleryEl);
+  }
+
+  function getImageLightboxEl() {
+    return document.getElementById("propertyImageLightbox");
+  }
+
+  function openImageLightbox(src, alt) {
+    var lb = getImageLightboxEl();
+    var img = document.getElementById("propertyImageLightboxImg");
+    if (!lb || !img || !src) return;
+    img.src = src;
+    img.alt = alt || "";
+    lb.hidden = false;
+    document.body.classList.add("property-lightbox-open");
+  }
+
+  function closeImageLightbox() {
+    var lb = getImageLightboxEl();
+    if (!lb) return;
+    lb.hidden = true;
+    document.body.classList.remove("property-lightbox-open");
+    var img = document.getElementById("propertyImageLightboxImg");
+    if (img) img.removeAttribute("src");
+  }
+
+  function bindGalleryZoom(galleryEl) {
+    if (!galleryEl) return;
+    var btn = galleryEl.querySelector(".property-modal-gallery-zoom");
+    if (!btn) return;
+
+    btn.addEventListener("click", function () {
+      var img = btn.querySelector("img");
+      if (!img || img.classList.contains("property-image--failed")) return;
+      var src = img.currentSrc || img.src;
+      if (!src) return;
+      openImageLightbox(src, img.alt || "");
+    });
   }
 
   function renderModalGallery(item) {
@@ -865,12 +920,12 @@
         thumbsEl.hidden = true;
         return;
       }
-      setGalleryImage(galleryEl, getListingImageSources(item)[0], item.title || "נכס", item);
+      setGalleryImage(galleryEl, getListingRemoteImageSources(item)[0], item.title || "נכס");
       thumbsEl.hidden = true;
       return;
     }
 
-    setGalleryImage(galleryEl, sources[0], item.title || "נכס", item);
+    setGalleryImage(galleryEl, sources[0], item.title || "נכס");
 
     if (sources.length <= 1) {
       thumbsEl.hidden = true;
@@ -882,10 +937,10 @@
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "property-modal-thumb" + (idx === 0 ? " is-active" : "");
-      btn.setAttribute("aria-label", "תמונה " + (idx + 1));
-      btn.innerHTML = buildPropertyImageMarkup(rawSource, "");
+      btn.setAttribute("aria-label", "הצגת תמונה " + (idx + 1));
+      btn.innerHTML = buildPropertyImageMarkup(rawSource, "תמונה " + (idx + 1));
       btn.addEventListener("click", function () {
-        setGalleryImage(galleryEl, rawSource, item.title || "נכס", item);
+        setGalleryImage(galleryEl, rawSource, item.title || "נכס");
         thumbsEl.querySelectorAll(".property-modal-thumb").forEach(function (el) {
           el.classList.remove("is-active");
         });
@@ -956,6 +1011,7 @@
   }
 
   function closePropertyModal() {
+    closeImageLightbox();
     if (!modalEl) return;
     modalEl.hidden = true;
     document.body.classList.remove("property-modal-open");
@@ -994,10 +1050,20 @@
       });
     }
 
+    var lightboxEl = getImageLightboxEl();
+    var lightboxBackdrop = document.getElementById("propertyImageLightboxBackdrop");
+    var lightboxClose = document.getElementById("propertyImageLightboxClose");
+
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener("click", closeImageLightbox);
+    if (lightboxClose) lightboxClose.addEventListener("click", closeImageLightbox);
+
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !modalEl.hidden) {
-        closePropertyModal();
+      if (e.key !== "Escape") return;
+      if (lightboxEl && !lightboxEl.hidden) {
+        closeImageLightbox();
+        return;
       }
+      if (!modalEl.hidden) closePropertyModal();
     });
   }
 

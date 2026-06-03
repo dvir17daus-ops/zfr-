@@ -6,15 +6,16 @@
 
 שורת כותרות (שורה 1):
 
-| id | title | description | area | type | rooms | priceLabel | status | image | featured | sortOrder |
-|----|-------|-------------|------|------|-------|------------|--------|-------|----------|-----------|
+| id | title | description | area | type | rooms | priceLabel | status | image | images | featured | sortOrder |
+|----|-------|-------------|------|------|-------|------------|--------|-------|--------|----------|-----------|
 
 - **status:** `available` | `sold` | `exclusive` | `hidden`
 - **featured:** `yes` / `no` (או `כן` / `לא`)
-- **image:** קישור מלא לתמונה (מומלץ) — Google Drive ציבורי, Imgur, CDN וכו'
+- **image:** תמונה ראשונה (חובה להצגה) — קישור Google Drive / Imgur
+- **images:** תמונות נוספות (אופציונלי) — באותו תא: `קישור1|קישור2` או שורה חדשה
+  - אפשר גם עמודות `image2`, `image3` בגיליון (האתר מזהה אותן)
+  - בכרטיס: תמונה ראשונה + תג "2 תמונות"; בלחיצה: גלריה עם מיני-תמונות למטה
   - דוגמה Drive: `https://drive.google.com/file/d/FILE_ID/view`
-  - האתר ימיר אוטומטית לקישור תצוגה כשאפשר
-  - אפשר גם נתיב יחסי: `assets/listings/photo1.jpg`
 
 ## 2. תרחיש Make — האתר קורא נכסים (GET)
 
@@ -26,7 +27,8 @@
 > **סדר נכון:** Webhook → Google Sheets → Array Aggregator → Webhook response  
 > **סדר שגוי:** Webhook → Array Aggregator → Google Sheets (האגרגטור לא יודע מה לאסוף)
    - Source: מודול Google Sheets
-   - שדות: `id`, `title`, `description`, `area`, `type`, `rooms`, `priceLabel`, `status`, `image`, `featured`, `sortOrder`
+   - שדות: `id`, `title`, `description`, `area`, `type`, `rooms`, `priceLabel`, `status`, `image`, `images`, `featured`, `sortOrder`
+   - אם יש עמודות `image2` / `sqm` וכו' — הוסיפו גם אותן ל-Aggregator
 
 5. מודול 4: **Webhooks → Webhook response**
    - Status: `200`
@@ -75,12 +77,14 @@ listingsLiveUrl: "https://hook.eu1.make.com/XXXXXXXX",
 | `exclusive` | מוצג + תג **בבלעדיות!** על התמונה |
 | `available` | מוצג + תג "למכירה" קטן בגוף הכרטיס |
 
-## 4. תמונות (למתווך)
-
-אין צורך להעלות קבצים לשרת. הדביקו בגיליון קישור ציבורי לתמונה:
+## 4. תמונות (למתווך) — כמה תמונות לנכס
 
 1. Google Drive → שיתוף → "כל מי שיש לו הקישור"
-2. העתיקו את הקישור לעמודת `image`
+2. תמונה ראשונה → עמודת `image`
+3. תמונות נוספות — **אחת מהדרכים:**
+   - עמודת `images`: `קישור2|קישור3` (מפריד | או פסיק או Enter)
+   - עמודות `image2`, `image3` עם קישור בכל עמודה
+4. ב-Make: וודאו ש-`images` (ו-`image2` אם יש) נכללים ב-Array Aggregator
 
 ## 5. בדיקה
 

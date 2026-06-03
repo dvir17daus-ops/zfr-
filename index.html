@@ -51,7 +51,7 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/zfr.css?v=20260605" />
+  <link rel="stylesheet" href="css/zfr.css?v=20260608" />
   <link rel="preload" href="assets/hero-bg.mp4" as="video" type="video/mp4" media="(min-width: 769px)" />
   <link rel="preload" href="assets/poster.jpg" as="image" />
 </head>
@@ -403,6 +403,18 @@
     </div>
   </div>
 
+  <div class="property-image-lightbox" id="propertyImageLightbox" hidden>
+    <div class="property-image-lightbox-backdrop" id="propertyImageLightboxBackdrop"></div>
+    <div class="property-image-lightbox-panel" role="dialog" aria-modal="true" aria-label="תמונה מוגדלת">
+      <button type="button" class="property-image-lightbox-close" id="propertyImageLightboxClose" aria-label="סגירת תמונה מוגדלת">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <img id="propertyImageLightboxImg" alt="" />
+    </div>
+  </div>
+
   <div class="chat-backdrop" id="chatBackdrop" aria-hidden="true"></div>
   <a
     class="whatsapp-fab"
@@ -418,7 +430,7 @@
   </a>
 
   <script src="js/zfr-config.js?v=20260604"></script>
-  <script src="js/zfr-listings.js?v=20260607"></script>
+  <script src="js/zfr-listings.js?v=20260608"></script>
   <script src="js/zfr-site.js?v=20260604"></script>
   <script src="js/zfr-chat.js?v=20260604"></script>
 </body>

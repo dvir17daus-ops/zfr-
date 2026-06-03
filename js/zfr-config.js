@@ -16,7 +16,7 @@ window.ZFR_CONFIG = {
   listingsLiveUrl: "https://hook.eu1.make.com/iznyfdparmxkv38sdlz4eyih3qgnygc0",
 
   /** דוא״ל ציבורי — דורש MX records על הדומיין (ראו data/DEPLOY-AND-EMAIL.md) */
-  contactEmail: "hello@zfr-estates.com",
+  contactEmail: "shlomo0632@gmail.com",
 
   /** Webhook Make — שליחת לידים. לפרודקשן מומלץ proxy בצד שרver (ה-URL חשוף בקליינט). */
   makeLeadWebhook: "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv",
