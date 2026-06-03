@@ -71,8 +71,9 @@
     var fileId = getDriveFileId(url);
     if (fileId) {
       return [
-        "https://lh3.googleusercontent.com/d/" + fileId + "=w1920",
         "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1920",
+        "https://lh3.googleusercontent.com/d/" + fileId + "=w1920",
+        "https://drive.google.com/uc?export=view&id=" + fileId,
         "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1200",
         "https://drive.google.com/uc?export=download&id=" + fileId,
       ];
@@ -178,36 +179,97 @@
     return out;
   }
 
-  /** תמונות מהגיליון / Make בלבד — לספירה ולגלריה */
+  /** מחלץ כל קישורי http(s) מתא — כולל כמה קישורי Drive מופרדים ברווחים (כמו ב-Make) */
+  function parseImageList(value) {
+    if (value == null || value === "") return [];
+    if (Array.isArray(value)) {
+      var merged = [];
+      value.forEach(function (entry) {
+        parseImageList(entry).forEach(function (url) {
+          merged.push(url);
+        });
+      });
+      return merged;
+    }
+
+    var str = String(value).trim();
+    if (!str) return [];
+
+    var urlMatches = str.match(/https?:\/\/[^\s"'<>]+/gi);
+    if (urlMatches && urlMatches.length) {
+      return urlMatches
+        .map(function (url) {
+          return url.replace(/[.,;]+$/g, "").trim();
+        })
+        .filter(Boolean);
+    }
+
+    return str
+      .split(/[\n\r]+|[,;|]+/)
+      .map(function (part) {
+        return part.trim();
+      })
+      .filter(Boolean);
+  }
+
+  var EXTRA_IMAGE_FIELD_KEYS = [
+    "images",
+    "image",
+    "imageUrl",
+    "Image",
+    "תמונה",
+    "תמונות",
+    "image2",
+    "image3",
+    "image4",
+    "Image2",
+    "Image3",
+    "Image4",
+    "תמונה2",
+    "תמונה3",
+    "תמונה 2",
+    "תמונה 3",
+    "photo2",
+    "photo3",
+    "photos",
+    "gallery",
+  ];
+
+  function collectListingImageSources(item) {
+    if (!item) return [];
+    var sources = [];
+    EXTRA_IMAGE_FIELD_KEYS.forEach(function (key) {
+      if (item[key] == null || item[key] === "") return;
+      parseImageList(item[key]).forEach(function (url) {
+        sources.push(url);
+      });
+    });
+    return dedupeImageSources(sources);
+  }
+
+  function normalizeListingImages(item) {
+    if (!item) return item;
+    var all = collectListingImageSources(item);
+    if (all.length) {
+      item.images = all;
+      item.image = all[0];
+    } else {
+      item.images = [];
+    }
+    return item;
+  }
+
+  /** תמונות מהגיליון / Make — לספירה, כרטיס וגלריה במודל */
   function getListingRemoteImageSources(item) {
     if (!item) return [];
-
-    var sources = [];
-
-    if (Array.isArray(item.images)) {
-      item.images.forEach(function (src) {
-        if (src != null && String(src).trim() !== "") {
-          sources.push(String(src).trim());
-        }
-      });
-    } else if (typeof item.images === "string" && item.images.trim()) {
-      item.images
-        .split(/[,;|]/)
-        .map(function (part) {
-          return part.trim();
+    if (Array.isArray(item.images) && item.images.length) {
+      return dedupeImageSources(
+        item.images.map(function (src) {
+          return String(src).trim();
         })
-        .filter(Boolean)
-        .forEach(function (src) {
-          sources.push(src);
-        });
+      );
     }
-
-    var single = item.image || item.imageUrl;
-    if (single) {
-      sources.push(String(single).trim());
-    }
-
-    return dedupeImageSources(sources);
+    return collectListingImageSources(item);
   }
 
   function getPhotoCountLabel(count) {
@@ -298,6 +360,10 @@
 
   var HEBREW_FIELD_MAP = {
     "תמונה": "image",
+    "תמונות": "images",
+    "תמונה2": "image2",
+    "תמונה 2": "image2",
+    "תמונה3": "image3",
     "מחיר": "priceLabel",
     "כותרת": "title",
     "תיאור": "description",
@@ -396,6 +462,8 @@
         item[field] = numericVal;
       }
     });
+
+    normalizeListingImages(item);
 
     return item;
   }
