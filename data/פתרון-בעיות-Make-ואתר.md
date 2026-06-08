@@ -1,6 +1,35 @@
 # למה הנכסים לא מופיעים מ-Google Sheets?
 
-## הבעיה שלך (נמצאה בבדיקה — יוני 2026)
+## הבעיה הנוכחית (יוני 2026) — Make מחזיר `Accepted`
+
+כשפותחים את כתובת ה-Webhook בדפדפן ורואים רק:
+
+```
+Accepted
+```
+
+**זו הסיבה שהנכסים מהגיליון לא מגיעים לאתר.**
+
+זה קורה כש:
+- שיניתם את Make לרוץ **פעם ביום** (Scheduled) בלי **Webhook response** שמחזיר JSON
+- או שהמודול **Webhook response** נמחק / לא מחובר בסוף התרחיש
+
+**מה האתר עושה:** עובר ל-`data/listings.json` (גיבוי). אם שם יש נכס אחד — תראו נכס אחד.
+
+**תיקון ב-Make:** חייב להיות מודול **Webhooks → Webhook response** בסוף, עם Body:
+
+```json
+{
+  "updatedAt": "{{formatDate(now; \"YYYY-MM-DDTHH:mm:ssZ\")}}",
+  "listings": {{json(N.array)}}
+}
+```
+
++ כותרת CORS: `Access-Control-Allow-Origin: *`
+
+---
+
+## הבעיה הקודמת (נמצאה בבדיקה — יוני 2026)
 
 Make **כן עובד**, אבל מחזיר JSON בפורmat שגוי:
 

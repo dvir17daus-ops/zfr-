@@ -1,6 +1,5 @@
 /**
- * משיכת נכסים מ-Make (GET) + גיבוי מקומי + תצוגת פרטי נכס.
- * מבנה JSON: { updatedAt, listings: [{ id, title, description, priceLabel, image, images, ... }] }
+ * משיכת נכסים: Google Sheets (ישיר) + cache + גיבוי listings.json / Make.
  */
 (function initZfrListings() {
   var cfg = window.ZFR_CONFIG || {};
@@ -385,8 +384,10 @@
   };
 
   var HEBREW_FIELD_MAP = {
+    "מזהה": "id",
     "תמונה": "image",
     "תמונות": "images",
+    "קישור לתמונה": "image",
     "תמונה2": "image2",
     "תמונה 2": "image2",
     "תמונה3": "image3",
@@ -395,9 +396,11 @@
     "תיאור": "description",
     "אזור": "area",
     "סוג": "type",
+    "סוג נכס": "type",
     "חדרים": "rooms",
     "סטטוס": "status",
     "מודגש": "featured",
+    "סדר תצוגה": "sortOrder",
   };
 
   function slugifyId(text) {
@@ -556,7 +559,7 @@
 
     if (isMakeNonJsonBody(raw)) {
       throw new Error(
-        "Make returned non-JSON (e.g. Accepted or template text) — fix Webhook response in Make"
+        'Make returned "Accepted" instead of JSON — add Webhook response module in Make (see data/MAKE-GOOGLE-SHEETS-SETUP.md)'
       );
     }
 
@@ -619,6 +622,215 @@
     );
   }
 
+  function parseGoogleSheetRef(input) {
+    var str = String(input || "").trim();
+    if (!str) return null;
+
+    if (/script\.google\.com/i.test(str)) {
+      return { type: "apps-script", url: str };
+    }
+
+    var idMatch = str.match(/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+    if (idMatch) {
+      var gidMatch = str.match(/[?&#]gid=(\d+)/);
+      var gid =
+        (gidMatch && gidMatch[1]) ||
+        String(cfg.listingsSheetGid != null ? cfg.listingsSheetGid : "0").trim();
+      return { type: "gviz", id: idMatch[1], gid: gid };
+    }
+
+    if (/^[a-zA-Z0-9-_]{20,}$/.test(str)) {
+      return {
+        type: "gviz",
+        id: str,
+        gid: String(cfg.listingsSheetGid != null ? cfg.listingsSheetGid : "0").trim(),
+      };
+    }
+
+    if (/^https?:\/\//i.test(str)) {
+      return { type: "direct", url: str };
+    }
+
+    return null;
+  }
+
+  function buildGvizSheetUrl(id, gid) {
+    return (
+      "https://docs.google.com/spreadsheets/d/" +
+      encodeURIComponent(id) +
+      "/gviz/tq?tqx=out:json&headers=1&gid=" +
+      encodeURIComponent(gid || "0")
+    );
+  }
+
+  function buildCsvSheetUrl(id, gid) {
+    return (
+      "https://docs.google.com/spreadsheets/d/" +
+      encodeURIComponent(id) +
+      "/export?format=csv&gid=" +
+      encodeURIComponent(gid || "0")
+    );
+  }
+
+  function getListingsSheetRef() {
+    var raw = String(cfg.listingsSheetUrl || cfg.listingsSheetId || "").trim();
+    return parseGoogleSheetRef(raw);
+  }
+
+  function parseGvizResponse(text) {
+    var raw = String(text || "").trim();
+    var start = raw.indexOf("{");
+    var end = raw.lastIndexOf("}");
+    if (start === -1 || end === -1) {
+      throw new Error("Invalid Google Sheets gviz response");
+    }
+    var payload = JSON.parse(raw.slice(start, end + 1));
+    if (!payload || !payload.table) {
+      throw new Error("Google Sheets returned empty table");
+    }
+
+    var cols = (payload.table.cols || []).map(function (col) {
+      return String((col && (col.label || col.id)) || "").trim();
+    });
+    var rows = payload.table.rows || [];
+    var items = [];
+
+    rows.forEach(function (row) {
+      if (!row || !row.c) return;
+      var item = {};
+      row.c.forEach(function (cell, idx) {
+        var key = cols[idx];
+        if (!key) return;
+        var val = "";
+        if (cell) {
+          val = cell.v != null ? cell.v : cell.f != null ? cell.f : "";
+        }
+        item[key] = val;
+      });
+      items.push(item);
+    });
+
+    return normalizeListingsArray(items);
+  }
+
+  function parseCsvRows(text) {
+    var rows = [];
+    var row = [];
+    var field = "";
+    var inQuotes = false;
+    var src = String(text || "").replace(/^\uFEFF/, "");
+
+    for (var i = 0; i < src.length; i += 1) {
+      var c = src.charAt(i);
+      var next = src.charAt(i + 1);
+
+      if (inQuotes) {
+        if (c === '"' && next === '"') {
+          field += '"';
+          i += 1;
+        } else if (c === '"') {
+          inQuotes = false;
+        } else {
+          field += c;
+        }
+      } else if (c === '"') {
+        inQuotes = true;
+      } else if (c === ",") {
+        row.push(field);
+        field = "";
+      } else if (c === "\r" && next === "\n") {
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+        i += 1;
+      } else if (c === "\n" || c === "\r") {
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+      } else {
+        field += c;
+      }
+    }
+
+    if (field.length || row.length) {
+      row.push(field);
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  function parseCsvListings(text) {
+    var rows = parseCsvRows(text);
+    if (rows.length < 2) return [];
+
+    var headers = rows[0].map(function (h) {
+      return String(h || "").trim();
+    });
+    var items = [];
+
+    for (var r = 1; r < rows.length; r += 1) {
+      var item = {};
+      rows[r].forEach(function (val, idx) {
+        var key = headers[idx];
+        if (key) item[key] = val;
+      });
+      items.push(item);
+    }
+
+    return normalizeListingsArray(items);
+  }
+
+  function assertSheetResponseIsReadable(text) {
+    var raw = String(text || "").trim();
+    if (/^<!DOCTYPE html/i.test(raw) || /show-login-page|accounts\.google\.com/i.test(raw)) {
+      throw new Error(
+        'Google Sheets לא ציבורי — בגיליון: שיתוף → "כל מי שיש לו הקישור" → צופה'
+      );
+    }
+  }
+
+  function fetchSheetText(url) {
+    return fetch(url, {
+      method: "GET",
+      cache: "no-store",
+      mode: "cors",
+      credentials: "omit",
+    }).then(function (res) {
+      if (!res.ok) {
+        throw new Error("Google Sheets HTTP " + res.status);
+      }
+      return res.text();
+    }).then(function (text) {
+      assertSheetResponseIsReadable(text);
+      return text;
+    });
+  }
+
+  function fetchListingsFromGoogleSheet(ref) {
+    if (!ref) {
+      return Promise.reject(new Error("Missing listingsSheetUrl in ZFR_CONFIG"));
+    }
+
+    if (ref.type === "apps-script" || ref.type === "direct") {
+      return fetchSheetText(ref.url).then(function (text) {
+        return parseListingsJson(text, { requireListingsKey: false });
+      });
+    }
+
+    return fetchSheetText(buildGvizSheetUrl(ref.id, ref.gid))
+      .then(parseGvizResponse)
+      .catch(function (gvizErr) {
+        return fetchSheetText(buildCsvSheetUrl(ref.id, ref.gid))
+          .then(parseCsvListings)
+          .catch(function () {
+            return Promise.reject(gvizErr);
+          });
+      });
+  }
+
   function fetchListingsFromWebhook(webhookUrl) {
     var url = normalizeWebhookUrl(webhookUrl);
     if (!url) {
@@ -627,14 +839,255 @@
     return fetchJson(url, { asListingsArray: true, requireListingsKey: true });
   }
 
-  window.ZFR_fetchListings = function () {
+  var DEFAULT_LISTINGS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+  var listingsRenderHook = null;
+
+  function getListingsCacheKey() {
+    var key = String(cfg.listingsCacheKey || "zfr_listings_v3").trim();
+    return key || "zfr_listings_v3";
+  }
+
+  function getListingsCacheTtlMs(source) {
+    if (source === "sheet") {
+      var sheetTtl = Number(cfg.listingsSheetCacheTtlMs);
+      return sheetTtl > 0 ? sheetTtl : 60 * 60 * 1000;
+    }
+    var ttl = Number(cfg.listingsCacheTtlMs);
+    return ttl > 0 ? ttl : DEFAULT_LISTINGS_CACHE_TTL_MS;
+  }
+
+  function getListingsFetchMode() {
+    var mode = String(cfg.listingsFetchMode || "sheet-first").trim().toLowerCase();
+    if (mode === "live-first" || mode === "json-first") return mode;
+    return "sheet-first";
+  }
+
+  function readListingsCache() {
+    try {
+      if (!window.localStorage) return null;
+      var raw = localStorage.getItem(getListingsCacheKey());
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.listings)) return null;
+      return {
+        listings: normalizeListingsArray(data.listings),
+        fetchedAt: Number(data.fetchedAt) || 0,
+        source: String(data.source || ""),
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeListingsCache(listings, meta) {
+    try {
+      if (!window.localStorage || !Array.isArray(listings)) return;
+      localStorage.setItem(
+        getListingsCacheKey(),
+        JSON.stringify({
+          fetchedAt: Date.now(),
+          source: (meta && meta.source) || "unknown",
+          listings: listings,
+        })
+      );
+    } catch (e) {
+      /* quota / private mode */
+    }
+  }
+
+  function isListingsCacheFresh(entry) {
+    if (!entry || !entry.fetchedAt) return false;
+    return Date.now() - entry.fetchedAt < getListingsCacheTtlMs(entry.source);
+  }
+
+  function pickBestListings(primary, secondary) {
+    var a = Array.isArray(primary) ? primary : [];
+    var b = Array.isArray(secondary) ? secondary : [];
+    if (!a.length) return b;
+    if (!b.length) return a;
+    return b.length > a.length ? b : a;
+  }
+
+  function maybeApplyListingsUpdate(nextListings, meta) {
+    if (!Array.isArray(nextListings) || !nextListings.length) return;
+    writeListingsCache(nextListings, meta);
+    if (typeof listingsRenderHook === "function") {
+      listingsRenderHook(nextListings);
+    }
+  }
+
+  function refreshListingsFromWebhookInBackground(currentListings) {
     var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
-    if (liveUrl) {
-      return fetchListingsFromWebhook(liveUrl).catch(function (err) {
-        return loadLocalListings(err && err.message);
+    if (!liveUrl) return;
+
+    fetchListingsFromWebhook(liveUrl)
+      .then(function (liveListings) {
+        var best = pickBestListings(currentListings, liveListings);
+        if (best.length > currentListings.length) {
+          if (cfg.debug) {
+            console.log("ZFR — background Make refresh applied", best.length, "listings");
+          }
+          maybeApplyListingsUpdate(best, { source: "webhook" });
+        }
+      })
+      .catch(function (err) {
+        if (cfg.debug) {
+          console.warn("ZFR — background Make refresh skipped:", err && err.message);
+        }
+      });
+  }
+
+  function refreshListingsFromSheetInBackground(currentListings) {
+    var sheetRef = getListingsSheetRef();
+    if (!sheetRef) return;
+
+    fetchListingsFromGoogleSheet(sheetRef)
+      .then(function (sheetListings) {
+        if (!sheetListings.length) return;
+        if (cfg.debug) {
+          console.log("ZFR — background sheet refresh:", sheetListings.length, "listings");
+        }
+        maybeApplyListingsUpdate(sheetListings, { source: "sheet" });
+      })
+      .catch(function (err) {
+        if (cfg.debug) {
+          console.warn("ZFR — background sheet refresh skipped:", err && err.message);
+        }
+      });
+  }
+
+  function refreshListingsInBackground(currentListings) {
+    if (getListingsFetchMode() === "sheet-first" && getListingsSheetRef()) {
+      refreshListingsFromSheetInBackground(currentListings);
+      return;
+    }
+    refreshListingsFromWebhookInBackground(currentListings);
+  }
+
+  function loadListingsFromSheetWithFallback(reason) {
+    var sheetRef = getListingsSheetRef();
+    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
+
+    if (!sheetRef) {
+      console.warn(
+        "ZFR — listingsSheetUrl חסר ב-zfr-config.js — הדביקו את כתובת Google Sheets"
+      );
+      if (liveUrl) {
+        return fetchListingsFromWebhook(liveUrl);
+      }
+      return loadLocalListings(reason || "Missing listingsSheetUrl");
+    }
+
+    return fetchListingsFromGoogleSheet(sheetRef).catch(function (sheetErr) {
+      console.warn("ZFR — Google Sheets failed:", sheetErr && sheetErr.message);
+      if (liveUrl) {
+        return fetchListingsFromWebhook(liveUrl).catch(function () {
+          return loadLocalListings(sheetErr && sheetErr.message);
+        });
+      }
+      return loadLocalListings(sheetErr && sheetErr.message);
+    });
+  }
+
+  function loadListingsWithCache() {
+    var cached = readListingsCache();
+    if (cached && isListingsCacheFresh(cached) && cached.listings.length) {
+      if (cfg.debug) {
+        console.log("ZFR — listings from localStorage cache (" + cached.source + ")");
+      }
+      refreshListingsInBackground(cached.listings);
+      return Promise.resolve(cached.listings);
+    }
+
+    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
+    var mode = getListingsFetchMode();
+
+    if (mode === "sheet-first") {
+      return loadListingsFromSheetWithFallback()
+        .then(function (listings) {
+          var source = getListingsSheetRef() ? "sheet" : liveUrl ? "webhook" : "local";
+          writeListingsCache(listings, { source: source });
+          return listings;
+        })
+        .catch(function (err) {
+          if (cached && cached.listings.length) {
+            console.warn("ZFR — using stale cache:", err && err.message);
+            return cached.listings;
+          }
+          return Promise.reject(err);
+        });
+    }
+
+    if (mode === "json-first") {
+      return loadLocalListings()
+        .then(function (localListings) {
+          writeListingsCache(localListings, { source: "local" });
+          refreshListingsInBackground(localListings);
+          return localListings;
+        })
+        .catch(function (localErr) {
+          if (!liveUrl) {
+            return Promise.reject(localErr);
+          }
+          return fetchListingsFromWebhook(liveUrl)
+            .then(function (liveListings) {
+              writeListingsCache(liveListings, { source: "webhook" });
+              return liveListings;
+            })
+            .catch(function (webhookErr) {
+              if (cached && cached.listings.length) {
+                console.warn(
+                  "ZFR — local + webhook failed, using stale cache:",
+                  webhookErr && webhookErr.message
+                );
+                return cached.listings;
+              }
+              return Promise.reject(webhookErr || localErr);
+            });
+        });
+    }
+
+    if (!liveUrl) {
+      return loadLocalListings().then(function (listings) {
+        writeListingsCache(listings, { source: "local" });
+        return listings;
       });
     }
-    return loadLocalListings();
+
+    return fetchListingsFromWebhook(liveUrl)
+      .then(function (listings) {
+        writeListingsCache(listings, { source: "webhook" });
+        return listings;
+      })
+      .catch(function (err) {
+        if (cached && cached.listings.length) {
+          console.warn(
+            "ZFR — webhook failed, using stale localStorage cache:",
+            err && err.message
+          );
+          return cached.listings;
+        }
+        var msg =
+          (err && err.message) ||
+          (err && String(err)) ||
+          "Live listings unavailable (CORS/network)";
+        return loadLocalListings(msg).then(function (listings) {
+          writeListingsCache(listings, { source: "local-fallback" });
+          return listings;
+        });
+      });
+  }
+
+  window.ZFR_fetchListings = loadListingsWithCache;
+
+  window.ZFR_clearListingsCache = function () {
+    try {
+      if (window.localStorage) {
+        localStorage.removeItem(getListingsCacheKey());
+      }
+    } catch (e) {
+      /* ignore */
+    }
   };
 
   function showLoadingState() {
@@ -655,19 +1108,7 @@
   }
 
   function loadListings() {
-    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
-
-    if (!liveUrl) {
-      return loadLocalListings();
-    }
-
-    return fetchListingsFromWebhook(liveUrl).catch(function (err) {
-      var msg =
-        (err && err.message) ||
-        (err && String(err)) ||
-        "Live listings unavailable (CORS/network)";
-      return loadLocalListings(msg);
-    });
+    return loadListingsWithCache();
   }
 
   function sortListings(list) {
@@ -1430,6 +1871,12 @@
   }
 
   initPropertyModal();
+
+  listingsRenderHook = function (listings) {
+    clearLoadingState();
+    render(listings);
+    activateListingCards();
+  };
 
   showLoadingState();
 

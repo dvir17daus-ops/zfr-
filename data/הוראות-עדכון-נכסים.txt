@@ -1,25 +1,21 @@
-ZFR Estates — איך מעדכנים נכסים
-================================
+ZFR Estates — איך מעדכנים נכסים (אוטומטי)
+=========================================
 
-אפשרות 1 — Google Sheets (מומלץ למתווך)
-----------------------------------------
-1. צרו גיליון לפי data/google-sheets-template.csv
-2. מלאו שורות — כל שורה = נכס
-3. תמונות — אפשר כמה תמונות לנכס אחד:
-   א) עמודת image (עמודה 9 בגיליון): אפשר כמה קישורי Drive באותו תא
-      — מפרידים ב- |  או  ,  או שורה חדשה  או  כמה רווחים בין קישורים
-   ב) עמודת images (אם קיימת): אותו דבר
-   ג) עמודות נפרדות: image + image2 (או תמונה + תמונה2) — כל קישור בעמודה
-   חשוב: ב-Make חייב לכלול את השדות image ו-images (וראו MAKE-GOOGLE-SHEETS-SETUP.md)
-   בכרטיס מוצגת תמונה ראשונה; בלחיצה על הנכס — גלריה עם כל התמונות
-   sqm, floor, parking, year (אופציונלי): מופיעים בחלון פרטי הנכס
-4. חברו Make לפי data/MAKE-GOOGLE-SHEETS-SETUP.md
-5. הדביקו את כתובת ה-Webhook ב-js/zfr-config.js → listingsLiveUrl
+האתר קורא ישירות מ-Google Sheets — בלי Make, בלי לערוך קבצים.
+עדכון בגיליון → מופיע באתר (עד שעה, או מיד אחרי רענון קשיח).
 
-אפשרות 2 — קובץ מקומי (גיבוי)
+הגדרה חד-פעמית (5 דקות)
+-------------------------
+1. פתחו את Google Sheets עם הנכסים
+2. שיתוף → "כל מי שיש לו הקישור" → צופה
+3. העתיקו את כתובת ה-URL מהדפדפן (כולל #gid=...)
+4. הדביקו ב-js/zfr-config.js בשורה listingsSheetUrl:
+     listingsSheetUrl: "https://docs.google.com/spreadsheets/d/XXXXX/edit#gid=0",
+5. git push — וזהו. מעכשיו כל עדכון בגיליון מתעדכן אוטומטית.
+
+מבנה הגיליון (שורה 1 = כותרות)
 -------------------------------
-ערכו: data/listings.json
-העלו מחדש לאתר.
+id | title | description | area | type | rooms | priceLabel | status | image | images | featured | sortOrder
 
 סטטוסים:
   available  = למכירה
@@ -27,5 +23,20 @@ ZFR Estates — איך מעדכנים נכסים
   exclusive  = בבלעדיות (תג על התמונה)
   hidden     = לא מוצג
 
-לידים מהבוט / טופס:
-  js/zfr-config.js → makeLeadWebhook
+תמונות:
+  image = קישור Drive ראשון
+  images = קישורים נוספים (מפריד | או פסיק)
+  או עמודות image2, image3
+
+אם הגיליון לא נטען
+------------------
+- וודאו שיתוף "כל מי שיש לו הקישור"
+- בקונסול (F12): חפשו "ZFR — Google Sheets failed"
+- אופציה מתקדמת: data/google-sheets-webapp.gs (Web app מ-Apps Script)
+
+גיבוי
+-----
+data/listings.json — רק אם Google Sheets לא זמין. לא צריך לערוך ידנית.
+
+לידים מהבוט:
+  js/zfr-config.js → makeLeadWebhook (Make נפרד — לא קשור לנכסים)

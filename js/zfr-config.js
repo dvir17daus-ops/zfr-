@@ -1,23 +1,35 @@
 /**
- * הגדרות ZFR Estates — ערכו כאן אחרי חיבור Make + Google Sheets
+ * הגדרות ZFR Estates
  */
 window.ZFR_CONFIG = {
-  /** הצגת כלי דיבוג בקונסול (zfrDebugSendMake וכו') — false בפרודקשן */
+  /** הצגת כלי דיבוג בקונסול — false בפרודקשן */
   debug: false,
 
-  /** קובץ נכסים מקומי (גיבוי) */
+  /** קובץ נכסים מקומי (גיבוי בלבד — לא צריך לערוך ידנית) */
   listingsJsonUrl: "data/listings.json",
 
   /**
-   * Make GET — נכסים מ-Google Sheets (תרחיש נפרד מלידים/WhatsApp).
-   * חובה: Webhook response עם JSON { "listings": [ ... ] } + CORS header.
-   * בדיקה: פתחו את ה-URL בדפדפן — JSON תקין, לא "Accepted" / gibberish.
+   * Google Sheets — מקור הנכסים (אוטומטי).
+   * הגיליון: שיתוף → "כל מי שיש לו הקישור" → צופה.
    */
-  listingsLiveUrl: "https://hook.eu1.make.com/iznyfdparmxkv38sdlz4eyih3qgnygc0",
+  listingsSheetUrl:
+    "https://docs.google.com/spreadsheets/d/1G1geujcGx-PgJUILQRewO7sig4IBwLQdkIlEVi7sC4U/edit?usp=sharing",
 
-  /** דוא״ל ציבורי — דורש MX records על הדומיין (ראו data/DEPLOY-AND-EMAIL.md) */
+  /** gid של הטאב (0 = הראשון). נגזר אוטומטית מה-URL אם יש #gid= */
+  listingsSheetGid: "0",
+
+  /** מפתח localStorage — שינוי מאפס cache */
+  listingsCacheKey: "zfr_listings_v4",
+
+  /** cache לגיליון — שעה */
+  listingsSheetCacheTtlMs: 60 * 60 * 1000,
+
+  /** cache לגיבוי מקומי — 24 שעות */
+  listingsCacheTtlMs: 24 * 60 * 60 * 1000,
+
+  /** דוא״ל ציבורי */
   contactEmail: "shlomo0632@gmail.com",
 
-  /** Webhook Make — שליחת לידים. לפרודקשן מומלץ proxy בצד שרver (ה-URL חשוף בקליינט). */
+  /** Make — לידים מהבוט בלבד (→ וואטסאפ). לא קשור לנכסים. */
   makeLeadWebhook: "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv",
 };
