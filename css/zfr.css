@@ -1248,6 +1248,8 @@
       right: 1.25rem;
       width: 3.5rem;
       height: 3.5rem;
+      padding: 0;
+      font: inherit;
       background: #25d366;
       color: #fff;
       text-decoration: none;
@@ -1674,6 +1676,26 @@
       margin: 0;
       font-size: 0.6875rem;
       color: rgba(245, 245, 247, 0.4);
+    }
+
+    .footer-credits {
+      width: 100%;
+      margin: 0.75rem 0 0;
+      padding-top: 0.75rem;
+      border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.625rem;
+      letter-spacing: 0.02em;
+      color: rgba(245, 245, 247, 0.28);
+    }
+
+    .footer-credits a {
+      color: rgba(245, 245, 247, 0.38);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-credits a:hover {
+      color: rgba(212, 175, 55, 0.65);
     }
 
     .hero-copy {
@@ -2195,6 +2217,10 @@
       .typing span {
         animation: none;
       }
+
+      .contact-choice-modal-panel {
+        animation: none;
+      }
     }
 
     /* Scroll-driven reveal (Intersection Observer + CSS) */
@@ -2504,6 +2530,163 @@
       background: rgba(0, 0, 0, 0.55);
       border-radius: 999px;
       border: 0.5px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* —— WhatsApp choice modal —— */
+    body.contact-choice-open {
+      overflow: hidden;
+    }
+
+    .contact-choice-modal[hidden] {
+      display: none;
+    }
+
+    .contact-choice-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 410;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1rem, 4vw, 1.75rem);
+    }
+
+    .contact-choice-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.68);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .contact-choice-modal-panel {
+      position: relative;
+      z-index: 1;
+      width: min(22rem, 100%);
+      padding: clamp(1.5rem, 4vw, 2rem);
+      text-align: center;
+      border-radius: var(--radius-xl);
+      background: rgba(14, 14, 16, 0.97);
+      border: 0.5px solid rgba(212, 175, 55, 0.28);
+      box-shadow: var(--shadow), 0 0 48px rgba(212, 175, 55, 0.08);
+      animation: contact-choice-in 0.38s var(--ease-apple) both;
+    }
+
+    @keyframes contact-choice-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .contact-choice-modal-close {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border: 0.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.35);
+      color: var(--white-muted);
+      cursor: pointer;
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .contact-choice-modal-close:hover {
+      color: var(--white);
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .contact-choice-modal-close svg {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+
+    .contact-choice-modal-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      margin: 0 auto 1rem;
+      border-radius: 999px;
+      background: rgba(37, 211, 102, 0.14);
+      color: #25d366;
+      box-shadow: 0 0 0 0.5px rgba(37, 211, 102, 0.35);
+    }
+
+    .contact-choice-modal-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .contact-choice-eyebrow {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+    }
+
+    .contact-choice-modal-panel h2 {
+      margin: 0 0 0.75rem;
+      font-family: var(--font-brand);
+      font-size: clamp(1.35rem, 4vw, 1.6rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--white);
+    }
+
+    .contact-choice-lead {
+      margin: 0 0 1.5rem;
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: var(--white-muted);
+    }
+
+    .contact-choice-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+
+    .contact-choice-actions .btn-gold--wide {
+      width: 100%;
+    }
+
+    .contact-choice-secondary {
+      padding: 0.45rem 0.5rem;
+      border: none;
+      background: none;
+      font-size: 0.8125rem;
+      color: rgba(245, 245, 247, 0.48);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .contact-choice-secondary:hover {
+      color: rgba(37, 211, 102, 0.85);
+    }
+
+    .contact-choice-secondary:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     /* —— Property detail modal —— */

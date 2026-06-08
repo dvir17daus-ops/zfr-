@@ -304,6 +304,130 @@
   }
 })();
 
+(function initFooterCredits() {
+  var el = document.getElementById("footerCredits");
+  var credit = window.ZFR_CONFIG && window.ZFR_CONFIG.siteCredit;
+  if (!el || !credit || !credit.name || !credit.email) return;
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var label = String(credit.label || "עיצוב ופיתוח").trim();
+  var name = String(credit.name).trim();
+  var email = String(credit.email).trim();
+
+  el.innerHTML =
+    escapeHtml(label) +
+    ' · <a href="mailto:' +
+    encodeURIComponent(email) +
+    '">' +
+    escapeHtml(name) +
+    "</a>";
+  el.hidden = false;
+})();
+
+(function initWhatsAppFabChoice() {
+  var fab = document.getElementById("whatsappFab");
+  var modal = document.getElementById("whatsappChoiceModal");
+  var backdrop = document.getElementById("whatsappChoiceBackdrop");
+  var closeBtn = document.getElementById("whatsappChoiceClose");
+  var surveyBtn = document.getElementById("whatsappChoiceSurvey");
+  var directBtn = document.getElementById("whatsappChoiceDirect");
+  if (!fab || !modal) return;
+
+  var cfg = (window.ZFR_CONFIG && window.ZFR_CONFIG.whatsappFab) || {};
+  var waUrl = String(cfg.url || "").trim();
+  var rememberKey = String(cfg.rememberDirectKey || "zfr_whatsapp_direct").trim();
+
+  function prefersDirectThisSession() {
+    try {
+      return sessionStorage.getItem(rememberKey) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function rememberDirectChoice() {
+    try {
+      sessionStorage.setItem(rememberKey, "1");
+    } catch (e) {
+      /* private mode */
+    }
+  }
+
+  function openWhatsApp() {
+    if (!waUrl) return;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  }
+
+  function openSurvey() {
+    if (window.location.hash !== "#concierge") {
+      window.location.hash = "#concierge";
+    }
+    if (typeof window.zfrOpenChat === "function") {
+      window.zfrOpenChat();
+    }
+    var input = document.getElementById("chatInput");
+    if (input && !input.disabled) {
+      window.setTimeout(function () {
+        try {
+          input.focus({ preventScroll: true });
+        } catch (e) {
+          input.focus();
+        }
+      }, 400);
+    }
+  }
+
+  function openModal() {
+    modal.hidden = false;
+    document.body.classList.add("contact-choice-open");
+    if (surveyBtn) surveyBtn.focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    document.body.classList.remove("contact-choice-open");
+    fab.focus();
+  }
+
+  fab.addEventListener("click", function () {
+    if (prefersDirectThisSession()) {
+      openWhatsApp();
+      return;
+    }
+    openModal();
+  });
+
+  if (surveyBtn) {
+    surveyBtn.addEventListener("click", function () {
+      closeModal();
+      openSurvey();
+    });
+  }
+
+  if (directBtn) {
+    directBtn.addEventListener("click", function () {
+      rememberDirectChoice();
+      closeModal();
+      openWhatsApp();
+    });
+  }
+
+  if (backdrop) backdrop.addEventListener("click", closeModal);
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+
+  document.addEventListener("keydown", function (e) {
+    if (modal.hidden) return;
+    if (e.key === "Escape") closeModal();
+  });
+})();
+
 (function initMobileNav() {
   var toggle = document.getElementById("navToggle");
   var drawer = document.getElementById("navDrawer");

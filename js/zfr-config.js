@@ -32,4 +32,21 @@ window.ZFR_CONFIG = {
 
   /** Make — לידים מהבוט בלבד (→ וואטסאפ). לא קשור לנכסים. */
   makeLeadWebhook: "https://hook.eu1.make.com/gsmo9h6e2hfruc5hshw9e0x35oejeexv",
+
+  /**
+   * כפתור WhatsApp הצף — מציג שאלת שכנוע לפני מעבר ישיר.
+   * sessionStorage: אם בחרו "WhatsApp ישיר" — לא מציגים שוב באותה סשן.
+   */
+  whatsappFab: {
+    url:
+      "https://wa.me/972547532972?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%99%D7%97%D7%94%20%D7%A2%D7%9D%20%D7%99%D7%95%D7%A2%D7%A5%20ZFR",
+    rememberDirectKey: "zfr_whatsapp_direct",
+  },
+
+  /** קרדיט יוצר האתר — מוצג בתחתית העמוד */
+  siteCredit: {
+    label: "עיצוב ופיתוח",
+    name: "דביר דאוס",
+    email: "dvir17daus@gmail.com",
+  },
 };

@@ -1,5 +1,5 @@
 /**
- * משיכת נכסים: Google Sheets (ישיר) + cache + גיבוי listings.json / Make.
+ * משיכת נכסים: Google Sheets (ישיר) + cache + גיבוי listings.json.
  */
 (function initZfrListings() {
   var cfg = window.ZFR_CONFIG || {};
@@ -12,15 +12,6 @@
   var lightboxState = { sources: [], index: 0, alt: "" };
 
   if (!gridEl) return;
-
-  function normalizeWebhookUrl(url) {
-    var u = String(url || "").trim();
-    var match = u.match(/^https:\/\/([^/@]+)@hook\.(eu\d+)\.make\.com\/?$/i);
-    if (match) {
-      return "https://hook." + match[2] + ".make.com/" + match[1];
-    }
-    return u;
-  }
 
   function getPriceLabel(item) {
     return item.priceLabel || item.price || "";
@@ -341,17 +332,16 @@
     return getListingImageSources(item).map(resolveImageUrl).filter(Boolean);
   }
 
-  function isMakeNonJsonBody(text) {
+  function isNonJsonBody(text) {
     var t = String(text || "").trim();
     if (!t) return true;
     if (/^accepted$/i.test(t)) return true;
+    if (/^<!DOCTYPE html/i.test(t)) return true;
     if (/no scenario listening/i.test(t)) return true;
-    if (/map\s*\(\s*\d+\.array/i.test(t)) return true;
-    if (/\"[^\"]+\"\s*;\s*[^\"]/i.test(t)) return true;
     return false;
   }
 
-  /** סדר עמודות ב-Google Sheets — כש-Make מחזיר 0,1,2 במקום id,title,... */
+  /** סדר עמודות — גיבוי כשמפתחות מגיעים כ-0,1,2 */
   var MAKE_SHEET_COLUMN_ORDER = [
     "id",
     "title",
@@ -436,7 +426,7 @@
     var fromNumeric = rowFromNumericKeys(raw);
 
     if (fromNumeric) {
-      /* fromNumeric אחרון — שדות מ-Google Sheets דרך Make (0,1,2…) גוברים */
+      /* fromNumeric — שדות ממפתחות מספריים גוברים */
       item = Object.assign({}, raw, fromNumeric);
     }
 
@@ -483,7 +473,7 @@
       featuredRaw === "true" ||
       featuredRaw === "1";
 
-    /* גיבוי אחרון — מפתחות 0,1,2… ישירות מ-Make */
+    /* גיבוי — מפתחות 0,1,2… */
     MAKE_SHEET_COLUMN_ORDER.forEach(function (field, idx) {
       if (item[field] != null && String(item[field]).trim() !== "") return;
       var numericVal = raw[String(idx)];
@@ -548,7 +538,7 @@
     if (Array.isArray(data.listings)) return data.listings;
     if (data.body && Array.isArray(data.body.listings)) return data.body.listings;
     if (opts.requireListingsKey) {
-      throw new Error('Make must return JSON: { "listings": [ ... ] }');
+      throw new Error('Expected JSON: { "listings": [ ... ] }');
     }
     return [];
   }
@@ -557,19 +547,15 @@
     opts = opts || {};
     var raw = String(text || "").trim();
 
-    if (isMakeNonJsonBody(raw)) {
-      throw new Error(
-        'Make returned "Accepted" instead of JSON — add Webhook response module in Make (see data/MAKE-GOOGLE-SHEETS-SETUP.md)'
-      );
+    if (isNonJsonBody(raw)) {
+      throw new Error("Invalid listings response (not JSON)");
     }
 
     var parsed;
     try {
       parsed = JSON.parse(raw);
     } catch (parseErr) {
-      throw new Error(
-        "Invalid JSON from Make — fix Webhook response body (see data/MAKE-GOOGLE-SHEETS-SETUP.md)"
-      );
+      throw new Error("Invalid listings JSON");
     }
 
     return normalizeListingsArray(extractListingsArray(parsed, opts));
@@ -831,20 +817,12 @@
       });
   }
 
-  function fetchListingsFromWebhook(webhookUrl) {
-    var url = normalizeWebhookUrl(webhookUrl);
-    if (!url) {
-      return Promise.reject(new Error("Missing webhook URL"));
-    }
-    return fetchJson(url, { asListingsArray: true, requireListingsKey: true });
-  }
-
   var DEFAULT_LISTINGS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
   var listingsRenderHook = null;
 
   function getListingsCacheKey() {
-    var key = String(cfg.listingsCacheKey || "zfr_listings_v3").trim();
-    return key || "zfr_listings_v3";
+    var key = String(cfg.listingsCacheKey || "zfr_listings_v4").trim();
+    return key || "zfr_listings_v4";
   }
 
   function getListingsCacheTtlMs(source) {
@@ -854,12 +832,6 @@
     }
     var ttl = Number(cfg.listingsCacheTtlMs);
     return ttl > 0 ? ttl : DEFAULT_LISTINGS_CACHE_TTL_MS;
-  }
-
-  function getListingsFetchMode() {
-    var mode = String(cfg.listingsFetchMode || "sheet-first").trim().toLowerCase();
-    if (mode === "live-first" || mode === "json-first") return mode;
-    return "sheet-first";
   }
 
   function readListingsCache() {
@@ -900,14 +872,6 @@
     return Date.now() - entry.fetchedAt < getListingsCacheTtlMs(entry.source);
   }
 
-  function pickBestListings(primary, secondary) {
-    var a = Array.isArray(primary) ? primary : [];
-    var b = Array.isArray(secondary) ? secondary : [];
-    if (!a.length) return b;
-    if (!b.length) return a;
-    return b.length > a.length ? b : a;
-  }
-
   function maybeApplyListingsUpdate(nextListings, meta) {
     if (!Array.isArray(nextListings) || !nextListings.length) return;
     writeListingsCache(nextListings, meta);
@@ -916,28 +880,7 @@
     }
   }
 
-  function refreshListingsFromWebhookInBackground(currentListings) {
-    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
-    if (!liveUrl) return;
-
-    fetchListingsFromWebhook(liveUrl)
-      .then(function (liveListings) {
-        var best = pickBestListings(currentListings, liveListings);
-        if (best.length > currentListings.length) {
-          if (cfg.debug) {
-            console.log("ZFR — background Make refresh applied", best.length, "listings");
-          }
-          maybeApplyListingsUpdate(best, { source: "webhook" });
-        }
-      })
-      .catch(function (err) {
-        if (cfg.debug) {
-          console.warn("ZFR — background Make refresh skipped:", err && err.message);
-        }
-      });
-  }
-
-  function refreshListingsFromSheetInBackground(currentListings) {
+  function refreshListingsFromSheetInBackground() {
     var sheetRef = getListingsSheetRef();
     if (!sheetRef) return;
 
@@ -956,35 +899,18 @@
       });
   }
 
-  function refreshListingsInBackground(currentListings) {
-    if (getListingsFetchMode() === "sheet-first" && getListingsSheetRef()) {
-      refreshListingsFromSheetInBackground(currentListings);
-      return;
-    }
-    refreshListingsFromWebhookInBackground(currentListings);
-  }
-
   function loadListingsFromSheetWithFallback(reason) {
     var sheetRef = getListingsSheetRef();
-    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
 
     if (!sheetRef) {
       console.warn(
         "ZFR — listingsSheetUrl חסר ב-zfr-config.js — הדביקו את כתובת Google Sheets"
       );
-      if (liveUrl) {
-        return fetchListingsFromWebhook(liveUrl);
-      }
       return loadLocalListings(reason || "Missing listingsSheetUrl");
     }
 
     return fetchListingsFromGoogleSheet(sheetRef).catch(function (sheetErr) {
       console.warn("ZFR — Google Sheets failed:", sheetErr && sheetErr.message);
-      if (liveUrl) {
-        return fetchListingsFromWebhook(liveUrl).catch(function () {
-          return loadLocalListings(sheetErr && sheetErr.message);
-        });
-      }
       return loadLocalListings(sheetErr && sheetErr.message);
     });
   }
@@ -995,86 +921,22 @@
       if (cfg.debug) {
         console.log("ZFR — listings from localStorage cache (" + cached.source + ")");
       }
-      refreshListingsInBackground(cached.listings);
+      refreshListingsFromSheetInBackground();
       return Promise.resolve(cached.listings);
     }
 
-    var liveUrl = normalizeWebhookUrl(cfg.listingsLiveUrl);
-    var mode = getListingsFetchMode();
-
-    if (mode === "sheet-first") {
-      return loadListingsFromSheetWithFallback()
-        .then(function (listings) {
-          var source = getListingsSheetRef() ? "sheet" : liveUrl ? "webhook" : "local";
-          writeListingsCache(listings, { source: source });
-          return listings;
-        })
-        .catch(function (err) {
-          if (cached && cached.listings.length) {
-            console.warn("ZFR — using stale cache:", err && err.message);
-            return cached.listings;
-          }
-          return Promise.reject(err);
-        });
-    }
-
-    if (mode === "json-first") {
-      return loadLocalListings()
-        .then(function (localListings) {
-          writeListingsCache(localListings, { source: "local" });
-          refreshListingsInBackground(localListings);
-          return localListings;
-        })
-        .catch(function (localErr) {
-          if (!liveUrl) {
-            return Promise.reject(localErr);
-          }
-          return fetchListingsFromWebhook(liveUrl)
-            .then(function (liveListings) {
-              writeListingsCache(liveListings, { source: "webhook" });
-              return liveListings;
-            })
-            .catch(function (webhookErr) {
-              if (cached && cached.listings.length) {
-                console.warn(
-                  "ZFR — local + webhook failed, using stale cache:",
-                  webhookErr && webhookErr.message
-                );
-                return cached.listings;
-              }
-              return Promise.reject(webhookErr || localErr);
-            });
-        });
-    }
-
-    if (!liveUrl) {
-      return loadLocalListings().then(function (listings) {
-        writeListingsCache(listings, { source: "local" });
-        return listings;
-      });
-    }
-
-    return fetchListingsFromWebhook(liveUrl)
+    return loadListingsFromSheetWithFallback()
       .then(function (listings) {
-        writeListingsCache(listings, { source: "webhook" });
+        var source = getListingsSheetRef() ? "sheet" : "local";
+        writeListingsCache(listings, { source: source });
         return listings;
       })
       .catch(function (err) {
         if (cached && cached.listings.length) {
-          console.warn(
-            "ZFR — webhook failed, using stale localStorage cache:",
-            err && err.message
-          );
+          console.warn("ZFR — using stale cache:", err && err.message);
           return cached.listings;
         }
-        var msg =
-          (err && err.message) ||
-          (err && String(err)) ||
-          "Live listings unavailable (CORS/network)";
-        return loadLocalListings(msg).then(function (listings) {
-          writeListingsCache(listings, { source: "local-fallback" });
-          return listings;
-        });
+        return Promise.reject(err);
       });
   }
 
