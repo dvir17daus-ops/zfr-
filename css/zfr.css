@@ -2773,6 +2773,72 @@
       background: rgba(0, 0, 0, 0.35);
     }
 
+    .property-modal-gallery-stage {
+      position: relative;
+      flex: 1;
+      min-height: min(42dvh, 360px);
+    }
+
+    .property-modal-gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      border: 0.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.55);
+      color: var(--white);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .property-modal-gallery-nav[hidden] {
+      display: none;
+    }
+
+    .property-modal-gallery-nav:hover {
+      background: rgba(0, 0, 0, 0.78);
+    }
+
+    .property-modal-gallery-nav svg {
+      width: 1.35rem;
+      height: 1.35rem;
+    }
+
+    /* RTL: הקודמת ימין, הבאה שמאל */
+    .property-modal-gallery-prev {
+      right: 0.75rem;
+    }
+
+    .property-modal-gallery-next {
+      left: 0.75rem;
+    }
+
+    .property-modal-gallery-counter {
+      position: absolute;
+      bottom: 0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.55);
+      color: var(--white);
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+    }
+
+    .property-modal-gallery-counter[hidden] {
+      display: none;
+    }
+
     .property-modal-gallery {
       flex: 1;
       min-height: min(42dvh, 360px);
@@ -2997,6 +3063,22 @@
       font-size: 0.875rem;
       color: var(--text-silver-muted);
       background: rgba(255, 255, 255, 0.03);
+    }
+
+    @media (max-width: 640px) {
+      .property-modal-gallery-nav {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: rgba(0, 0, 0, 0.65);
+      }
+
+      .property-modal-gallery-prev {
+        right: 0.5rem;
+      }
+
+      .property-modal-gallery-next {
+        left: 0.5rem;
+      }
     }
 
     .property-modal-thumbs {

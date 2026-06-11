@@ -1386,6 +1386,29 @@
     return document.getElementById("propertyImageLightbox");
   }
 
+  function updateGalleryNavControls() {
+    var prevBtn = document.getElementById("propertyModalGalleryPrev");
+    var nextBtn = document.getElementById("propertyModalGalleryNext");
+    var counterEl = document.getElementById("propertyModalGalleryCounter");
+    var total = galleryState.sources.length;
+    var hasMultiple = total > 1;
+
+    if (prevBtn) prevBtn.hidden = !hasMultiple;
+    if (nextBtn) nextBtn.hidden = !hasMultiple;
+    if (counterEl) {
+      counterEl.hidden = !hasMultiple;
+      if (hasMultiple) {
+        counterEl.textContent = String(galleryState.index + 1) + " / " + String(total);
+      }
+    }
+  }
+
+  function stepGallery(delta) {
+    var total = galleryState.sources.length;
+    if (total <= 1) return;
+    showGalleryImage(galleryState.index + delta);
+  }
+
   function updateLightboxControls() {
     var prevBtn = document.getElementById("propertyImageLightboxPrev");
     var nextBtn = document.getElementById("propertyImageLightboxNext");
@@ -1499,6 +1522,8 @@
       });
     }
 
+    updateGalleryNavControls();
+
     /* אם ה-lightbox פתוח — סנכרון התמונה המוגדלת */
     if (!opts.skipLightboxSync) {
       var lb = getImageLightboxEl();
@@ -1525,14 +1550,17 @@
         galleryEl.innerHTML =
           '<div class="property-modal-no-image" aria-hidden="true">תמונה בקרוב</div>';
         thumbsEl.hidden = true;
+        updateGalleryNavControls();
         return;
       }
       setGalleryImage(galleryEl, getListingRemoteImageSources(item)[0], item.title || "נכס");
       thumbsEl.hidden = true;
+      updateGalleryNavControls();
       return;
     }
 
     setGalleryImage(galleryEl, sources[0], item.title || "נכס");
+    updateGalleryNavControls();
 
     if (sources.length <= 1) {
       thumbsEl.hidden = true;
@@ -1653,11 +1681,67 @@
       });
     }
 
+    var galleryWrap = document.querySelector(".property-modal-gallery-stage");
+    var galleryPrev = document.getElementById("propertyModalGalleryPrev");
+    var galleryNext = document.getElementById("propertyModalGalleryNext");
     var lightboxEl = getImageLightboxEl();
     var lightboxBackdrop = document.getElementById("propertyImageLightboxBackdrop");
     var lightboxClose = document.getElementById("propertyImageLightboxClose");
     var lightboxPrev = document.getElementById("propertyImageLightboxPrev");
     var lightboxNext = document.getElementById("propertyImageLightboxNext");
+
+    function stopNavClick(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
+    if (galleryPrev) {
+      galleryPrev.addEventListener("click", function (e) {
+        stopNavClick(e);
+        stepGallery(-1);
+      });
+    }
+    if (galleryNext) {
+      galleryNext.addEventListener("click", function (e) {
+        stopNavClick(e);
+        stepGallery(1);
+      });
+    }
+
+    if (galleryWrap) {
+      var galleryTouchStartX = 0;
+      var galleryTouchStartY = 0;
+      var galleryTouchActive = false;
+
+      galleryWrap.addEventListener(
+        "touchstart",
+        function (e) {
+          if (!e.touches || e.touches.length !== 1) {
+            galleryTouchActive = false;
+            return;
+          }
+          galleryTouchActive = true;
+          galleryTouchStartX = e.touches[0].clientX;
+          galleryTouchStartY = e.touches[0].clientY;
+        },
+        { passive: true }
+      );
+
+      galleryWrap.addEventListener(
+        "touchend",
+        function (e) {
+          if (!galleryTouchActive) return;
+          galleryTouchActive = false;
+          var touch = (e.changedTouches && e.changedTouches[0]) || null;
+          if (!touch) return;
+          var dx = touch.clientX - galleryTouchStartX;
+          var dy = touch.clientY - galleryTouchStartY;
+          if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+          stepGallery(dx < 0 ? 1 : -1);
+        },
+        { passive: true }
+      );
+    }
 
     if (lightboxBackdrop) lightboxBackdrop.addEventListener("click", closeImageLightbox);
     if (lightboxClose) lightboxClose.addEventListener("click", closeImageLightbox);
@@ -1727,6 +1811,18 @@
           return;
         }
         return;
+      }
+      if (!modalEl.hidden && galleryState.sources.length > 1) {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          stepGallery(1);
+          return;
+        }
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          stepGallery(-1);
+          return;
+        }
       }
       if (e.key === "Escape" && !modalEl.hidden) closePropertyModal();
     });
